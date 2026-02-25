@@ -1,9 +1,13 @@
 ---
 # ===============================================
 # VCDPA-SPECIFIC QUESTIONS (Virginia)
-# Only presented when VCDPA is in
-# matters[i].confirmed_jurisdictions
+# Part 1: Data processing details
+# Part 2: Compliance posture assessment
+# Only presented when VCDPA is confirmed.
 # ===============================================
+
+# --- PART 1: DATA PROCESSING DETAILS ---
+
 question: |
   VCDPA — Processing Roles — ${ matters[i].org.name.text }
 fields:
@@ -31,7 +35,7 @@ fields:
     datatype: yesnoradio
   - Does the client sell personal data?: matters[i].vcdpa.sells_data
     datatype: yesnoradio
-  - Does the client use personal data for profiling that produces significant decisions?: matters[i].vcdpa.profiling_opt_out
+  - Does the client use personal data for profiling producing significant decisions?: matters[i].vcdpa.profiling_opt_out
     datatype: yesnoradio
   - URL for Virginia consumer rights requests: matters[i].vcdpa.rights_request_url
     required: False
@@ -53,3 +57,39 @@ fields:
       - Profiling with significant effects
       - Processing sensitive data
       - Processing children's data
+
+# --- PART 2: VCDPA COMPLIANCE POSTURE ---
+
+---
+question: |
+  VCDPA — Compliance Posture: Notices and Rights — ${ matters[i].org.name.text }
+subquestion: |
+  Answer based on what the client **currently has in place**.
+fields:
+  - Is a privacy notice provided to Virginia consumers that meets VCDPA requirements (§59.1-578)?: matters[i].vcdpa.posture.privacy_notice_provided
+    datatype: yesnoradio
+  - Is there a documented procedure to respond to consumer rights requests within 45 days (§59.1-581)?: matters[i].vcdpa.posture.rights_procedure_45_days
+    datatype: yesnoradio
+  - Is an appeals procedure in place for denied consumer requests (§59.1-581)?: matters[i].vcdpa.posture.appeals_procedure
+    datatype: yesnoradio
+---
+question: |
+  VCDPA — Compliance Posture: Opt-Out and Sensitive Data — ${ matters[i].org.name.text }
+fields:
+  - Is a clear opt-out mechanism for targeted advertising, data sale, and profiling in place (§59.1-578)?: matters[i].vcdpa.posture.opt_out_mechanism_in_place
+    datatype: yesnoradio
+    show if: matters[i].vcdpa.include_opt_out_section
+  - Is opt-in consent obtained before processing sensitive data (§59.1-578)?: matters[i].vcdpa.posture.sensitive_data_consent_obtained
+    datatype: yesnoradio
+    show if: matters[i].vcdpa.processes_sensitive_data
+---
+question: |
+  VCDPA — Compliance Posture: Contracts and Assessments — ${ matters[i].org.name.text }
+fields:
+  - Are Data Processing Agreements in place with all processors meeting VCDPA requirements (§59.1-580)?: matters[i].vcdpa.posture.dpa_contracts_in_place
+    datatype: yesnoradio
+  - Have required Data Protection Impact Assessments (PIAs) been completed (§59.1-582)?: matters[i].vcdpa.posture.pia_assessments_completed
+    datatype: yesnoradio
+    show if: matters[i].vcdpa.include_opt_out_section
+  - Have contracts with third parties been reviewed and updated for VCDPA compliance (§59.1-580)?: matters[i].vcdpa.posture.third_party_contracts_updated
+    datatype: yesnoradio

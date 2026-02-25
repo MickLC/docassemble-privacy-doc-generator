@@ -1,9 +1,13 @@
 ---
 # ===============================================
 # GDPR-SPECIFIC QUESTIONS
-# Only presented when GDPR is in
-# matters[i].confirmed_jurisdictions
+# Part 1: Data processing details
+# Part 2: Compliance posture assessment
+# Only presented when GDPR is confirmed.
 # ===============================================
+
+# --- PART 1: DATA PROCESSING DETAILS ---
+
 question: |
   GDPR — Lawful Basis for Processing — ${ matters[i].org.name.text }
 subquestion: |
@@ -89,3 +93,61 @@ fields:
   - Supervisory Authority Website: matters[i].gdpr.supervisory_authority_url
     required: False
     hint: e.g. https://ico.org.uk
+
+# --- PART 2: GDPR COMPLIANCE POSTURE ---
+
+---
+question: |
+  GDPR — Compliance Posture: Documentation — ${ matters[i].org.name.text }
+subquestion: |
+  Answer based on what the client **currently has in place**, not what
+  they plan to implement. These answers drive the gap analysis.
+fields:
+  - Is a lawful basis documented for each processing activity?: matters[i].gdpr.posture.lawful_basis_documented
+    datatype: yesnoradio
+  - Is a Record of Processing Activities (RoPA) maintained (Article 30)?: matters[i].gdpr.posture.ropa_maintained
+    datatype: yesnoradio
+  - Is a data retention schedule documented?: matters[i].gdpr.posture.retention_schedule_documented
+    datatype: yesnoradio
+  - If legitimate interests is relied upon, is a Legitimate Interests Assessment (LIA) documented?: matters[i].gdpr.posture.lia_documented
+    datatype: yesnoradio
+    show if:
+      variable: matters[i].gdpr.lawful_bases
+      has: Legitimate interests (Article 6(1)(f))
+---
+question: |
+  GDPR — Compliance Posture: Notices and Consent — ${ matters[i].org.name.text }
+fields:
+  - Is a privacy notice provided to data subjects at or before the point of data collection (Articles 13/14)?: matters[i].gdpr.posture.privacy_notice_provided
+    datatype: yesnoradio
+  - Is a compliant cookie consent mechanism in place (ePrivacy Directive)?: matters[i].gdpr.posture.cookie_consent_compliant
+    datatype: yesnoradio
+  - If consent is relied upon, is there a mechanism to record and evidence consent (Article 7)?: matters[i].gdpr.posture.consent_records_maintained
+    datatype: yesnoradio
+    show if:
+      variable: matters[i].gdpr.lawful_bases
+      has: Consent (Article 6(1)(a))
+---
+question: |
+  GDPR — Compliance Posture: Rights and Contracts — ${ matters[i].org.name.text }
+fields:
+  - Is there a documented procedure for responding to data subject rights requests within one month (Articles 15–22)?: matters[i].gdpr.posture.rights_procedure_documented
+    datatype: yesnoradio
+  - Do all processor relationships have a compliant Article 28 contract or DPA in place?: matters[i].gdpr.posture.article28_contracts_in_place
+    datatype: yesnoradio
+  - If international transfers occur, is an appropriate transfer mechanism in place (Article 46)?: matters[i].gdpr.posture.transfer_mechanism_in_place
+    datatype: yesnoradio
+    show if: matters[i].gdpr.international_transfers
+---
+question: |
+  GDPR — Compliance Posture: Security and Breach — ${ matters[i].org.name.text }
+fields:
+  - Is a documented breach detection and notification procedure in place (Articles 33/34)?: matters[i].gdpr.posture.breach_procedure_documented
+    datatype: yesnoradio
+  - Has a DPIA been conducted for high-risk processing activities (Article 35)?: matters[i].gdpr.posture.dpia_conducted
+    datatype: yesnoradio
+    show if: matters[i].gdpr.requires_dpia
+  - Are privacy by design principles embedded in new projects and systems (Article 25)?: matters[i].gdpr.posture.privacy_by_design
+    datatype: yesnoradio
+  - Have staff received data protection training in the last 12 months?: matters[i].gdpr.posture.staff_training_current
+    datatype: yesnoradio

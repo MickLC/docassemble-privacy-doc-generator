@@ -1,9 +1,13 @@
 ---
 # ===============================================
 # CCPA/CPRA-SPECIFIC QUESTIONS
-# Only presented when CCPA/CPRA is in
-# matters[i].confirmed_jurisdictions
+# Part 1: Data processing details
+# Part 2: Compliance posture assessment
+# Only presented when CCPA/CPRA is confirmed.
 # ===============================================
+
+# --- PART 1: DATA PROCESSING DETAILS ---
+
 question: |
   CCPA/CPRA — Sale and Sharing of Personal Information — ${ matters[i].org.name.text }
 subquestion: |
@@ -16,7 +20,6 @@ fields:
     datatype: yesnoradio
   - URL of the client's "Do Not Sell or Share My Personal Information" page: matters[i].ccpa.opt_out_link
     required: False
-    hint: Required if client sells or shares PI
     show if:
       variable: matters[i].ccpa.sells_pi
       is: True
@@ -73,5 +76,46 @@ fields:
     required: False
   - Toll-free number for consumer rights requests: matters[i].ccpa.rights_request_phone
     required: False
-  - Does the client offer a two-step verification process for rights requests?: matters[i].ccpa.uses_verification
+  - Does the client offer a two-step verification process for deletion requests?: matters[i].ccpa.uses_verification
+    datatype: yesnoradio
+
+# --- PART 2: CCPA/CPRA COMPLIANCE POSTURE ---
+
+---
+question: |
+  CCPA/CPRA — Compliance Posture: Notices — ${ matters[i].org.name.text }
+subquestion: |
+  Answer based on what the client **currently has in place**.
+fields:
+  - Is a privacy notice at collection provided to California consumers at or before data collection (§1798.100)?: matters[i].ccpa.posture.notice_at_collection
+    datatype: yesnoradio
+  - Has the published privacy policy been updated within the last 12 months (§1798.130)?: matters[i].ccpa.posture.policy_updated_12mo
+    datatype: yesnoradio
+  - Does the privacy policy include all required CCPA/CPRA disclosures?: matters[i].ccpa.posture.policy_disclosures_complete
+    datatype: yesnoradio
+---
+question: |
+  CCPA/CPRA — Compliance Posture: Opt-Out and Rights — ${ matters[i].org.name.text }
+fields:
+  - Is a "Do Not Sell or Share My Personal Information" link or mechanism in place (§1798.120)?: matters[i].ccpa.posture.opt_out_mechanism_in_place
+    datatype: yesnoradio
+    show if:
+      variable: matters[i].ccpa.sells_pi
+      is: True
+  - Is the Global Privacy Control (GPC) signal honoured automatically?: matters[i].ccpa.posture.gpc_honoured
+    datatype: yesnoradio
+  - Is a "Limit Use of My Sensitive Personal Information" link or mechanism in place (§1798.121)?: matters[i].ccpa.posture.spi_limit_mechanism_in_place
+    datatype: yesnoradio
+    show if: matters[i].ccpa.uses_spi_beyond_primary
+  - Is there a documented procedure to respond to consumer rights requests within 45 days (§1798.105)?: matters[i].ccpa.posture.rights_procedure_45_days
+    datatype: yesnoradio
+---
+question: |
+  CCPA/CPRA — Compliance Posture: Contracts and Training — ${ matters[i].org.name.text }
+fields:
+  - Do all service provider and contractor agreements include required CPRA data protection provisions (§1798.140)?: matters[i].ccpa.posture.service_provider_contracts_compliant
+    datatype: yesnoradio
+  - Have staff who handle consumer rights requests been trained on CCPA/CPRA requirements?: matters[i].ccpa.posture.staff_trained
+    datatype: yesnoradio
+  - Has the client implemented a two-step verification process for deletion requests?: matters[i].ccpa.posture.deletion_verification_in_place
     datatype: yesnoradio

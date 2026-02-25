@@ -1,14 +1,17 @@
 ---
 # ===============================================
 # TDPSA-SPECIFIC QUESTIONS (Texas)
-# Only presented when TDPSA is in
-# matters[i].confirmed_jurisdictions
+# Part 1: Data processing details
+# Part 2: Compliance posture assessment
+# Only presented when TDPSA is confirmed.
 # ===============================================
+
+# --- PART 1: DATA PROCESSING DETAILS ---
+
 question: |
   TDPSA — Controller and Processor Roles — ${ matters[i].org.name.text }
 subquestion: |
-  The TDPSA distinguishes between controllers (who determine the purpose
-  and means of processing) and processors (who process on behalf of controllers).
+  The TDPSA distinguishes between controllers and processors.
 fields:
   - In relation to Texas consumers, the client primarily acts as a: matters[i].tdpsa.role
     choices:
@@ -35,8 +38,7 @@ fields:
 question: |
   TDPSA — Data Protection Assessments — ${ matters[i].org.name.text }
 subquestion: |
-  Under the TDPSA, controllers must conduct Data Protection Assessments
-  for high-risk processing activities.
+  Controllers must conduct Data Protection Assessments for high-risk processing.
 fields:
   - Has the client conducted Data Protection Assessments for applicable activities?: matters[i].tdpsa.dpa_completed
     datatype: yesnoradio
@@ -49,3 +51,41 @@ fields:
       - Profiling with significant effects
       - Processing sensitive data
       - Processing children's data
+
+# --- PART 2: TDPSA COMPLIANCE POSTURE ---
+
+---
+question: |
+  TDPSA — Compliance Posture: Notices and Rights — ${ matters[i].org.name.text }
+subquestion: |
+  Answer based on what the client **currently has in place**.
+fields:
+  - Is a privacy notice provided to Texas consumers that meets TDPSA requirements (§541.101)?: matters[i].tdpsa.posture.privacy_notice_provided
+    datatype: yesnoradio
+  - Is there a documented procedure to respond to consumer rights requests within 45 days (§541.052)?: matters[i].tdpsa.posture.rights_procedure_45_days
+    datatype: yesnoradio
+  - Is an appeals procedure in place for denied consumer requests (§541.053)?: matters[i].tdpsa.posture.appeals_procedure
+    datatype: yesnoradio
+---
+question: |
+  TDPSA — Compliance Posture: Opt-Out and Sensitive Data — ${ matters[i].org.name.text }
+fields:
+  - Is a clear opt-out mechanism for targeted advertising, data sale, and profiling in place (§541.051)?: matters[i].tdpsa.posture.opt_out_mechanism_in_place
+    datatype: yesnoradio
+    show if: matters[i].tdpsa.include_opt_out_section
+  - Does the client support the Universal Opt-Out Mechanism (UOOM) (§541.056)?: matters[i].tdpsa.posture.uoom_supported
+    datatype: yesnoradio
+  - Is opt-in consent obtained before processing sensitive data (§541.101)?: matters[i].tdpsa.posture.sensitive_data_consent_obtained
+    datatype: yesnoradio
+    show if: matters[i].footprint.processes_sensitive_data
+---
+question: |
+  TDPSA — Compliance Posture: Contracts and Assessments — ${ matters[i].org.name.text }
+fields:
+  - Are Data Processing Agreements in place with all processors meeting TDPSA requirements (§541.104)?: matters[i].tdpsa.posture.dpa_contracts_in_place
+    datatype: yesnoradio
+  - Have required Data Protection Assessments been completed for high-risk processing (§541.105)?: matters[i].tdpsa.posture.dpa_assessments_completed
+    datatype: yesnoradio
+    show if:
+      variable: matters[i].tdpsa.include_opt_out_section
+      is: True
