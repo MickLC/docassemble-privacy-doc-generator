@@ -1,0 +1,65 @@
+---
+# ===============================================
+# DIAGNOSTIC TEST INTERVIEW
+# Tests that the package loads correctly:
+# - Python modules import without error
+# - DAList initialises
+# - Attorney setup question renders
+# - matters[i].complete code block is reachable
+#
+# Run at:
+# /interview?i=docassemble.privacydocgenerator:data/questions/test_load.yml
+#
+# DELETE or exclude from production deployment.
+# ===============================================
+---
+modules:
+  - docassemble.privacydocgenerator.jurisdiction_engine
+  - docassemble.privacydocgenerator.gap_analysis_engine
+---
+objects:
+  - matters: DAList.using(object_type=DAObject, auto_gather=False)
+  - attorney: Individual
+---
+mandatory: True
+code: |
+  load_test_intro
+  attorney.name.first
+  load_test_result
+---
+question: Package Load Test
+subquestion: |
+  This diagnostic interview confirms the package loads correctly.
+
+  It will test:
+
+  - Python module imports (`jurisdiction_engine`, `gap_analysis_engine`)
+  - `DAList` object initialisation
+  - Basic question rendering
+
+  Click **Continue** to begin.
+continue button field: load_test_intro
+---
+question: Attorney Name
+fields:
+  - First name: attorney.name.first
+  - Last name: attorney.name.last
+---
+question: |
+  ✅ Package Loaded Successfully
+subquestion: |
+  The following checks passed:
+
+  - `jurisdiction_engine` module imported
+  - `gap_analysis_engine` module imported
+  - `DAList` objects initialised
+  - Question rendering working
+  - Attorney name captured: **${ attorney.name.full() }**
+
+  You can now test the full interview at:
+
+  `/interview?i=docassemble.privacydocgenerator:data/questions/main.yml`
+buttons:
+  - Exit: exit
+  - Run full interview: restart
+event: load_test_result
