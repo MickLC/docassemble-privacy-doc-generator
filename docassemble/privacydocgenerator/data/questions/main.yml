@@ -2,71 +2,96 @@
 metadata:
   title: Privacy Policy Generator
   short title: Privacy Policy
-  description: Generate a GDPR-compliant privacy policy document for your organisation
+  description: |
+    Multi-jurisdiction privacy policy document generator for legal professionals.
+    Supports GDPR, CCPA/CPRA, TDPSA, VCDPA, and more.
   documentation: https://github.com/MickLC/docassemble-privacy-doc-generator
   authors:
     - name: MickLC
   revision_date: 2026-02-25
 ---
 include:
-  - docassemble.privacydocgenerator:data/questions/includes/questions.yml
-  - docassemble.privacydocgenerator:data/questions/includes/logic.yml
+  - docassemble.privacydocgenerator:data/questions/includes/matter_setup.yml
+  - docassemble.privacydocgenerator:data/questions/includes/org_profile.yml
+  - docassemble.privacydocgenerator:data/questions/includes/operational_footprint.yml
+  - docassemble.privacydocgenerator:data/questions/includes/jurisdiction_engine.yml
+  - docassemble.privacydocgenerator:data/questions/includes/universal_data_questions.yml
+  - docassemble.privacydocgenerator:data/questions/includes/gdpr/questions.yml
+  - docassemble.privacydocgenerator:data/questions/includes/gdpr/logic.yml
+  - docassemble.privacydocgenerator:data/questions/includes/ccpa_cpra/questions.yml
+  - docassemble.privacydocgenerator:data/questions/includes/ccpa_cpra/logic.yml
+  - docassemble.privacydocgenerator:data/questions/includes/tdpsa/questions.yml
+  - docassemble.privacydocgenerator:data/questions/includes/tdpsa/logic.yml
+  - docassemble.privacydocgenerator:data/questions/includes/vcdpa/questions.yml
+  - docassemble.privacydocgenerator:data/questions/includes/vcdpa/logic.yml
   - docassemble.privacydocgenerator:data/questions/includes/review.yml
 ---
-objects:
-  - org: Thing
-  - dpo: Individual
+modules:
+  - docassemble.privacydocgenerator.jurisdiction_engine
 ---
+objects:
+  - matters: DAList.using(object_type=DAObject, auto_gather=False, gathered=True)
+  - attorney: Individual
+---
+# -----------------------------------------------
+# MAIN INTERVIEW FLOW
+# -----------------------------------------------
 mandatory: True
 code: |
-  # -----------------------------------------------
-  # Main interview flow
-  # -----------------------------------------------
-  intro_screen
-  org.name.text
-  org.address
-  org.contact_email
-  org.website
-  data_types_collected
-  processing_purposes
-  lawful_bases
-  retention_period
-  third_party_sharing
-  international_transfers
-  children_data
-  dpo_exists
-  if dpo_exists:
-    dpo.name.first
-    dpo.email
-  review_screen
-  final_document
+  # Step 1: Attorney/firm setup (once per session)
+  attorney_setup_done
+
+  # Step 2: Matter management loop
+  for i in range(len(matters)):
+    matters[i].matter_ref
+    matters[i].org.name.text
+    matters[i].org.address
+    matters[i].org.contact_email
+    matters[i].org.website
+    matters[i].org.industry
+    matters[i].footprint.operating_regions
+    matters[i].footprint.consumer_regions
+    matters[i].footprint.annual_revenue
+    matters[i].footprint.consumer_volume
+    matters[i].footprint.sells_data
+    matters[i].footprint.processes_sensitive_data
+    matters[i].confirmed_jurisdictions
+    matters[i].data.types_collected
+    matters[i].data.purposes
+    matters[i].data.retention_period
+    matters[i].data.third_party_sharing
+    if 'GDPR' in matters[i].confirmed_jurisdictions:
+      matters[i].gdpr.lawful_bases
+      matters[i].gdpr.dpo_exists
+      if matters[i].gdpr.dpo_exists:
+        matters[i].gdpr.dpo.name.first
+      matters[i].gdpr.international_transfers
+    if 'CCPA/CPRA' in matters[i].confirmed_jurisdictions:
+      matters[i].ccpa.service_providers
+      matters[i].ccpa.sells_shares_pi
+      matters[i].ccpa.sensitive_pi_categories
+      matters[i].ccpa.opt_out_link
+    if 'TDPSA' in matters[i].confirmed_jurisdictions:
+      matters[i].tdpsa.acts_as_controller
+      matters[i].tdpsa.universal_opt_out_supported
+      matters[i].tdpsa.profiling_decisions
+    if 'VCDPA' in matters[i].confirmed_jurisdictions:
+      matters[i].vcdpa.pia_completed
+      matters[i].vcdpa.profiling_opt_out
+      matters[i].vcdpa.sensitive_data_consent
+    matters[i].review_done
+    matters[i].document_generated
+
+  # Step 3: Session complete
+  session_complete
 ---
-question: |
-  Welcome to the Privacy Policy Generator
+question: Session Complete
 subquestion: |
-  This guided interview will help you create a GDPR-compliant privacy policy
-  for your organisation.
+  All matters for this session have been processed.
 
-  You will be asked about:
+  % for matter in matters:
+  - **${ matter.org.name.text }** (${ matter.matter_ref }) — ${ comma_and_list(matter.confirmed_jurisdictions) }
+  % endfor
 
-  - Your organisation's details
-  - What personal data you collect and why
-  - How long you keep data
-  - Whether you share data with third parties
-  - Your Data Protection Officer (if applicable)
-
-  At the end, you will be able to download a completed privacy policy document.
-continue button field: intro_screen
----
-event: final_document
-question: Your Privacy Policy is Ready
-subquestion: |
-  Your GDPR-compliant privacy policy has been generated.
-  Click below to download your document.
-attachment:
-  name: Privacy Policy - ${ org.name.text }
-  filename: privacy_policy
-  docx template file: privacy_policy.docx
-  valid formats:
-    - docx
-    - pdf
+  You may close this window or start a new session.
+event: session_complete
