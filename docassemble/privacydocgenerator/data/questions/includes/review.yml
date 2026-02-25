@@ -1,41 +1,81 @@
 ---
-# -----------------------------------------------
-# Review Screen
-# Allows user to verify all answers before
-# generating the document.
-# -----------------------------------------------
+# ===============================================
+# REVIEW SCREEN
+# Displays a full summary of matter answers
+# before document generation.
+# ===============================================
 question: |
-  Please review your information
+  Review — ${ matters[i].org.name.text }
 subquestion: |
-  Review the details below before generating your privacy policy.
-  Click **Edit** next to any section to make changes.
+  Review all information below before generating the privacy policy.
+  Click **Back** to make changes.
 
-  **Organisation Details**
+  ---
 
-  % if defined('org.name.text'):
-  - Name: ${ org.name.text }
-  - Address: ${ org.address.on_one_line() }
-  - Contact Email: ${ org.contact_email }
-  - Website: ${ org.website if org.website else 'Not provided' }
+  **Matter Reference:** ${ matters[i].matter_ref }
+
+  **Organisation:** ${ matters[i].org.name.text }
+  ${ matters[i].org.address.on_one_line() }
+  Privacy contact: ${ matters[i].org.contact_email }
+
+  **Applicable Laws:** ${ comma_and_list(matters[i].confirmed_jurisdictions.true_values()) }
+
+  ---
+
+  **Data Collected:** ${ matters[i].data.types_collected.true_values() }
+
+  **Processing Purposes:** ${ matters[i].data.purposes.true_values() }
+
+  **Retention Policy:** ${ matters[i].data.retention_period }
+
+  **Third-Party Sharing:** ${ 'Yes' if matters[i].data.third_party_sharing else 'No' }
+
+  ---
+
+  % if 'GDPR' in matters[i].confirmed_jurisdictions.true_values():
+  **GDPR**
+  Lawful bases: ${ matters[i].gdpr.lawful_bases.true_values() }
+  DPO: ${ matters[i].gdpr.dpo.name.full() if matters[i].gdpr.dpo_exists else 'Not appointed' }
+  International transfers: ${ 'Yes' if matters[i].gdpr.international_transfers else 'No' }
   % endif
 
-  **Data Processing**
-
-  - Data Types Collected: ${ data_types_collected.true_values() }
-  - Processing Purposes: ${ processing_purposes.true_values() }
-  - Lawful Bases: ${ lawful_bases.true_values() }
-  - Retention Period: ${ retention_period }
-
-  **Third Parties & Transfers**
-
-  - Third Party Sharing: ${ 'Yes' if third_party_sharing else 'No' }
-  - International Transfers: ${ 'Yes' if international_transfers else 'No' }
-
-  **Data Protection Officer**
-
-  - DPO Appointed: ${ 'Yes' if dpo_exists else 'No' }
-  % if dpo_exists:
-  - DPO Name: ${ dpo.name.full() }
-  - DPO Email: ${ dpo.email }
+  % if 'CCPA/CPRA' in matters[i].confirmed_jurisdictions.true_values():
+  **CCPA/CPRA**
+  Sells PI: ${ 'Yes' if matters[i].ccpa.sells_pi else 'No' }
+  Shares PI for advertising: ${ 'Yes' if matters[i].ccpa.shares_pi_for_advertising else 'No' }
+  Collects SPI: ${ 'Yes' if matters[i].ccpa.collects_spi else 'No' }
+  Honours GPC: ${ 'Yes' if matters[i].ccpa.honours_gpc else 'No' }
   % endif
-continue button field: review_screen
+
+  % if 'TDPSA' in matters[i].confirmed_jurisdictions.true_values():
+  **TDPSA**
+  Role: ${ matters[i].tdpsa.role }
+  Targeted advertising: ${ 'Yes' if matters[i].tdpsa.targeted_advertising else 'No' }
+  Sells data: ${ 'Yes' if matters[i].tdpsa.sells_data else 'No' }
+  Universal opt-out supported: ${ 'Yes' if matters[i].tdpsa.universal_opt_out_supported else 'No' }
+  % endif
+
+  % if 'VCDPA' in matters[i].confirmed_jurisdictions.true_values():
+  **VCDPA**
+  Role: ${ matters[i].vcdpa.role }
+  Processes sensitive data: ${ 'Yes' if matters[i].vcdpa.processes_sensitive_data else 'No' }
+  PIAs completed: ${ 'Yes' if matters[i].vcdpa.pia_completed else 'No' }
+  % endif
+continue button field: matters[i].review_done
+---
+event: matters[i].document_generated
+question: |
+  Privacy Policy Ready — ${ matters[i].org.name.text }
+subquestion: |
+  The privacy policy for **${ matters[i].org.name.text }** has been generated.
+  Download the document below.
+
+  **Matter:** ${ matters[i].matter_ref }
+  **Jurisdictions covered:** ${ comma_and_list(matters[i].confirmed_jurisdictions.true_values()) }
+attachment:
+  name: Privacy Policy — ${ matters[i].org.name.text }
+  filename: privacy_policy_${ matters[i].matter_ref }
+  docx template file: privacy_policy.docx
+  valid formats:
+    - docx
+    - pdf

@@ -1,0 +1,43 @@
+{
+  "consumer_rights": [
+    {
+      "right": "Right to Know",
+      "description": "You have the right to request that we disclose what personal information we collect, use, disclose, and sell about you."
+    },
+    {
+      "right": "Right to Delete",
+      "description": "You have the right to request that we delete personal information we collected from you, subject to certain exceptions."
+    },
+    {
+      "right": "Right to Correct",
+      "description": "You have the right to request that we correct inaccurate personal information we maintain about you."
+    },
+    {
+      "right": "Right to Opt-Out of Sale or Sharing",
+      "description": "You have the right to opt out of the sale or sharing of your personal information for cross-context behavioural advertising."
+    },
+    {
+      "right": "Right to Limit Use of Sensitive Personal Information",
+      "description": "You have the right to request that we limit our use and disclosure of your sensitive personal information."
+    },
+    {
+      "right": "Right to Non-Discrimination",
+      "description": "We will not discriminate against you for exercising any of your CCPA/CPRA rights."
+    },
+    {
+      "right": "Right to Data Portability",
+      "description": "You have the right to receive your personal information in a portable and readily usable format."
+    }
+  ],
+  "sensitive_pi_categories": [
+    "Social Security, driver's license, state identification card, or passport number",
+    "Account log-in, financial account, debit card, or credit card number in combination with a password",
+    "Precise geolocation",
+    "Racial or ethnic origin, religious or philosophical beliefs, or union membership",
+    "The contents of mail, email, and text messages unless we are the intended recipient",
+    "Genetic data",
+    "Biometric information processed to uniquely identify a consumer",
+    "Personal information collected and analyzed concerning a consumer's health",
+    "Personal information collected and analyzed concerning a consumer's sex life or sexual orientation"
+  ]
+}

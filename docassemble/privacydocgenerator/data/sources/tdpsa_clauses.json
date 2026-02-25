@@ -1,0 +1,42 @@
+{
+  "consumer_rights": [
+    {
+      "right": "Right to Access",
+      "description": "You have the right to confirm whether we process your personal data and to access that data."
+    },
+    {
+      "right": "Right to Correction",
+      "description": "You have the right to correct inaccuracies in your personal data."
+    },
+    {
+      "right": "Right to Deletion",
+      "description": "You have the right to request deletion of personal data you have provided or that we have collected about you."
+    },
+    {
+      "right": "Right to Data Portability",
+      "description": "You have the right to obtain a copy of your personal data in a portable format."
+    },
+    {
+      "right": "Right to Opt Out of Targeted Advertising",
+      "description": "You have the right to opt out of the processing of your personal data for targeted advertising."
+    },
+    {
+      "right": "Right to Opt Out of Sale",
+      "description": "You have the right to opt out of the sale of your personal data."
+    },
+    {
+      "right": "Right to Opt Out of Profiling",
+      "description": "You have the right to opt out of profiling in furtherance of decisions that produce legal or similarly significant effects."
+    }
+  ],
+  "sensitive_data_categories": [
+    "Racial or ethnic origin",
+    "Religious beliefs",
+    "Mental or physical health diagnosis",
+    "Sexual orientation",
+    "Citizenship or immigration status",
+    "Genetic or biometric data processed to uniquely identify an individual",
+    "Personal data of a known child",
+    "Precise geolocation data"
+  ]
+}
