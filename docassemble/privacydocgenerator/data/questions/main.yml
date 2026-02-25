@@ -15,6 +15,7 @@ include:
   - docassemble.privacydocgenerator:data/questions/includes/org_profile.yml
   - docassemble.privacydocgenerator:data/questions/includes/operational_footprint.yml
   - docassemble.privacydocgenerator:data/questions/includes/jurisdiction_engine.yml
+  - docassemble.privacydocgenerator:data/questions/includes/current_state_assessment.yml
   - docassemble.privacydocgenerator:data/questions/includes/universal_data_questions.yml
   - docassemble.privacydocgenerator:data/questions/includes/gdpr/questions.yml
   - docassemble.privacydocgenerator:data/questions/includes/gdpr/logic.yml
@@ -28,6 +29,7 @@ include:
 ---
 modules:
   - docassemble.privacydocgenerator.jurisdiction_engine
+  - docassemble.privacydocgenerator.gap_analysis_engine
 ---
 objects:
   - matters: DAList.using(object_type=DAObject, auto_gather=False, gathered=True)
@@ -43,42 +45,113 @@ code: |
 
   # Step 2: Matter management loop
   for i in range(len(matters)):
+
+    # --- Organisation profile ---
     matters[i].matter_ref
     matters[i].org.name.text
-    matters[i].org.address
+    matters[i].org.trading_name
+    matters[i].org.industry
+    matters[i].org.address.address
     matters[i].org.contact_email
     matters[i].org.website
-    matters[i].org.industry
+
+    # --- Operational footprint (drives jurisdiction detection) ---
     matters[i].footprint.operating_regions
     matters[i].footprint.consumer_regions
     matters[i].footprint.annual_revenue
     matters[i].footprint.consumer_volume
     matters[i].footprint.sells_data
     matters[i].footprint.processes_sensitive_data
+    matters[i].footprint.is_sba_small_business
+
+    # --- Jurisdiction determination ---
     matters[i].confirmed_jurisdictions
+
+    # --- Current state assessment (baseline for gap analysis) ---
+    matters[i].current_state.collection_methods
+    matters[i].current_state.storage_systems
+    matters[i].current_state.has_data_inventory
+    matters[i].current_state.existing_docs
+    matters[i].current_state.vendor_count
+    matters[i].current_state.vendor_contracts_include_dp_terms
+    matters[i].current_state.shares_data_commercially
+    matters[i].current_state.has_rights_request_procedure
+    matters[i].current_state.has_opt_out_mechanism
+    matters[i].current_state.has_had_breach
+    matters[i].current_state.has_breach_response_plan
+    matters[i].current_state.has_privacy_lead
+    matters[i].current_state.has_staff_training
+    matters[i].current_state.uses_automated_decisions
+
+    # --- Universal data processing questions ---
     matters[i].data.types_collected
     matters[i].data.purposes
     matters[i].data.retention_period
     matters[i].data.third_party_sharing
-    if 'GDPR' in matters[i].confirmed_jurisdictions:
+
+    # --- Jurisdiction-specific questions and compliance posture ---
+    if 'GDPR' in matters[i].confirmed_jurisdictions.true_values():
       matters[i].gdpr.lawful_bases
+      matters[i].gdpr.processes_special_category
+      matters[i].gdpr.international_transfers
       matters[i].gdpr.dpo_exists
       if matters[i].gdpr.dpo_exists:
         matters[i].gdpr.dpo.name.first
-      matters[i].gdpr.international_transfers
-    if 'CCPA/CPRA' in matters[i].confirmed_jurisdictions:
+        matters[i].gdpr.dpo.name.last
+        matters[i].gdpr.dpo.email
+      matters[i].gdpr.supervisory_authority
+      matters[i].gdpr.posture.lawful_basis_documented
+      matters[i].gdpr.posture.privacy_notice_provided
+      matters[i].gdpr.posture.rights_procedure_documented
+      matters[i].gdpr.posture.breach_procedure_documented
+      matters[i].gdpr.posture.staff_training_current
+
+    if 'CCPA/CPRA' in matters[i].confirmed_jurisdictions.true_values():
+      matters[i].ccpa.sells_pi
+      matters[i].ccpa.shares_pi_for_advertising
+      matters[i].ccpa.honours_gpc
+      matters[i].ccpa.collects_spi
       matters[i].ccpa.service_providers
-      matters[i].ccpa.sells_shares_pi
-      matters[i].ccpa.sensitive_pi_categories
-      matters[i].ccpa.opt_out_link
-    if 'TDPSA' in matters[i].confirmed_jurisdictions:
-      matters[i].tdpsa.acts_as_controller
-      matters[i].tdpsa.universal_opt_out_supported
+      matters[i].ccpa.rights_request_url
+      matters[i].ccpa.uses_verification
+      matters[i].ccpa.posture.notice_at_collection
+      matters[i].ccpa.posture.policy_updated_12mo
+      matters[i].ccpa.posture.policy_disclosures_complete
+      matters[i].ccpa.posture.rights_procedure_45_days
+      matters[i].ccpa.posture.service_provider_contracts_compliant
+      matters[i].ccpa.posture.staff_trained
+      matters[i].ccpa.posture.gpc_honoured
+
+    if 'TDPSA' in matters[i].confirmed_jurisdictions.true_values():
+      matters[i].tdpsa.role
+      matters[i].tdpsa.targeted_advertising
+      matters[i].tdpsa.sells_data
       matters[i].tdpsa.profiling_decisions
-    if 'VCDPA' in matters[i].confirmed_jurisdictions:
-      matters[i].vcdpa.pia_completed
+      matters[i].tdpsa.universal_opt_out_supported
+      matters[i].tdpsa.dpa_completed
+      matters[i].tdpsa.posture.privacy_notice_provided
+      matters[i].tdpsa.posture.rights_procedure_45_days
+      matters[i].tdpsa.posture.appeals_procedure
+      matters[i].tdpsa.posture.uoom_supported
+      matters[i].tdpsa.posture.dpa_contracts_in_place
+
+    if 'VCDPA' in matters[i].confirmed_jurisdictions.true_values():
+      matters[i].vcdpa.role
+      matters[i].vcdpa.processes_sensitive_data
+      matters[i].vcdpa.targeted_advertising
+      matters[i].vcdpa.sells_data
       matters[i].vcdpa.profiling_opt_out
-      matters[i].vcdpa.sensitive_data_consent
+      matters[i].vcdpa.pia_completed
+      matters[i].vcdpa.posture.privacy_notice_provided
+      matters[i].vcdpa.posture.rights_procedure_45_days
+      matters[i].vcdpa.posture.appeals_procedure
+      matters[i].vcdpa.posture.dpa_contracts_in_place
+      matters[i].vcdpa.posture.third_party_contracts_updated
+
+    # --- Run gap analysis ---
+    matters[i].gap_analysis = run_gap_analysis(matters[i])
+
+    # --- Review and generate documents ---
     matters[i].review_done
     matters[i].document_generated
 
@@ -90,7 +163,8 @@ subquestion: |
   All matters for this session have been processed.
 
   % for matter in matters:
-  - **${ matter.org.name.text }** (${ matter.matter_ref }) — ${ comma_and_list(matter.confirmed_jurisdictions) }
+  - **${ matter.org.name.text }** (${ matter.matter_ref }) &mdash;
+  ${ comma_and_list(matter.confirmed_jurisdictions.true_values()) }
   % endfor
 
   You may close this window or start a new session.
