@@ -32,7 +32,7 @@ modules:
   - docassemble.privacydocgenerator.gap_analysis_engine
 ---
 objects:
-  - matters: DAList.using(object_type=DAObject, auto_gather=False, gathered=True)
+  - matters: DAList.using(object_type=DAObject, auto_gather=False)
   - attorney: Individual
 ---
 # -----------------------------------------------
@@ -43,121 +43,154 @@ code: |
   # Step 1: Attorney/firm setup (once per session)
   attorney_setup_done
 
-  # Step 2: Matter management loop
-  for i in range(len(matters)):
-
-    # --- Organisation profile ---
-    matters[i].matter_ref
-    matters[i].org.name.text
-    matters[i].org.trading_name
-    matters[i].org.industry
-    matters[i].org.address.address
-    matters[i].org.contact_email
-    matters[i].org.website
-
-    # --- Operational footprint (drives jurisdiction detection) ---
-    matters[i].footprint.operating_regions
-    matters[i].footprint.consumer_regions
-    matters[i].footprint.annual_revenue
-    matters[i].footprint.consumer_volume
-    matters[i].footprint.sells_data
-    matters[i].footprint.processes_sensitive_data
-    matters[i].footprint.is_sba_small_business
-
-    # --- Jurisdiction determination ---
-    matters[i].confirmed_jurisdictions
-
-    # --- Current state assessment (baseline for gap analysis) ---
-    matters[i].current_state.collection_methods
-    matters[i].current_state.storage_systems
-    matters[i].current_state.has_data_inventory
-    matters[i].current_state.existing_docs
-    matters[i].current_state.vendor_count
-    matters[i].current_state.vendor_contracts_include_dp_terms
-    matters[i].current_state.shares_data_commercially
-    matters[i].current_state.has_rights_request_procedure
-    matters[i].current_state.has_opt_out_mechanism
-    matters[i].current_state.has_had_breach
-    matters[i].current_state.has_breach_response_plan
-    matters[i].current_state.has_privacy_lead
-    matters[i].current_state.has_staff_training
-    matters[i].current_state.uses_automated_decisions
-
-    # --- Universal data processing questions ---
-    matters[i].data.types_collected
-    matters[i].data.purposes
-    matters[i].data.retention_period
-    matters[i].data.third_party_sharing
-
-    # --- Jurisdiction-specific questions and compliance posture ---
-    if 'GDPR' in matters[i].confirmed_jurisdictions.true_values():
-      matters[i].gdpr.lawful_bases
-      matters[i].gdpr.processes_special_category
-      matters[i].gdpr.international_transfers
-      matters[i].gdpr.dpo_exists
-      if matters[i].gdpr.dpo_exists:
-        matters[i].gdpr.dpo.name.first
-        matters[i].gdpr.dpo.name.last
-        matters[i].gdpr.dpo.email
-      matters[i].gdpr.supervisory_authority
-      matters[i].gdpr.posture.lawful_basis_documented
-      matters[i].gdpr.posture.privacy_notice_provided
-      matters[i].gdpr.posture.rights_procedure_documented
-      matters[i].gdpr.posture.breach_procedure_documented
-      matters[i].gdpr.posture.staff_training_current
-
-    if 'CCPA/CPRA' in matters[i].confirmed_jurisdictions.true_values():
-      matters[i].ccpa.sells_pi
-      matters[i].ccpa.shares_pi_for_advertising
-      matters[i].ccpa.honours_gpc
-      matters[i].ccpa.collects_spi
-      matters[i].ccpa.service_providers
-      matters[i].ccpa.rights_request_url
-      matters[i].ccpa.uses_verification
-      matters[i].ccpa.posture.notice_at_collection
-      matters[i].ccpa.posture.policy_updated_12mo
-      matters[i].ccpa.posture.policy_disclosures_complete
-      matters[i].ccpa.posture.rights_procedure_45_days
-      matters[i].ccpa.posture.service_provider_contracts_compliant
-      matters[i].ccpa.posture.staff_trained
-      matters[i].ccpa.posture.gpc_honoured
-
-    if 'TDPSA' in matters[i].confirmed_jurisdictions.true_values():
-      matters[i].tdpsa.role
-      matters[i].tdpsa.targeted_advertising
-      matters[i].tdpsa.sells_data
-      matters[i].tdpsa.profiling_decisions
-      matters[i].tdpsa.universal_opt_out_supported
-      matters[i].tdpsa.dpa_completed
-      matters[i].tdpsa.posture.privacy_notice_provided
-      matters[i].tdpsa.posture.rights_procedure_45_days
-      matters[i].tdpsa.posture.appeals_procedure
-      matters[i].tdpsa.posture.uoom_supported
-      matters[i].tdpsa.posture.dpa_contracts_in_place
-
-    if 'VCDPA' in matters[i].confirmed_jurisdictions.true_values():
-      matters[i].vcdpa.role
-      matters[i].vcdpa.processes_sensitive_data
-      matters[i].vcdpa.targeted_advertising
-      matters[i].vcdpa.sells_data
-      matters[i].vcdpa.profiling_opt_out
-      matters[i].vcdpa.pia_completed
-      matters[i].vcdpa.posture.privacy_notice_provided
-      matters[i].vcdpa.posture.rights_procedure_45_days
-      matters[i].vcdpa.posture.appeals_procedure
-      matters[i].vcdpa.posture.dpa_contracts_in_place
-      matters[i].vcdpa.posture.third_party_contracts_updated
-
-    # --- Run gap analysis ---
-    matters[i].gap_analysis = run_gap_analysis(matters[i])
-
-    # --- Review and generate documents ---
-    matters[i].review_done
-    matters[i].document_generated
+  # Step 2: Gather all matters
+  # This triggers there_are_any, then loops asking
+  # matters[i].complete for each matter, then
+  # asks there_is_another after each one.
+  matters.gather()
 
   # Step 3: Session complete
   session_complete
 ---
+# -----------------------------------------------
+# MATTER COMPLETION TRIGGER
+# Docassemble checks matters[i].complete to know
+# when a matter is fully gathered. This code block
+# sequences every screen for a single matter.
+# -----------------------------------------------
+code: |
+  # --- Organisation profile ---
+  matters[i].matter_ref
+  matters[i].org.name.text
+  matters[i].org.trading_name
+  matters[i].org.industry
+  matters[i].org.address.address
+  matters[i].org.contact_email
+  matters[i].org.website
+
+  # --- Operational footprint ---
+  matters[i].footprint.operating_regions
+  matters[i].footprint.consumer_regions
+  matters[i].footprint.annual_revenue
+  matters[i].footprint.consumer_volume
+  matters[i].footprint.sells_data
+  matters[i].footprint.processes_sensitive_data
+  matters[i].footprint.is_sba_small_business
+
+  # --- Jurisdiction determination ---
+  matters[i].confirmed_jurisdictions
+
+  # --- Current state assessment ---
+  matters[i].current_state.collection_methods
+  matters[i].current_state.storage_systems
+  matters[i].current_state.existing_docs
+  matters[i].current_state.vendor_count
+  matters[i].current_state.vendor_contracts_include_dp_terms
+  matters[i].current_state.shares_data_commercially
+  matters[i].current_state.has_rights_request_procedure
+  matters[i].current_state.has_opt_out_mechanism
+  matters[i].current_state.has_had_breach
+  matters[i].current_state.has_breach_response_plan
+  matters[i].current_state.has_privacy_lead
+  matters[i].current_state.has_staff_training
+  matters[i].current_state.uses_automated_decisions
+
+  # --- Universal data processing ---
+  matters[i].data.types_collected
+  matters[i].data.purposes
+  matters[i].data.retention_period
+  matters[i].data.third_party_sharing
+
+  # --- GDPR ---
+  if 'GDPR' in matters[i].confirmed_jurisdictions.true_values():
+    matters[i].gdpr.lawful_bases
+    matters[i].gdpr.processes_special_category
+    matters[i].gdpr.international_transfers
+    matters[i].gdpr.dpo_exists
+    if matters[i].gdpr.dpo_exists:
+      matters[i].gdpr.dpo.name.first
+      matters[i].gdpr.dpo.name.last
+      matters[i].gdpr.dpo.email
+    matters[i].gdpr.supervisory_authority
+    matters[i].gdpr.posture.lawful_basis_documented
+    matters[i].gdpr.posture.ropa_maintained
+    matters[i].gdpr.posture.retention_schedule_documented
+    matters[i].gdpr.posture.privacy_notice_provided
+    matters[i].gdpr.posture.cookie_consent_compliant
+    matters[i].gdpr.posture.rights_procedure_documented
+    matters[i].gdpr.posture.article28_contracts_in_place
+    matters[i].gdpr.posture.breach_procedure_documented
+    matters[i].gdpr.posture.privacy_by_design
+    matters[i].gdpr.posture.staff_training_current
+
+  # --- CCPA/CPRA ---
+  if 'CCPA/CPRA' in matters[i].confirmed_jurisdictions.true_values():
+    matters[i].ccpa.sells_pi
+    matters[i].ccpa.shares_pi_for_advertising
+    matters[i].ccpa.honours_gpc
+    matters[i].ccpa.collects_spi
+    matters[i].ccpa.service_providers
+    matters[i].ccpa.rights_request_url
+    matters[i].ccpa.uses_verification
+    matters[i].ccpa.posture.notice_at_collection
+    matters[i].ccpa.posture.policy_updated_12mo
+    matters[i].ccpa.posture.policy_disclosures_complete
+    matters[i].ccpa.posture.opt_out_mechanism_in_place
+    matters[i].ccpa.posture.gpc_honoured
+    matters[i].ccpa.posture.rights_procedure_45_days
+    matters[i].ccpa.posture.service_provider_contracts_compliant
+    matters[i].ccpa.posture.staff_trained
+    matters[i].ccpa.posture.deletion_verification_in_place
+
+  # --- TDPSA ---
+  if 'TDPSA' in matters[i].confirmed_jurisdictions.true_values():
+    matters[i].tdpsa.role
+    matters[i].tdpsa.targeted_advertising
+    matters[i].tdpsa.sells_data
+    matters[i].tdpsa.profiling_decisions
+    matters[i].tdpsa.universal_opt_out_supported
+    matters[i].tdpsa.dpa_completed
+    matters[i].tdpsa.posture.privacy_notice_provided
+    matters[i].tdpsa.posture.rights_procedure_45_days
+    matters[i].tdpsa.posture.appeals_procedure
+    matters[i].tdpsa.posture.opt_out_mechanism_in_place
+    matters[i].tdpsa.posture.uoom_supported
+    matters[i].tdpsa.posture.dpa_contracts_in_place
+    matters[i].tdpsa.posture.dpa_assessments_completed
+
+  # --- VCDPA ---
+  if 'VCDPA' in matters[i].confirmed_jurisdictions.true_values():
+    matters[i].vcdpa.role
+    matters[i].vcdpa.processes_sensitive_data
+    matters[i].vcdpa.targeted_advertising
+    matters[i].vcdpa.sells_data
+    matters[i].vcdpa.profiling_opt_out
+    matters[i].vcdpa.pia_completed
+    matters[i].vcdpa.posture.privacy_notice_provided
+    matters[i].vcdpa.posture.rights_procedure_45_days
+    matters[i].vcdpa.posture.appeals_procedure
+    matters[i].vcdpa.posture.opt_out_mechanism_in_place
+    matters[i].vcdpa.posture.sensitive_data_consent_obtained
+    matters[i].vcdpa.posture.dpa_contracts_in_place
+    matters[i].vcdpa.posture.pia_assessments_completed
+    matters[i].vcdpa.posture.third_party_contracts_updated
+
+  # --- Run gap analysis ---
+  matters[i].gap_analysis = run_gap_analysis(matters[i])
+
+  # --- Review ---
+  matters[i].review_done
+
+  # --- Generate documents ---
+  matters[i].document_generated
+
+  # Mark this matter complete for the DAList gather loop
+  matters[i].complete = True
+sets: matters[i].complete
+---
+# -----------------------------------------------
+# SESSION COMPLETE
+# -----------------------------------------------
 question: Session Complete
 subquestion: |
   All matters for this session have been processed.
@@ -166,6 +199,7 @@ subquestion: |
   - **${ matter.org.name.text }** (${ matter.matter_ref }) &mdash;
   ${ comma_and_list(matter.confirmed_jurisdictions.true_values()) }
   % endfor
-
-  You may close this window or start a new session.
+buttons:
+  - Exit: exit
+  - Restart: restart
 event: session_complete

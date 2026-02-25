@@ -24,31 +24,31 @@ fields:
 continue button field: attorney_setup_done
 ---
 # -----------------------------------------------
-# Matter initialisation
+# There are always matters to process
+# -----------------------------------------------
+code: |
+  matters.there_are_any = True
+sets: matters.there_are_any
+---
+# -----------------------------------------------
+# Matter reference and client name
+# (first question asked per matter)
 # -----------------------------------------------
 question: |
-  Add a New Client Matter
+  New Client Matter
 subquestion: |
-  Enter the details for this client matter. You can add multiple
-  matters in a single session.
+  Enter the reference details for this matter.
 fields:
   - Matter Reference: matters[i].matter_ref
     hint: e.g. SMITH-2026-001
-  - Client Name (for reference): matters[i].client_name
-list collect:
-  enable: True
-  label: Client Matters
-generic object: DAList
+  - Client Name (for your reference): matters[i].client_name
 ---
 # -----------------------------------------------
-# Add another matter prompt
+# Add another matter?
 # -----------------------------------------------
 question: |
   Add Another Client Matter?
 subquestion: |
-  You have completed the policy for **${ matters[i-1].org.name.text }**.
-  Would you like to generate a policy for another client?
+  The documents for **${ matters[i-1].org.name.text }** have been generated.
+  Would you like to prepare documents for another client?
 yesno: matters.there_is_another
----
-code: |
-  matters.there_are_any = True
