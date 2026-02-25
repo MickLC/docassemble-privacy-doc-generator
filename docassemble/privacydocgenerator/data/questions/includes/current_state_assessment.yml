@@ -1,0 +1,133 @@
+---
+# ===============================================
+# CURRENT STATE ASSESSMENT
+# Establishes what the client actually does
+# today with personal data. This is the
+# factual baseline for both the internal
+# Privacy Policy and the Gap Analysis.
+#
+# Client assumption: starting from zero.
+# No existing privacy programme assumed.
+# ===============================================
+
+---
+question: |
+  Data Collection Methods — ${ matters[i].org.name.text }
+subquestion: |
+  How does the client currently collect personal data?
+  Select all that apply.
+fields:
+  - no label: matters[i].current_state.collection_methods
+    datatype: checkboxes
+    choices:
+      - Website forms (contact, registration, checkout)
+      - Mobile application
+      - In-person / paper forms
+      - Telephone
+      - Email correspondence
+      - Third-party data sources or data brokers
+      - Social media platforms
+      - CCTV or physical surveillance
+      - Automated tracking (cookies, pixels, fingerprinting)
+      - Employment / HR processes
+      - Contracts and business agreements
+      - Other
+---
+question: |
+  Data Storage and Systems — ${ matters[i].org.name.text }
+subquestion: |
+  Where does the client currently store personal data?
+fields:
+  - no label: matters[i].current_state.storage_systems
+    datatype: checkboxes
+    choices:
+      - Cloud-based CRM (e.g. Salesforce, HubSpot)
+      - Cloud file storage (e.g. Google Drive, OneDrive, Dropbox)
+      - Cloud database (e.g. AWS, Azure, GCP)
+      - On-premise servers
+      - Employee laptops or devices
+      - Email systems (e.g. Gmail, Outlook)
+      - Accounting or ERP software
+      - Marketing platforms (e.g. Mailchimp, Klaviyo)
+      - Payment processors (e.g. Stripe, PayPal)
+      - Physical files or paper records
+      - Other
+  - Does the client know where all personal data is stored?: matters[i].current_state.has_data_inventory
+    datatype: yesnoradio
+    label above field: True
+---
+question: |
+  Existing Privacy Documentation — ${ matters[i].org.name.text }
+subquestion: |
+  What privacy-related documentation does the client currently have?
+  Check all that exist in any form, even if informal or out of date.
+fields:
+  - no label: matters[i].current_state.existing_docs
+    datatype: checkboxes
+    choices:
+      - A published privacy policy or notice on their website
+      - An internal data handling or processing policy
+      - A record of processing activities (RoPA / data register)
+      - Data retention schedule or policy
+      - Data breach response plan
+      - Data processing agreements with vendors/processors
+      - Employee data protection training materials
+      - Cookie policy or cookie consent mechanism
+      - Consent records or consent management platform
+      - Data subject / consumer rights request procedure
+      - None of the above
+  - If a website privacy policy exists, when was it last updated?: matters[i].current_state.last_policy_update
+    datatype: date
+    required: False
+    show if:
+      variable: matters[i].current_state.existing_docs
+      has: A published privacy policy or notice on their website
+---
+question: |
+  Vendor and Third-Party Relationships — ${ matters[i].org.name.text }
+subquestion: |
+  Describe the client's current vendor and data-sharing landscape.
+fields:
+  - Approximately how many third-party vendors or service providers receive or access personal data?: matters[i].current_state.vendor_count
+    choices:
+      - None
+      - 1–5
+      - 6–20
+      - More than 20
+      - Unknown
+  - Do any vendor contracts currently include data processing or data protection terms?: matters[i].current_state.vendor_contracts_include_dp_terms
+    datatype: yesnoradio
+  - Does the client share or sell personal data with third parties for their own use (not as a service provider)?: matters[i].current_state.shares_data_commercially
+    datatype: yesnoradio
+---
+question: |
+  Consumer / Data Subject Interactions — ${ matters[i].org.name.text }
+subquestion: |
+  How does the client currently handle privacy-related requests from individuals?
+fields:
+  - Has the client ever received a data subject access request (DSAR) or consumer rights request?: matters[i].current_state.has_received_rights_requests
+    datatype: yesnoradio
+  - Does the client have a documented procedure for handling rights requests?: matters[i].current_state.has_rights_request_procedure
+    datatype: yesnoradio
+  - Does the client currently have any mechanism for individuals to opt out of marketing or data processing?: matters[i].current_state.has_opt_out_mechanism
+    datatype: yesnoradio
+  - Has the client ever experienced a personal data breach or security incident?: matters[i].current_state.has_had_breach
+    datatype: yesnoradio
+  - Does the client have a documented breach response plan?: matters[i].current_state.has_breach_response_plan
+    datatype: yesnoradio
+---
+question: |
+  Staff and Training — ${ matters[i].org.name.text }
+subquestion: |
+  What is the current state of data protection awareness within the organisation?
+fields:
+  - Does any individual within the organisation have designated responsibility for data protection or privacy?: matters[i].current_state.has_privacy_lead
+    datatype: yesnoradio
+  - If yes, describe their role: matters[i].current_state.privacy_lead_role
+    required: False
+    show if: matters[i].current_state.has_privacy_lead
+    hint: e.g. General Counsel, IT Manager, Operations Director
+  - Have staff received any data protection or privacy training in the last 12 months?: matters[i].current_state.has_staff_training
+    datatype: yesnoradio
+  - Does the client use automated decision-making or profiling that could significantly affect individuals?: matters[i].current_state.uses_automated_decisions
+    datatype: yesnoradio
