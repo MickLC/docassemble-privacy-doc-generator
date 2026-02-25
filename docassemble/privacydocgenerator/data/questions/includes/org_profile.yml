@@ -1,0 +1,48 @@
+---
+# ===============================================
+# ORGANISATION PROFILE
+# Core client organisation details.
+# Universal across all jurisdictions.
+# ===============================================
+question: |
+  Organisation Details — ${ matters[i].matter_ref }
+subquestion: |
+  Enter the client organisation's legal details.
+fields:
+  - Legal Name: matters[i].org.name.text
+  - Trading Name (if different): matters[i].org.trading_name
+    required: False
+  - Company / Registration Number: matters[i].org.reg_number
+    required: False
+  - Industry / Sector: matters[i].org.industry
+    choices:
+      - Technology / SaaS
+      - E-commerce / Retail
+      - Healthcare
+      - Financial Services
+      - Legal Services
+      - Education
+      - Non-profit
+      - Government / Public Sector
+      - Other
+---
+question: |
+  Organisation Address — ${ matters[i].org.name.text }
+fields:
+  - Address Line 1: matters[i].org.address.address
+  - Address Line 2: matters[i].org.address.unit
+    required: False
+  - City: matters[i].org.address.city
+  - State / County: matters[i].org.address.state
+    required: False
+  - Postcode / ZIP: matters[i].org.address.zip
+  - Country: matters[i].org.address.country
+---
+question: |
+  Organisation Contact Details — ${ matters[i].org.name.text }
+fields:
+  - Privacy Contact Email: matters[i].org.contact_email
+    datatype: email
+    hint: The email address for privacy-related enquiries
+  - Website URL: matters[i].org.website
+    required: False

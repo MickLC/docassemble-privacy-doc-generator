@@ -1,0 +1,63 @@
+---
+# ===============================================
+# OPERATIONAL FOOTPRINT
+# Drives auto-detection of applicable
+# privacy laws for this client matter.
+# ===============================================
+question: |
+  Operational Footprint — ${ matters[i].org.name.text }
+subquestion: |
+  These answers determine which privacy laws apply to your client.
+  Answer based on the client's actual operations, not their registered location.
+fields:
+  - label: In which regions does the client operate or have a legal establishment?
+    field: matters[i].footprint.operating_regions
+    datatype: checkboxes
+    choices:
+      - European Union (EU)
+      - United Kingdom (UK)
+      - California (US)
+      - Texas (US)
+      - Virginia (US)
+      - Other US States
+      - Canada
+      - Australia
+      - Other
+  - label: In which regions are the client's customers or end users located?
+    field: matters[i].footprint.consumer_regions
+    datatype: checkboxes
+    choices:
+      - European Union (EU)
+      - United Kingdom (UK)
+      - California (US)
+      - Texas (US)
+      - Virginia (US)
+      - Other US States
+      - Canada
+      - Australia
+      - Other
+---
+question: |
+  Business Scale — ${ matters[i].org.name.text }
+subquestion: |
+  These figures are used to determine statutory thresholds under US state privacy laws.
+fields:
+  - Annual Gross Revenue (USD): matters[i].footprint.annual_revenue
+    datatype: currency
+    min: 0
+    required: False
+    hint: Enter 0 if not applicable or unknown
+  - Approximate number of consumers whose personal data is processed annually: matters[i].footprint.consumer_volume
+    datatype: integer
+    min: 0
+    required: False
+    hint: Include all individuals whose data is collected, used, or shared
+  - Does the client sell or share personal data for cross-context behavioural advertising?: matters[i].footprint.sells_data
+    datatype: yesnoradio
+  - Does the client process sensitive personal data (health, biometric, precise location, etc.)?: matters[i].footprint.processes_sensitive_data
+    datatype: yesnoradio
+  - Is the client classified as a "small business" under the US Small Business Administration definition?: matters[i].footprint.is_sba_small_business
+    datatype: yesnoradio
+    help: |
+      SBA small business definitions vary by industry (typically based on
+      employee count or annual revenue). Relevant for TDPSA exemption.

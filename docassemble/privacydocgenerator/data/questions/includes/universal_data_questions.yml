@@ -1,0 +1,81 @@
+---
+# ===============================================
+# UNIVERSAL DATA PROCESSING QUESTIONS
+# Asked once per matter. Answers feed all
+# jurisdiction-specific document sections.
+# ===============================================
+question: |
+  Personal Data Collected — ${ matters[i].org.name.text }
+subquestion: |
+  Select all categories of personal data the client collects or processes.
+fields:
+  - no label: matters[i].data.types_collected
+    datatype: checkboxes
+    choices:
+      - Identifiers (name, email, phone, address)
+      - Government-issued ID numbers
+      - Financial information (account numbers, payment card data)
+      - Health or medical data
+      - Biometric data
+      - Precise geolocation data
+      - Internet / network activity data
+      - Cookies and usage data
+      - Inferences drawn from personal data
+      - Employment and HR data
+      - Education records
+      - Data relating to children (under 13 / under 16)
+      - Racial or ethnic origin
+      - Political opinions
+      - Religious or philosophical beliefs
+      - Trade union membership
+      - Sexual orientation or gender identity
+      - Criminal conviction data
+      - Other
+---
+question: |
+  Processing Purposes — ${ matters[i].org.name.text }
+subquestion: |
+  Why does the client collect and use personal data? Select all that apply.
+fields:
+  - no label: matters[i].data.purposes
+    datatype: checkboxes
+    choices:
+      - Providing products or services
+      - Processing payments and transactions
+      - Customer support and communication
+      - Marketing and promotional communications
+      - Targeted or behavioural advertising
+      - Analytics and service improvement
+      - Legal and regulatory compliance
+      - Employment and HR administration
+      - Fraud prevention and security
+      - Research and development
+      - Sharing or selling to third parties
+      - Other
+---
+question: |
+  Data Retention — ${ matters[i].org.name.text }
+subquestion: |
+  Describe the client's data retention policy.
+fields:
+  - Retention Policy: matters[i].data.retention_period
+    input type: area
+    hint: |
+      Describe how long different categories of data are kept and why,
+      e.g. "Transaction records: 7 years (tax compliance).
+      Marketing data: until opt-out or 2 years of inactivity."
+---
+question: |
+  Third-Party Data Sharing — ${ matters[i].org.name.text }
+subquestion: |
+  Provide details of third parties with whom personal data is shared.
+fields:
+  - Does the client share personal data with third parties?: matters[i].data.third_party_sharing
+    datatype: yesnoradio
+  - If yes, describe the categories of third parties and the purpose of sharing: matters[i].data.third_party_details
+    input type: area
+    show if: matters[i].data.third_party_sharing
+    hint: |
+      e.g. "Payment processors (Stripe), cloud hosting providers (AWS),
+      analytics platforms (Google Analytics), marketing platforms (Mailchimp)."
+    required: False

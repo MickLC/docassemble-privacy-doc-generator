@@ -1,0 +1,44 @@
+---
+# ===============================================
+# JURISDICTION ENGINE
+# Auto-detects applicable privacy laws based
+# on operational footprint, then presents
+# results for attorney review and override.
+# ===============================================
+code: |
+  # Run auto-detection
+  matters[i].auto_detected_jurisdictions = detect_applicable_jurisdictions(
+    operating_regions=matters[i].footprint.operating_regions,
+    consumer_regions=matters[i].footprint.consumer_regions,
+    annual_revenue=matters[i].footprint.annual_revenue,
+    consumer_volume=matters[i].footprint.consumer_volume,
+    sells_data=matters[i].footprint.sells_data,
+    is_sba_small_business=matters[i].footprint.is_sba_small_business
+  )
+---
+question: |
+  Applicable Privacy Laws — ${ matters[i].org.name.text }
+subquestion: |
+  Based on the operational footprint you provided, the following privacy
+  laws appear to apply to this client. Review and adjust as needed.
+
+  **Reasons for each determination are shown in the notes below.**
+
+  % for j in matters[i].auto_detected_jurisdictions:
+  - **${ j['name'] }**: ${ j['reason'] }
+  % endfor
+
+  Adjust the selection below if the auto-detection does not reflect
+  your professional assessment.
+fields:
+  - label: Confirmed applicable jurisdictions
+    field: matters[i].confirmed_jurisdictions
+    datatype: checkboxes
+    choices:
+      - GDPR
+      - CCPA/CPRA
+      - TDPSA
+      - VCDPA
+    code: |
+      {j['name']: (j['name'] in [x['name'] for x in matters[i].auto_detected_jurisdictions])
+       for j in [{'name': 'GDPR'}, {'name': 'CCPA/CPRA'}, {'name': 'TDPSA'}, {'name': 'VCDPA'}]}
