@@ -1,0 +1,132 @@
+---
+# -----------------------------------------------
+# Organisation Details
+# -----------------------------------------------
+question: |
+  What is your organisation's name?
+fields:
+  - Organisation Name: org.name.text
+---
+question: |
+  What is your organisation's address?
+fields:
+  - Address Line 1: org.address.address
+  - Address Line 2: org.address.unit
+    required: False
+  - City: org.address.city
+  - Postcode / ZIP: org.address.zip
+  - Country: org.address.country
+---
+question: |
+  What are your organisation's contact details?
+fields:
+  - Contact Email: org.contact_email
+    datatype: email
+  - Website URL: org.website
+    required: False
+---
+# -----------------------------------------------
+# Data Collection
+# -----------------------------------------------
+question: |
+  What types of personal data does your organisation collect?
+fields:
+  - no label: data_types_collected
+    datatype: checkboxes
+    choices:
+      - Name
+      - Email address
+      - Phone number
+      - Physical address
+      - Date of birth
+      - Financial information
+      - Health or medical data
+      - Location data
+      - IP address / device data
+      - Cookies and usage data
+      - Children's data (under 16)
+      - Other
+---
+question: |
+  Why does your organisation collect personal data?
+subquestion: |
+  Select all purposes that apply.
+fields:
+  - no label: processing_purposes
+    datatype: checkboxes
+    choices:
+      - Providing products or services
+      - Processing payments
+      - Customer support
+      - Marketing and communications
+      - Legal or regulatory compliance
+      - Analytics and service improvement
+      - Employment and HR
+      - Fraud prevention and security
+      - Other
+---
+question: |
+  What is the lawful basis for processing personal data?
+subquestion: |
+  Under GDPR Article 6, you must have a lawful basis for processing.
+  Select all that apply.
+fields:
+  - no label: lawful_bases
+    datatype: checkboxes
+    choices:
+      - Consent (Article 6(1)(a))
+      - Contract performance (Article 6(1)(b))
+      - Legal obligation (Article 6(1)(c))
+      - Vital interests (Article 6(1)(d))
+      - Public task (Article 6(1)(e))
+      - Legitimate interests (Article 6(1)(f))
+---
+question: |
+  How long does your organisation retain personal data?
+fields:
+  - Retention Period: retention_period
+    input type: area
+    hint: |
+      Describe your data retention policy, e.g. "Customer data is retained
+      for 7 years after the last transaction to comply with tax regulations."
+---
+# -----------------------------------------------
+# Third Parties & Transfers
+# -----------------------------------------------
+question: |
+  Does your organisation share personal data with third parties?
+fields:
+  - no label: third_party_sharing
+    datatype: yesnoradio
+---
+question: |
+  Do you transfer personal data outside the UK or EEA?
+fields:
+  - no label: international_transfers
+    datatype: yesnoradio
+---
+# -----------------------------------------------
+# Children's Data
+# -----------------------------------------------
+question: |
+  Does your organisation collect or process data relating to children (under 16)?
+fields:
+  - no label: children_data
+    datatype: yesnoradio
+---
+# -----------------------------------------------
+# Data Protection Officer
+# -----------------------------------------------
+question: |
+  Does your organisation have a Data Protection Officer (DPO)?
+fields:
+  - no label: dpo_exists
+    datatype: yesnoradio
+---
+question: |
+  What are your Data Protection Officer's contact details?
+fields:
+  - First Name: dpo.name.first
+  - Last Name: dpo.name.last
+  - Email: dpo.email
+    datatype: email

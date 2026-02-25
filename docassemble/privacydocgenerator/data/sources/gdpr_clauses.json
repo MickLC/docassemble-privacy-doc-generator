@@ -1,0 +1,45 @@
+{
+  "data_subject_rights": [
+    {
+      "right": "Right of access",
+      "article": "Article 15",
+      "description": "You have the right to request a copy of the personal data we hold about you."
+    },
+    {
+      "right": "Right to rectification",
+      "article": "Article 16",
+      "description": "You have the right to request correction of inaccurate personal data."
+    },
+    {
+      "right": "Right to erasure",
+      "article": "Article 17",
+      "description": "You have the right to request deletion of your personal data in certain circumstances."
+    },
+    {
+      "right": "Right to restrict processing",
+      "article": "Article 18",
+      "description": "You have the right to request that we restrict the processing of your personal data."
+    },
+    {
+      "right": "Right to data portability",
+      "article": "Article 20",
+      "description": "You have the right to receive your personal data in a structured, commonly used format."
+    },
+    {
+      "right": "Right to object",
+      "article": "Article 21",
+      "description": "You have the right to object to the processing of your personal data in certain circumstances."
+    },
+    {
+      "right": "Rights related to automated decision-making",
+      "article": "Article 22",
+      "description": "You have rights in relation to automated decision-making and profiling."
+    }
+  ],
+  "international_transfer_mechanisms": [
+    "Adequacy decision",
+    "Standard Contractual Clauses (SCCs)",
+    "Binding Corporate Rules (BCRs)",
+    "Derogations for specific situations (Article 49)"
+  ]
+}

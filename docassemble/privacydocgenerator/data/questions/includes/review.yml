@@ -1,0 +1,41 @@
+---
+# -----------------------------------------------
+# Review Screen
+# Allows user to verify all answers before
+# generating the document.
+# -----------------------------------------------
+question: |
+  Please review your information
+subquestion: |
+  Review the details below before generating your privacy policy.
+  Click **Edit** next to any section to make changes.
+
+  **Organisation Details**
+
+  % if defined('org.name.text'):
+  - Name: ${ org.name.text }
+  - Address: ${ org.address.on_one_line() }
+  - Contact Email: ${ org.contact_email }
+  - Website: ${ org.website if org.website else 'Not provided' }
+  % endif
+
+  **Data Processing**
+
+  - Data Types Collected: ${ data_types_collected.true_values() }
+  - Processing Purposes: ${ processing_purposes.true_values() }
+  - Lawful Bases: ${ lawful_bases.true_values() }
+  - Retention Period: ${ retention_period }
+
+  **Third Parties & Transfers**
+
+  - Third Party Sharing: ${ 'Yes' if third_party_sharing else 'No' }
+  - International Transfers: ${ 'Yes' if international_transfers else 'No' }
+
+  **Data Protection Officer**
+
+  - DPO Appointed: ${ 'Yes' if dpo_exists else 'No' }
+  % if dpo_exists:
+  - DPO Name: ${ dpo.name.full() }
+  - DPO Email: ${ dpo.email }
+  % endif
+continue button field: review_screen

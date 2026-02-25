@@ -1,0 +1,72 @@
+---
+metadata:
+  title: Privacy Policy Generator
+  short title: Privacy Policy
+  description: Generate a GDPR-compliant privacy policy document for your organisation
+  documentation: https://github.com/MickLC/docassemble-privacy-doc-generator
+  authors:
+    - name: MickLC
+  revision_date: 2026-02-25
+---
+include:
+  - docassemble.privacydocgenerator:data/questions/includes/questions.yml
+  - docassemble.privacydocgenerator:data/questions/includes/logic.yml
+  - docassemble.privacydocgenerator:data/questions/includes/review.yml
+---
+objects:
+  - org: Thing
+  - dpo: Individual
+---
+mandatory: True
+code: |
+  # -----------------------------------------------
+  # Main interview flow
+  # -----------------------------------------------
+  intro_screen
+  org.name.text
+  org.address
+  org.contact_email
+  org.website
+  data_types_collected
+  processing_purposes
+  lawful_bases
+  retention_period
+  third_party_sharing
+  international_transfers
+  children_data
+  dpo_exists
+  if dpo_exists:
+    dpo.name.first
+    dpo.email
+  review_screen
+  final_document
+---
+question: |
+  Welcome to the Privacy Policy Generator
+subquestion: |
+  This guided interview will help you create a GDPR-compliant privacy policy
+  for your organisation.
+
+  You will be asked about:
+
+  - Your organisation's details
+  - What personal data you collect and why
+  - How long you keep data
+  - Whether you share data with third parties
+  - Your Data Protection Officer (if applicable)
+
+  At the end, you will be able to download a completed privacy policy document.
+continue button field: intro_screen
+---
+event: final_document
+question: Your Privacy Policy is Ready
+subquestion: |
+  Your GDPR-compliant privacy policy has been generated.
+  Click below to download your document.
+attachment:
+  name: Privacy Policy - ${ org.name.text }
+  filename: privacy_policy
+  docx template file: privacy_policy.docx
+  valid formats:
+    - docx
+    - pdf

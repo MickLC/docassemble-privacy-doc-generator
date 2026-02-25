@@ -1,0 +1,14 @@
+---
+# -----------------------------------------------
+# GDPR Clause Logic
+# Determines which clauses are included in the
+# generated document based on interview answers.
+# -----------------------------------------------
+code: |
+  include_consent_clause = lawful_bases['Consent (Article 6(1)(a))']
+  include_legitimate_interests_clause = lawful_bases['Legitimate interests (Article 6(1)(f))']
+  include_children_clause = children_data or data_types_collected["Children's data (under 16)"]
+  include_international_transfer_clause = international_transfers
+  include_third_party_clause = third_party_sharing
+  include_marketing_clause = processing_purposes['Marketing and communications']
+  include_dpo_section = dpo_exists
