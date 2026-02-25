@@ -1,0 +1,19 @@
+---
+# ===============================================
+# TDPSA CLAUSE LOGIC
+# ===============================================
+code: |
+  matters[i].tdpsa.include_opt_out_section = (
+    matters[i].tdpsa.targeted_advertising or
+    matters[i].tdpsa.sells_data or
+    matters[i].tdpsa.profiling_decisions
+  )
+  matters[i].tdpsa.include_uoom_notice = (
+    matters[i].tdpsa.universal_opt_out_supported
+  )
+  matters[i].tdpsa.include_dpa_reference = (
+    matters[i].tdpsa.dpa_completed
+  )
+  matters[i].tdpsa.is_controller = (
+    matters[i].tdpsa.role in ['Controller', 'Both controller and processor']
+  )

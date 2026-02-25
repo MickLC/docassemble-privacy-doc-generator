@@ -1,0 +1,19 @@
+---
+# ===============================================
+# VCDPA CLAUSE LOGIC
+# ===============================================
+code: |
+  matters[i].vcdpa.include_opt_out_section = (
+    matters[i].vcdpa.targeted_advertising or
+    matters[i].vcdpa.sells_data or
+    matters[i].vcdpa.profiling_opt_out
+  )
+  matters[i].vcdpa.include_sensitive_data_section = (
+    matters[i].vcdpa.processes_sensitive_data
+  )
+  matters[i].vcdpa.include_pia_reference = (
+    matters[i].vcdpa.pia_completed
+  )
+  matters[i].vcdpa.is_controller = (
+    matters[i].vcdpa.role in ['Controller', 'Both']
+  )

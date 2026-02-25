@@ -1,0 +1,51 @@
+---
+# ===============================================
+# TDPSA-SPECIFIC QUESTIONS (Texas)
+# Only presented when TDPSA is in
+# matters[i].confirmed_jurisdictions
+# ===============================================
+question: |
+  TDPSA — Controller and Processor Roles — ${ matters[i].org.name.text }
+subquestion: |
+  The TDPSA distinguishes between controllers (who determine the purpose
+  and means of processing) and processors (who process on behalf of controllers).
+fields:
+  - In relation to Texas consumers, the client primarily acts as a: matters[i].tdpsa.role
+    choices:
+      - Controller
+      - Processor
+      - Both controller and processor
+  - Does the client enter into Data Processing Agreements with processors?: matters[i].tdpsa.has_dpa_with_processors
+    datatype: yesnoradio
+---
+question: |
+  TDPSA — Consumer Rights and Opt-Out — ${ matters[i].org.name.text }
+fields:
+  - Does the client process personal data for targeted advertising?: matters[i].tdpsa.targeted_advertising
+    datatype: yesnoradio
+  - Does the client sell personal data?: matters[i].tdpsa.sells_data
+    datatype: yesnoradio
+  - Does the client engage in profiling that produces legal or similarly significant effects?: matters[i].tdpsa.profiling_decisions
+    datatype: yesnoradio
+  - Does the client support the Universal Opt-Out Mechanism (UOOM)?: matters[i].tdpsa.universal_opt_out_supported
+    datatype: yesnoradio
+  - URL for Texas consumer opt-out requests: matters[i].tdpsa.opt_out_url
+    required: False
+---
+question: |
+  TDPSA — Data Protection Assessments — ${ matters[i].org.name.text }
+subquestion: |
+  Under the TDPSA, controllers must conduct Data Protection Assessments
+  for high-risk processing activities.
+fields:
+  - Has the client conducted Data Protection Assessments for applicable activities?: matters[i].tdpsa.dpa_completed
+    datatype: yesnoradio
+  - Activities subject to assessment: matters[i].tdpsa.dpa_activities
+    datatype: checkboxes
+    show if: matters[i].tdpsa.dpa_completed
+    choices:
+      - Targeted advertising
+      - Sale of personal data
+      - Profiling with significant effects
+      - Processing sensitive data
+      - Processing children's data

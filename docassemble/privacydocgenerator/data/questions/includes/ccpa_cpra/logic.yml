@@ -1,0 +1,17 @@
+---
+# ===============================================
+# CCPA/CPRA CLAUSE LOGIC
+# ===============================================
+code: |
+  matters[i].ccpa.include_opt_out_section = (
+    matters[i].ccpa.sells_pi or matters[i].ccpa.shares_pi_for_advertising
+  )
+  matters[i].ccpa.include_spi_section = (
+    matters[i].ccpa.collects_spi
+  )
+  matters[i].ccpa.include_spi_limit_link = (
+    matters[i].ccpa.collects_spi and matters[i].ccpa.uses_spi_beyond_primary
+  )
+  matters[i].ccpa.include_gpc_notice = (
+    matters[i].ccpa.honours_gpc
+  )

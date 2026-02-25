@@ -1,0 +1,77 @@
+---
+# ===============================================
+# CCPA/CPRA-SPECIFIC QUESTIONS
+# Only presented when CCPA/CPRA is in
+# matters[i].confirmed_jurisdictions
+# ===============================================
+question: |
+  CCPA/CPRA — Sale and Sharing of Personal Information — ${ matters[i].org.name.text }
+subquestion: |
+  Under CCPA/CPRA, consumers have the right to opt out of the sale or
+  sharing of their personal information.
+fields:
+  - Does the client sell personal information (receive valuable consideration in exchange)?: matters[i].ccpa.sells_pi
+    datatype: yesnoradio
+  - Does the client share personal information for cross-context behavioural advertising?: matters[i].ccpa.shares_pi_for_advertising
+    datatype: yesnoradio
+  - URL of the client's "Do Not Sell or Share My Personal Information" page: matters[i].ccpa.opt_out_link
+    required: False
+    hint: Required if client sells or shares PI
+    show if:
+      variable: matters[i].ccpa.sells_pi
+      is: True
+  - Does the client honour the Global Privacy Control (GPC) signal?: matters[i].ccpa.honours_gpc
+    datatype: yesnoradio
+---
+question: |
+  CCPA/CPRA — Sensitive Personal Information — ${ matters[i].org.name.text }
+subquestion: |
+  CPRA creates a separate category of Sensitive Personal Information (SPI)
+  with enhanced protections.
+fields:
+  - Does the client collect or process Sensitive Personal Information (SPI)?: matters[i].ccpa.collects_spi
+    datatype: yesnoradio
+  - Categories of SPI collected: matters[i].ccpa.spi_categories
+    datatype: checkboxes
+    show if: matters[i].ccpa.collects_spi
+    choices:
+      - Social Security / government ID numbers
+      - Financial account login credentials
+      - Precise geolocation
+      - Racial or ethnic origin
+      - Religious or philosophical beliefs
+      - Union membership
+      - Mail, email, or text message contents
+      - Genetic data
+      - Biometric data for identification
+      - Health information
+      - Sexual orientation or sex life
+  - Does the client use SPI beyond what is necessary for the primary purpose?: matters[i].ccpa.uses_spi_beyond_primary
+    datatype: yesnoradio
+    show if: matters[i].ccpa.collects_spi
+  - URL of the client's "Limit the Use of My Sensitive Personal Information" page: matters[i].ccpa.spi_limit_link
+    required: False
+    show if: matters[i].ccpa.uses_spi_beyond_primary
+---
+question: |
+  CCPA/CPRA — Service Providers and Contractors — ${ matters[i].org.name.text }
+fields:
+  - Describe the client's key service providers and contractors: matters[i].ccpa.service_providers
+    input type: area
+    hint: |
+      e.g. "Payment processing: Stripe (service provider);
+      Cloud hosting: AWS (service provider);
+      Analytics: Google Analytics (contractor)."
+    required: False
+---
+question: |
+  CCPA/CPRA — Consumer Rights Mechanisms — ${ matters[i].org.name.text }
+subquestion: |
+  How can California consumers exercise their privacy rights?
+fields:
+  - URL for submitting consumer rights requests: matters[i].ccpa.rights_request_url
+    required: False
+  - Toll-free number for consumer rights requests: matters[i].ccpa.rights_request_phone
+    required: False
+  - Does the client offer a two-step verification process for rights requests?: matters[i].ccpa.uses_verification
+    datatype: yesnoradio

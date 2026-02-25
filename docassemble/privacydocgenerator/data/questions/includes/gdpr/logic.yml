@@ -1,0 +1,29 @@
+---
+# ===============================================
+# GDPR CLAUSE LOGIC
+# Sets flags used by the GDPR document section
+# template to include/exclude clauses.
+# ===============================================
+code: |
+  matters[i].gdpr.include_consent_clause = (
+    matters[i].gdpr.lawful_bases.get('Consent (Article 6(1)(a))', False)
+  )
+  matters[i].gdpr.include_legitimate_interests_clause = (
+    matters[i].gdpr.lawful_bases.get('Legitimate interests (Article 6(1)(f))', False)
+  )
+  matters[i].gdpr.include_special_category_clause = (
+    matters[i].gdpr.processes_special_category
+  )
+  matters[i].gdpr.include_international_transfer_clause = (
+    matters[i].gdpr.international_transfers
+  )
+  matters[i].gdpr.include_dpo_section = (
+    matters[i].gdpr.dpo_exists
+  )
+  matters[i].gdpr.include_children_clause = (
+    matters[i].data.types_collected.get('Data relating to children (under 13 / under 16)', False)
+  )
+  matters[i].gdpr.requires_dpia = requires_dpia(
+    matters[i].data.types_collected,
+    matters[i].data.purposes
+  )

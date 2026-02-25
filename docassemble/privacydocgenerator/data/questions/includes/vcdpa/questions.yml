@@ -1,0 +1,55 @@
+---
+# ===============================================
+# VCDPA-SPECIFIC QUESTIONS (Virginia)
+# Only presented when VCDPA is in
+# matters[i].confirmed_jurisdictions
+# ===============================================
+question: |
+  VCDPA — Processing Roles — ${ matters[i].org.name.text }
+fields:
+  - Under the VCDPA, the client primarily acts as a: matters[i].vcdpa.role
+    choices:
+      - Controller
+      - Processor
+      - Both
+---
+question: |
+  VCDPA — Sensitive Data and Consent — ${ matters[i].org.name.text }
+subquestion: |
+  The VCDPA requires opt-in consent before processing sensitive data.
+fields:
+  - Does the client process sensitive data as defined by the VCDPA?: matters[i].vcdpa.processes_sensitive_data
+    datatype: yesnoradio
+  - Has the client obtained opt-in consent for sensitive data processing?: matters[i].vcdpa.sensitive_data_consent
+    datatype: yesnoradio
+    show if: matters[i].vcdpa.processes_sensitive_data
+---
+question: |
+  VCDPA — Targeted Advertising and Profiling — ${ matters[i].org.name.text }
+fields:
+  - Does the client process personal data for targeted advertising?: matters[i].vcdpa.targeted_advertising
+    datatype: yesnoradio
+  - Does the client sell personal data?: matters[i].vcdpa.sells_data
+    datatype: yesnoradio
+  - Does the client use personal data for profiling that produces significant decisions?: matters[i].vcdpa.profiling_opt_out
+    datatype: yesnoradio
+  - URL for Virginia consumer rights requests: matters[i].vcdpa.rights_request_url
+    required: False
+---
+question: |
+  VCDPA — Data Protection Assessments — ${ matters[i].org.name.text }
+subquestion: |
+  Controllers must conduct Data Protection Impact Assessments (PIAs)
+  for high-risk processing under the VCDPA.
+fields:
+  - Has the client completed required Privacy Impact Assessments (PIAs)?: matters[i].vcdpa.pia_completed
+    datatype: yesnoradio
+  - Activities covered by PIAs: matters[i].vcdpa.pia_activities
+    datatype: checkboxes
+    show if: matters[i].vcdpa.pia_completed
+    choices:
+      - Targeted advertising
+      - Sale of personal data
+      - Profiling with significant effects
+      - Processing sensitive data
+      - Processing children's data

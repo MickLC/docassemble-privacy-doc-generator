@@ -1,0 +1,91 @@
+---
+# ===============================================
+# GDPR-SPECIFIC QUESTIONS
+# Only presented when GDPR is in
+# matters[i].confirmed_jurisdictions
+# ===============================================
+question: |
+  GDPR — Lawful Basis for Processing — ${ matters[i].org.name.text }
+subquestion: |
+  Under GDPR Article 6, the client must identify a lawful basis for each
+  processing activity. Select all that apply.
+fields:
+  - no label: matters[i].gdpr.lawful_bases
+    datatype: checkboxes
+    choices:
+      - Consent (Article 6(1)(a))
+      - Contract performance (Article 6(1)(b))
+      - Legal obligation (Article 6(1)(c))
+      - Vital interests (Article 6(1)(d))
+      - Public task (Article 6(1)(e))
+      - Legitimate interests (Article 6(1)(f))
+---
+question: |
+  GDPR — Special Category Data — ${ matters[i].org.name.text }
+subquestion: |
+  If the client processes special category data (Article 9), select
+  the applicable Article 9(2) condition(s).
+fields:
+  - Does the client process special category data?: matters[i].gdpr.processes_special_category
+    datatype: yesnoradio
+  - Article 9(2) condition(s): matters[i].gdpr.special_category_basis
+    datatype: checkboxes
+    show if: matters[i].gdpr.processes_special_category
+    choices:
+      - Explicit consent (Article 9(2)(a))
+      - Employment / social security obligations (Article 9(2)(b))
+      - Vital interests (Article 9(2)(c))
+      - Legitimate activities of a non-profit (Article 9(2)(d))
+      - Data manifestly made public (Article 9(2)(e))
+      - Legal claims (Article 9(2)(f))
+      - Substantial public interest (Article 9(2)(g))
+      - Medical purposes (Article 9(2)(h))
+      - Public health (Article 9(2)(i))
+      - Archiving / research / statistics (Article 9(2)(j))
+---
+question: |
+  GDPR — International Data Transfers — ${ matters[i].org.name.text }
+fields:
+  - Does the client transfer personal data outside the UK or EEA?: matters[i].gdpr.international_transfers
+    datatype: yesnoradio
+  - Transfer mechanism(s) used: matters[i].gdpr.transfer_mechanisms
+    datatype: checkboxes
+    show if: matters[i].gdpr.international_transfers
+    choices:
+      - Adequacy decision
+      - Standard Contractual Clauses (SCCs)
+      - Binding Corporate Rules (BCRs)
+      - UK International Data Transfer Agreement (IDTA)
+      - Derogations under Article 49
+  - Countries or regions to which data is transferred: matters[i].gdpr.transfer_destinations
+    input type: area
+    show if: matters[i].gdpr.international_transfers
+    required: False
+    hint: e.g. United States (SCCs in place), India (SCCs in place)
+---
+question: |
+  GDPR — Data Protection Officer — ${ matters[i].org.name.text }
+fields:
+  - Has the client appointed a Data Protection Officer (DPO)?: matters[i].gdpr.dpo_exists
+    datatype: yesnoradio
+  - DPO First Name: matters[i].gdpr.dpo.name.first
+    show if: matters[i].gdpr.dpo_exists
+  - DPO Last Name: matters[i].gdpr.dpo.name.last
+    show if: matters[i].gdpr.dpo_exists
+  - DPO Email: matters[i].gdpr.dpo.email
+    datatype: email
+    show if: matters[i].gdpr.dpo_exists
+  - DPO Phone: matters[i].gdpr.dpo.phone
+    show if: matters[i].gdpr.dpo_exists
+    required: False
+---
+question: |
+  GDPR — Supervisory Authority — ${ matters[i].org.name.text }
+subquestion: |
+  Identify the relevant supervisory authority for complaints.
+fields:
+  - Lead Supervisory Authority: matters[i].gdpr.supervisory_authority
+    hint: e.g. Information Commissioner's Office (ICO) — UK; CNIL — France
+  - Supervisory Authority Website: matters[i].gdpr.supervisory_authority_url
+    required: False
+    hint: e.g. https://ico.org.uk
