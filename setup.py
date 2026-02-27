@@ -22,6 +22,10 @@ setup(
         'docassemble.privacydocgenerator': [
             'data/questions/*.yml',
             'data/questions/includes/*.yml',
+            'data/questions/includes/gdpr/*.yml',
+            'data/questions/includes/ccpa_cpra/*.yml',
+            'data/questions/includes/tdpsa/*.yml',
+            'data/questions/includes/vcdpa/*.yml',
             'data/templates/*',
             'data/sources/*',
             'data/static/css/*',
