@@ -1,0 +1,61 @@
+---
+# ===============================================
+# HIPAA APPLICABILITY + NOTICE OF PRIVACY PRACTICES
+# Auto-detect-then-confirm screen (same UX as
+# jurisdiction_engine.yml), followed by a short NPP
+# question set. Most NPP language is fixed by 45 CFR
+# §164.520's required elements and belongs in the
+# template as boilerplate — these questions cover only
+# the client-specific details. Only asked when
+# matters[i].hipaa.status is requested (see main.yml);
+# the NPP-detail question is only asked for covered
+# entities — business associates don't issue an NPP.
+# ===============================================
+question: |
+  HIPAA Applicability — ${ matters[i].org.name.text }
+subquestion: |
+  These answers determine whether HIPAA's Privacy Rule applies to the
+  client as a covered entity, a business associate, or not at all.
+fields:
+  - Is the client a health plan (insurer, HMO, employer-sponsored group health plan, government health program, etc.)?: matters[i].hipaa.is_health_plan
+    datatype: yesnoradio
+  - Is the client a healthcare provider that conducts electronic transactions covered by HIPAA (claims, eligibility checks, referral authorizations, etc.)?: matters[i].hipaa.is_healthcare_provider_conducting_transactions
+    datatype: yesnoradio
+  - Is the client a healthcare clearinghouse?: matters[i].hipaa.is_healthcare_clearinghouse
+    datatype: yesnoradio
+  - Does the client create, receive, maintain, or transmit protected health information (PHI) on behalf of a covered entity (e.g., as a vendor or service provider)?: matters[i].hipaa.handles_phi_for_covered_entity
+    datatype: yesnoradio
+---
+question: |
+  HIPAA Status — ${ matters[i].org.name.text }
+subquestion: |
+  Based on your answers, the system suggests the status below. Review and
+  adjust to reflect your professional judgment.
+
+  Auto-detected: **${ matters[i].hipaa.auto_detected_status }**
+fields:
+  - label: Confirmed HIPAA status
+    field: matters[i].hipaa.status
+    datatype: radio
+    choices:
+      - covered_entity: Covered entity
+      - business_associate: Business associate
+      - none: Not subject to HIPAA
+    default code: |
+      matters[i].hipaa.auto_detected_status
+---
+question: |
+  HIPAA — Notice of Privacy Practices Details — ${ matters[i].org.name.text }
+subquestion: |
+  Most required NPP language is fixed by 45 CFR §164.520 and lives in the
+  template as boilerplate — these answers cover only the client-specific
+  details.
+fields:
+  - Privacy Official name: matters[i].hipaa.privacy_official_name
+  - Privacy Official contact (phone and/or email): matters[i].hipaa.privacy_official_contact
+  - Complaint contact, if different from the Privacy Official: matters[i].hipaa.complaint_contact
+    required: False
+  - Does the client use or disclose PHI for marketing or fundraising?: matters[i].hipaa.uses_phi_for_marketing_fundraising
+    datatype: yesnoradio
+  - Does the client's practice involve psychotherapy notes?: matters[i].hipaa.involves_psychotherapy_notes
+    datatype: yesnoradio

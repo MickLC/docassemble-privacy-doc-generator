@@ -1,0 +1,18 @@
+---
+# ===============================================
+# HIPAA STATUS DETECTION
+# Entity-type test (health plan / provider conducting
+# covered transactions / clearinghouse / business
+# associate), not a revenue/volume threshold — kept
+# separate from jurisdiction_engine.py's four
+# comprehensive-privacy-law detectors and from
+# confirmed_jurisdictions (see BUILD_PLAN.md Phase 4).
+# ===============================================
+code: |
+  matters[i].hipaa.auto_detected_status = detect_hipaa_status(
+    is_health_plan=matters[i].hipaa.is_health_plan,
+    is_healthcare_provider_conducting_transactions=matters[i].hipaa.is_healthcare_provider_conducting_transactions,
+    is_healthcare_clearinghouse=matters[i].hipaa.is_healthcare_clearinghouse,
+    handles_phi_for_covered_entity=matters[i].hipaa.handles_phi_for_covered_entity
+  )
+sets: matters[i].hipaa.auto_detected_status

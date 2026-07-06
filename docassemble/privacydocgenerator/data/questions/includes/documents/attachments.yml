@@ -59,3 +59,12 @@ attachment:
   valid formats:
     - docx
     - pdf
+---
+attachment:
+  variable name: hipaa_npp_doc
+  name: HIPAA Notice of Privacy Practices — ${ matters[i].org.name.text }
+  filename: hipaa_npp_${ matters[i].matter_ref }
+  docx template file: hipaa_npp.docx
+  valid formats:
+    - docx
+    - pdf

@@ -1,0 +1,25 @@
+{
+  "_meta": {
+    "status": "PLACEHOLDER — Phase 4 plumbing stub, not attorney-verified",
+    "note": "45 CFR 164.520 required-elements boilerplate for a Notice of Privacy Practices. Every string below is a placeholder for attorney-drafted/verified language, not usable client-facing text as-is. See BUILD_PLAN.md 'Legal content the agent must not fabricate.'"
+  },
+  "uses_and_disclosures": {
+    "treatment": "PLACEHOLDER — describe how PHI is used/disclosed for treatment purposes",
+    "payment": "PLACEHOLDER — describe how PHI is used/disclosed for payment purposes",
+    "healthcare_operations": "PLACEHOLDER — describe how PHI is used/disclosed for healthcare operations"
+  },
+  "patient_rights": [
+    "PLACEHOLDER — right to request restrictions on uses/disclosures (§164.522(a))",
+    "PLACEHOLDER — right to request confidential communications (§164.522(b))",
+    "PLACEHOLDER — right to inspect and copy PHI (§164.524)",
+    "PLACEHOLDER — right to amend PHI (§164.526)",
+    "PLACEHOLDER — right to an accounting of disclosures (§164.528)",
+    "PLACEHOLDER — right to a paper copy of the notice",
+    "PLACEHOLDER — right to be notified of a breach of unsecured PHI"
+  ],
+  "complaint_rights": {
+    "internal_complaint": "PLACEHOLDER — describe how to file a complaint with the client",
+    "hhs_complaint": "PLACEHOLDER — describe the right to file a complaint with the Secretary of HHS, Office for Civil Rights"
+  },
+  "verified": false
+}

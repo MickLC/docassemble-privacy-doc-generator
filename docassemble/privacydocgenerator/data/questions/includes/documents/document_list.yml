@@ -22,4 +22,6 @@ code: |
       matters[i].document_list.append(dpia_report_doc)
   if document_applies('lia_report', matters[i]):
       matters[i].document_list.append(lia_report_doc)
+  if document_applies('hipaa_npp', matters[i]):
+      matters[i].document_list.append(hipaa_npp_doc)
 sets: matters[i].document_list

@@ -16,7 +16,7 @@ object standing in for `matters[i]`.
 Registered incrementally as the underlying data exists (see the project's
 phased build plan): 'privacy_statement' and 'gap_analysis_memo' went live in
 Phase 1; 'internal_privacy_policy' and 'ropa' in Phase 2; 'dpia_report' and
-'lia_report' in Phase 3.
+'lia_report' in Phase 3; 'hipaa_npp' in Phase 4.
 """
 
 DOCUMENT_TYPES = [
@@ -73,6 +73,16 @@ DOCUMENT_TYPES = [
             'GDPR' in m.confirmed_jurisdictions.true_values()
             and any(a.relies_on_legitimate_interest for a in m.processing_activities)
         ),
+    },
+    {
+        'key': 'hipaa_npp',
+        'label': 'HIPAA Notice of Privacy Practices',
+        'family': 'collateral',
+        'template': 'hipaa_npp.docx',
+        'attachment_var': 'hipaa_npp_doc',
+        # Business-associate-only clients don't issue an NPP — only a
+        # covered entity does.
+        'applies': lambda m: m.hipaa.status == 'covered_entity',
     },
 ]
 
