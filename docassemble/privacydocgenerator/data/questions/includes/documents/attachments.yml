@@ -23,3 +23,21 @@ attachment:
   valid formats:
     - docx
     - pdf
+---
+attachment:
+  variable name: internal_privacy_policy_doc
+  name: Internal Privacy Policy — ${ matters[i].org.name.text }
+  filename: internal_privacy_policy_${ matters[i].matter_ref }
+  docx template file: internal_privacy_policy.docx
+  valid formats:
+    - docx
+    - pdf
+---
+attachment:
+  variable name: ropa_doc
+  name: Record of Processing Activities (ROPA) — ${ matters[i].org.name.text }
+  filename: ropa_${ matters[i].matter_ref }
+  docx template file: ropa.docx
+  valid formats:
+    - docx
+    - pdf

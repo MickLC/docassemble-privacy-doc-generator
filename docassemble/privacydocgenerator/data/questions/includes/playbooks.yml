@@ -1,0 +1,118 @@
+---
+# ===============================================
+# PLAYBOOKS
+# Operational contacts and procedures for the
+# internal Privacy Policy's regulator-inquiry, DSR,
+# and breach-response sections. Small and mostly
+# independent of the processing-activity model,
+# except the breach section's state-driven lookup.
+# ===============================================
+modules:
+  - docassemble.privacydocgenerator.breach_notification_engine
+  - docassemble.privacydocgenerator.jurisdiction_engine
+---
+# DRY hoist: one canonical high-risk-processing flag at the matter level,
+# regardless of which jurisdictions apply, reusing the same requires_dpia()
+# helper gdpr/logic.yml already wires up per-jurisdiction.
+code: |
+  matters[i].requires_privacy_assessment = requires_dpia(
+    matters[i].data.types_collected,
+    matters[i].data.purposes
+  )
+sets: matters[i].requires_privacy_assessment
+---
+question: |
+  Regulator & Data Subject Request Contacts — ${ matters[i].org.name.text }
+fields:
+  - Internal contact for regulator inquiries: matters[i].playbooks.regulator_contact
+    hint: Name and role, e.g. "Jane Smith, General Counsel"
+  - How do data subjects submit a rights request (intake channel)?: matters[i].playbooks.dsr_intake_channel
+    hint: e.g. "Web form at example.com/privacy-request", "privacy@example.com"
+  - Additional detail on the DSR intake process: matters[i].playbooks.dsr_intake_detail
+    input type: area
+    required: False
+---
+question: |
+  Breach Response Contacts — ${ matters[i].org.name.text }
+fields:
+  - Does the client have a breach counsel / forensics firm on retainer?: matters[i].playbooks.breach_counsel_retained
+    datatype: yesnoradio
+  - Name of breach counsel / forensics firm: matters[i].playbooks.breach_counsel_name
+    show if: matters[i].playbooks.breach_counsel_retained
+  - Internal escalation contact for a suspected breach: matters[i].playbooks.breach_escalation_contact
+    hint: Name and role, e.g. "John Doe, IT Director"
+---
+question: |
+  Affected Consumer States — ${ matters[i].org.name.text }
+subquestion: |
+  Separate from the operational-footprint states above, list every US state
+  where the client's consumers are actually located. This drives which
+  states' breach notification requirements are pulled into the internal
+  Privacy Policy's breach-response playbook.
+  % if matters[i].requires_privacy_assessment:
+  This matter's processing activities also indicate a data protection
+  assessment is likely required — the breach playbook below matters more
+  than usual here.
+  % endif
+fields:
+  - label: US states where affected consumers are located
+    field: matters[i].playbooks.breach_notification_states
+    datatype: checkboxes
+    choices:
+      - AL: Alabama
+      - AK: Alaska
+      - AZ: Arizona
+      - AR: Arkansas
+      - CA: California
+      - CO: Colorado
+      - CT: Connecticut
+      - DE: Delaware
+      - FL: Florida
+      - GA: Georgia
+      - HI: Hawaii
+      - ID: Idaho
+      - IL: Illinois
+      - IN: Indiana
+      - IA: Iowa
+      - KS: Kansas
+      - KY: Kentucky
+      - LA: Louisiana
+      - ME: Maine
+      - MD: Maryland
+      - MA: Massachusetts
+      - MI: Michigan
+      - MN: Minnesota
+      - MS: Mississippi
+      - MO: Missouri
+      - MT: Montana
+      - NE: Nebraska
+      - NV: Nevada
+      - NH: New Hampshire
+      - NJ: New Jersey
+      - NM: New Mexico
+      - NY: New York
+      - NC: North Carolina
+      - ND: North Dakota
+      - OH: Ohio
+      - OK: Oklahoma
+      - OR: Oregon
+      - PA: Pennsylvania
+      - RI: Rhode Island
+      - SC: South Carolina
+      - SD: South Dakota
+      - TN: Tennessee
+      - TX: Texas
+      - UT: Utah
+      - VT: Vermont
+      - VA: Virginia
+      - WA: Washington
+      - WV: West Virginia
+      - WI: Wisconsin
+      - WY: Wyoming
+      - DC: District of Columbia
+---
+code: |
+  matters[i].playbooks.breach_requirements = get_breach_requirements(
+    matters[i].playbooks.breach_notification_states.true_values()
+  )
+sets: matters[i].playbooks.breach_requirements

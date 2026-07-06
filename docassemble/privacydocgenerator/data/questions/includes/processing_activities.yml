@@ -1,0 +1,166 @@
+---
+# ===============================================
+# PROCESSING ACTIVITIES
+# The central data model every downstream document
+# (internal Privacy Policy, Privacy Statement, ROPA,
+# DPIA report, LIA report) reads from. See the
+# Architecture section of BUILD_PLAN.md.
+#
+# Gathered after data_map.yml since each activity's
+# recipients are selected from matters[i].systems.
+# Same nested-DAList mechanic as matters[i].systems —
+# inner gather loop uses `j`. NEEDS LIVE-SERVER
+# VERIFICATION (see BUILD_PLAN.md).
+#
+# matters[i].data.types_collected / matters[i].data.purposes
+# are computed as aggregates of these activities — see
+# activity_aggregates.yml, included immediately after this
+# file in main.yml.
+# ===============================================
+modules:
+  - docassemble.privacydocgenerator.jurisdiction_engine
+---
+code: |
+  matters[i].initializeAttribute('processing_activities', DAList.using(object_type=DAObject))
+  matters[i].processing_activities_initialized = True
+sets: matters[i].processing_activities_initialized
+---
+question: |
+  Processing Activities — ${ matters[i].org.name.text }
+subquestion: |
+  A processing activity is a distinct purpose for which personal data is
+  collected and used — e.g. "email marketing to customers," "payroll
+  processing," "website analytics." Every downstream document (Privacy
+  Statement, ROPA, DPIA, LIA) is built from this list, so capture each
+  activity separately rather than describing the business as a whole.
+yesno: matters[i].processing_activities.there_are_any
+---
+question: |
+  Processing Activity — ${ matters[i].org.name.text }
+fields:
+  - Activity name: matters[i].processing_activities[j].name
+    hint: e.g. Email marketing to customers, Payroll processing
+  - Description: matters[i].processing_activities[j].description
+    input type: area
+    required: False
+  - label: Purpose(s) of this activity
+    field: matters[i].processing_activities[j].purposes
+    datatype: checkboxes
+    choices:
+      - Providing products or services
+      - Processing payments and transactions
+      - Customer support and communication
+      - Marketing and promotional communications
+      - Targeted or behavioural advertising
+      - Analytics and service improvement
+      - Legal and regulatory compliance
+      - Employment and HR administration
+      - Fraud prevention and security
+      - Research and development
+      - Sharing or selling to third parties
+      - Other
+  - label: Categor(y/ies) of data involved
+    field: matters[i].processing_activities[j].data_categories
+    datatype: checkboxes
+    choices:
+      - Identifiers (name, email, phone, address)
+      - Government-issued ID numbers
+      - Financial information (account numbers, payment card data)
+      - Health or medical data
+      - Biometric data
+      - Precise geolocation data
+      - Internet / network activity data
+      - Cookies and usage data
+      - Inferences drawn from personal data
+      - Employment and HR data
+      - Education records
+      - Data relating to children (under 13 / under 16)
+      - Racial or ethnic origin
+      - Political opinions
+      - Religious or philosophical beliefs
+      - Trade union membership
+      - Sexual orientation or gender identity
+      - Criminal conviction data
+      - Other
+  - label: Categor(y/ies) of data subjects involved
+    field: matters[i].processing_activities[j].data_subject_categories
+    datatype: checkboxes
+    choices:
+      - Customers
+      - Employees
+      - Job applicants
+      - Website visitors
+      - Business contacts / vendors
+      - Minors
+      - Other
+  - label: Recipients (systems/vendors that receive this data)
+    field: matters[i].processing_activities[j].recipients
+    datatype: object_multiselect
+    choices: matters[i].systems
+    required: False
+    hint: |
+      Selected from the Vendor & System Inventory. If a system is missing,
+      go back and add it there.
+  - Does this activity involve transferring data internationally (outside the client's home jurisdiction)?: matters[i].processing_activities[j].international_transfer
+    datatype: yesnoradio
+  - Transfer mechanism used: matters[i].processing_activities[j].transfer_mechanism
+    datatype: checkboxes
+    show if: matters[i].processing_activities[j].international_transfer
+    choices:
+      - Adequacy decision
+      - Standard Contractual Clauses (SCCs)
+      - Binding Corporate Rules (BCRs)
+      - UK International Data Transfer Agreement (IDTA)
+      - Derogations under Article 49
+      - Other / not yet determined
+  - Retention period for this activity's data: matters[i].processing_activities[j].retention_period
+    hint: e.g. "3 years after last purchase" or "duration of employment plus 7 years"
+  - label: Lawful basis relied upon (GDPR Article 6)
+    field: matters[i].processing_activities[j].lawful_basis
+    datatype: checkboxes
+    show if:
+      code: |
+        'GDPR' in matters[i].confirmed_jurisdictions.true_values()
+    choices:
+      - Consent (Article 6(1)(a))
+      - Contract performance (Article 6(1)(b))
+      - Legal obligation (Article 6(1)(c))
+      - Vital interests (Article 6(1)(d))
+      - Public task (Article 6(1)(e))
+      - Legitimate interests (Article 6(1)(f))
+  - label: Security measures in place for this activity's data
+    field: matters[i].processing_activities[j].security_measures
+    datatype: checkboxes
+    choices:
+      - Encryption at rest
+      - Encryption in transit
+      - Access controls / role-based permissions
+      - Multi-factor authentication
+      - Logging and monitoring
+      - Regular access reviews
+      - Pseudonymisation or anonymisation
+      - Other
+---
+question: |
+  Another processing activity to add?
+yesno: matters[i].processing_activities.there_is_another
+---
+# -----------------------------------------------
+# Derived fields — computed once per activity after
+# the whole list is gathered, so nothing downstream
+# has to re-derive them (and can never drift from
+# the underlying facts). Mirrors the "centralize the
+# projection" pattern in branching-and-multi-document.md.
+# -----------------------------------------------
+code: |
+  for activity in matters[i].processing_activities:
+      activity.is_high_risk = requires_dpia(
+          activity.data_categories,
+          activity.purposes
+      )
+      activity.relies_on_legitimate_interest = (
+          'GDPR' in matters[i].confirmed_jurisdictions.true_values()
+          and activity.lawful_basis.get('Legitimate interests (Article 6(1)(f))', False)
+      )
+  matters[i].processing_activities_derived = True
+sets: matters[i].processing_activities_derived

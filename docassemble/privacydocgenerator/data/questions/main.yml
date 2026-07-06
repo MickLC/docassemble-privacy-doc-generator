@@ -16,6 +16,8 @@ include:
   - docassemble.privacydocgenerator:data/questions/includes/operational_footprint.yml
   - docassemble.privacydocgenerator:data/questions/includes/jurisdiction_engine.yml
   - docassemble.privacydocgenerator:data/questions/includes/current_state_assessment.yml
+  - docassemble.privacydocgenerator:data/questions/includes/data_map.yml
+  - docassemble.privacydocgenerator:data/questions/includes/processing_activities.yml
   - docassemble.privacydocgenerator:data/questions/includes/universal_data_questions.yml
   - docassemble.privacydocgenerator:data/questions/includes/gdpr/questions.yml
   - docassemble.privacydocgenerator:data/questions/includes/gdpr/logic.yml
@@ -25,6 +27,7 @@ include:
   - docassemble.privacydocgenerator:data/questions/includes/tdpsa/logic.yml
   - docassemble.privacydocgenerator:data/questions/includes/vcdpa/questions.yml
   - docassemble.privacydocgenerator:data/questions/includes/vcdpa/logic.yml
+  - docassemble.privacydocgenerator:data/questions/includes/playbooks.yml
   - docassemble.privacydocgenerator:data/questions/includes/review.yml
   - docassemble.privacydocgenerator:data/questions/includes/documents/attachments.yml
   - docassemble.privacydocgenerator:data/questions/includes/documents/document_list.yml
@@ -34,6 +37,7 @@ modules:
   - docassemble.privacydocgenerator.jurisdiction_engine
   - docassemble.privacydocgenerator.gap_analysis_engine
   - docassemble.privacydocgenerator.content_library
+  - docassemble.privacydocgenerator.breach_notification_engine
 ---
 objects:
   - matters: DAList.using(object_type=DAObject, auto_gather=False)
@@ -99,7 +103,26 @@ code: |
   matters[i].current_state.has_staff_training
   matters[i].current_state.uses_automated_decisions
 
+  # --- Data map: vendor/system inventory ---
+  # Must come before processing_activities: each activity's recipients
+  # are selected from this list. systems_initialized runs the
+  # initializeAttribute code block that makes matters[i].systems an
+  # actual DAList before .gather() is called on it.
+  matters[i].systems_initialized
+  matters[i].systems.gather()
+
+  # --- Processing activities ---
+  # The central data model every downstream document reads from. Must
+  # come before the universal data aggregate below, since
+  # data.types_collected/data.purposes are unions across these activities.
+  matters[i].processing_activities_initialized
+  matters[i].processing_activities.gather()
+  matters[i].processing_activities_derived
+
   # --- Universal data processing ---
+  # types_collected/purposes are now computed aggregates (see
+  # universal_data_questions.yml) rather than directly-asked questions —
+  # every existing consumer below keeps reading the same variable names.
   matters[i].data.types_collected
   matters[i].data.purposes
   matters[i].data.retention_period
@@ -178,6 +201,16 @@ code: |
     matters[i].vcdpa.posture.dpa_contracts_in_place
     matters[i].vcdpa.posture.pia_assessments_completed
     matters[i].vcdpa.posture.third_party_contracts_updated
+
+  # --- Playbooks: regulator/DSR/breach contacts, DPIA-trigger flag ---
+  matters[i].requires_privacy_assessment
+  matters[i].playbooks.regulator_contact
+  matters[i].playbooks.dsr_intake_channel
+  matters[i].playbooks.dsr_intake_detail
+  matters[i].playbooks.breach_counsel_retained
+  matters[i].playbooks.breach_escalation_contact
+  matters[i].playbooks.breach_notification_states
+  matters[i].playbooks.breach_requirements
 
   # --- Run gap analysis ---
   matters[i].gap_analysis = run_gap_analysis(matters[i])

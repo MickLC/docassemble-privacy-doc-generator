@@ -14,4 +14,8 @@ code: |
       matters[i].document_list.append(privacy_statement_doc)
   if document_applies('gap_analysis_memo', matters[i]):
       matters[i].document_list.append(gap_analysis_memo_doc)
+  if document_applies('internal_privacy_policy', matters[i]):
+      matters[i].document_list.append(internal_privacy_policy_doc)
+  if document_applies('ropa', matters[i]):
+      matters[i].document_list.append(ropa_doc)
 sets: matters[i].document_list

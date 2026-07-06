@@ -6,6 +6,11 @@
 # - DAList initialises
 # - Attorney setup question renders
 # - matters[i].complete code block is reachable
+# - Phase 2: nested DAList gather (matters[i].systems[j],
+#   matters[i].processing_activities[j]) — the riskiest new
+#   mechanic in the whole build. This is a SEPARATE screen
+#   from the main interview flow so it can be exercised in
+#   isolation before trusting main.yml's full flow.
 #
 # Run at:
 # /interview?i=docassemble.privacydocgenerator:data/questions/test_load.yml
@@ -25,6 +30,13 @@ mandatory: True
 code: |
   load_test_intro
   attorney.name.first
+  matters[0].matter_ref = 'TEST-001'
+  matters[0].confirmed_jurisdictions_test_ready
+  matters[0].systems_initialized
+  matters[0].systems.gather()
+  matters[0].processing_activities_initialized
+  matters[0].processing_activities.gather()
+  nested_list_test_result
   load_test_result
 ---
 question: Package Load Test
@@ -36,6 +48,8 @@ subquestion: |
   - Python module imports (`jurisdiction_engine`, `gap_analysis_engine`)
   - `DAList` object initialisation
   - Basic question rendering
+  - Nested `DAList` gathering (`matters[0].systems[j]`,
+    `matters[0].processing_activities[j]`)
 
   Click **Continue** to begin.
 continue button field: load_test_intro
@@ -44,6 +58,32 @@ question: Attorney Name
 fields:
   - First name: attorney.name.first
   - Last name: attorney.name.last
+---
+code: |
+  matters[0].initializeAttribute('confirmed_jurisdictions', DADict)
+  matters[0].confirmed_jurisdictions.gathered = True
+  matters[0].confirmed_jurisdictions_test_ready = True
+sets: matters[0].confirmed_jurisdictions_test_ready
+---
+include:
+  - docassemble.privacydocgenerator:data/questions/includes/data_map.yml
+  - docassemble.privacydocgenerator:data/questions/includes/processing_activities.yml
+---
+question: |
+  ✅ Nested DAList Gather Test Passed
+subquestion: |
+  - `matters[0].systems` gathered ${ matters[0].systems.number() } system(s)
+  - `matters[0].processing_activities` gathered
+    ${ matters[0].processing_activities.number() } activit(y/ies)
+
+  % for sys in matters[0].systems:
+  * System: **${ sys.name }** (${ sys.category })
+  % endfor
+
+  % for a in matters[0].processing_activities:
+  * Activity: **${ a.name }** — recipients: ${ a.recipients }
+  % endfor
+continue button field: nested_list_test_result
 ---
 question: |
   ✅ Package Loaded Successfully
@@ -54,6 +94,8 @@ subquestion: |
   - `gap_analysis_engine` module imported
   - `DAList` objects initialised
   - Question rendering working
+  - Nested `DAList` gathering (`matters[0].systems[j]`,
+    `matters[0].processing_activities[j]`) working
   - Attorney name captured: **${ attorney.name.full() }**
 
   You can now test the full interview at:

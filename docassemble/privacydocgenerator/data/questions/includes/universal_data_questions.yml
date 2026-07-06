@@ -3,55 +3,31 @@
 # UNIVERSAL DATA PROCESSING QUESTIONS
 # Asked once per matter. Answers feed all
 # jurisdiction-specific document sections.
+#
+# matters[i].data.types_collected and matters[i].data.purposes
+# are NOT asked directly here — as of Phase 2 they are computed
+# aggregates (a union across matters[i].processing_activities),
+# so every existing consumer (jurisdiction_engine.requires_dpia,
+# gdpr/logic.yml, review.yml) keeps working unmodified against a
+# real DADict with the same .get()/.true_values() interface.
+# See the two code blocks below, evaluated after
+# processing_activities.yml in main.yml's per-matter flow.
 # ===============================================
-question: |
-  Personal Data Collected — ${ matters[i].org.name.text }
-subquestion: |
-  Select all categories of personal data the client collects or processes.
-fields:
-  - no label: matters[i].data.types_collected
-    datatype: checkboxes
-    choices:
-      - Identifiers (name, email, phone, address)
-      - Government-issued ID numbers
-      - Financial information (account numbers, payment card data)
-      - Health or medical data
-      - Biometric data
-      - Precise geolocation data
-      - Internet / network activity data
-      - Cookies and usage data
-      - Inferences drawn from personal data
-      - Employment and HR data
-      - Education records
-      - Data relating to children (under 13 / under 16)
-      - Racial or ethnic origin
-      - Political opinions
-      - Religious or philosophical beliefs
-      - Trade union membership
-      - Sexual orientation or gender identity
-      - Criminal conviction data
-      - Other
+code: |
+  matters[i].data.initializeAttribute('types_collected', DADict)
+  for activity in matters[i].processing_activities:
+      for key in activity.data_categories.true_values():
+          matters[i].data.types_collected[key] = True
+  matters[i].data.types_collected.gathered = True
+sets: matters[i].data.types_collected
 ---
-question: |
-  Processing Purposes — ${ matters[i].org.name.text }
-subquestion: |
-  Why does the client collect and use personal data? Select all that apply.
-fields:
-  - no label: matters[i].data.purposes
-    datatype: checkboxes
-    choices:
-      - Providing products or services
-      - Processing payments and transactions
-      - Customer support and communication
-      - Marketing and promotional communications
-      - Targeted or behavioural advertising
-      - Analytics and service improvement
-      - Legal and regulatory compliance
-      - Employment and HR administration
-      - Fraud prevention and security
-      - Research and development
-      - Sharing or selling to third parties
-      - Other
+code: |
+  matters[i].data.initializeAttribute('purposes', DADict)
+  for activity in matters[i].processing_activities:
+      for key in activity.purposes.true_values():
+          matters[i].data.purposes[key] = True
+  matters[i].data.purposes.gathered = True
+sets: matters[i].data.purposes
 ---
 question: |
   Data Retention — ${ matters[i].org.name.text }

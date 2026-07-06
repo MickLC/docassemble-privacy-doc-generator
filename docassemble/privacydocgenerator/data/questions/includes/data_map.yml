@@ -1,0 +1,85 @@
+---
+# ===============================================
+# DATA MAP / VENDOR & SYSTEM INVENTORY
+# The storage/vendor inventory that processing
+# activities point to as "recipients." Gathered
+# before processing_activities.yml in main.yml's
+# per-matter code block.
+#
+# matters[i].systems is a DAList nested inside a
+# DAList item (matters[i]) — a new mechanic for this
+# package. It must be explicitly initialised with
+# initializeAttribute so docassemble tracks its
+# instanceName correctly; the inner gather loop uses
+# `j` because `i` is already consumed by matters.gather().
+# NEEDS LIVE-SERVER VERIFICATION (see BUILD_PLAN.md).
+# ===============================================
+code: |
+  matters[i].initializeAttribute('systems', DAList.using(object_type=DAObject))
+  matters[i].systems_initialized = True
+sets: matters[i].systems_initialized
+---
+question: |
+  Vendor & System Inventory — ${ matters[i].org.name.text }
+subquestion: |
+  List every system, vendor, or storage location where the client's
+  personal data lives — cloud platforms, on-premise servers, physical
+  records, and any third party that receives data. This becomes each
+  processing activity's list of recipients.
+yesno: matters[i].systems.there_are_any
+---
+question: |
+  System or Vendor — ${ matters[i].org.name.text }
+fields:
+  - Name of the system, vendor, or storage location: matters[i].systems[j].name
+    hint: e.g. Salesforce, AWS S3, Stripe, on-premise file server
+  - Category: matters[i].systems[j].category
+    datatype: dropdown
+    choices:
+      - Cloud CRM
+      - Cloud file storage
+      - Cloud database
+      - On-premise servers
+      - Employee devices
+      - Email system
+      - Marketing platform
+      - Payment processor
+      - Physical records
+      - Other
+  - Hosting location (country or region): matters[i].systems[j].hosting_location
+    hint: e.g. United States, European Union, unknown/multi-region
+  - label: Which data categories live here?
+    field: matters[i].systems[j].data_categories
+    datatype: checkboxes
+    choices:
+      - Identifiers (name, email, phone, address)
+      - Government-issued ID numbers
+      - Financial information (account numbers, payment card data)
+      - Health or medical data
+      - Biometric data
+      - Precise geolocation data
+      - Internet / network activity data
+      - Cookies and usage data
+      - Inferences drawn from personal data
+      - Employment and HR data
+      - Education records
+      - Data relating to children (under 13 / under 16)
+      - Racial or ethnic origin
+      - Political opinions
+      - Religious or philosophical beliefs
+      - Trade union membership
+      - Sexual orientation or gender identity
+      - Criminal conviction data
+      - Other
+  - Is this vendor a sub-processor of another system already listed?: matters[i].systems[j].is_sub_processor
+    datatype: yesnoradio
+  - If yes, which system is it a sub-processor of?: matters[i].systems[j].sub_processor_of
+    show if: matters[i].systems[j].is_sub_processor
+    required: False
+    hint: e.g. "Runs on AWS, which is already listed above"
+  - Is a Data Processing Agreement (DPA) in place with this vendor?: matters[i].systems[j].dpa_in_place
+    datatype: yesnoradio
+---
+question: |
+  Another system or vendor to add?
+yesno: matters[i].systems.there_is_another

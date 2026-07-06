@@ -1,0 +1,30 @@
+{
+  "_meta": {
+    "status": "PLACEHOLDER — Phase 2 plumbing stub, not attorney-verified",
+    "note": "Only CA, TX, and VA are stubbed here to prove the state selection -> lookup -> template plumbing end-to-end. Phase 5 backfills full coverage of CA, CO, CT, DE, IA, IN, KY, MD, MN, MT, NE, NH, NJ, OR, RI, TN, TX, UT, VA with attorney-verified statute citations, deadlines, and thresholds. Do not rely on any value below for actual client advice until Phase 5 marks it verified."
+  },
+  "CA": {
+    "state": "California",
+    "statute_citation": "PLACEHOLDER — verify current citation (Cal. Civ. Code §1798.29 / §1798.82)",
+    "notification_deadline": "PLACEHOLDER — verify (California requires notice in the most expedient time possible, without unreasonable delay)",
+    "ag_notice_threshold": "PLACEHOLDER — verify (single-incident notice to CA AG generally required at 500+ affected CA residents)",
+    "consumer_notice_required": "PLACEHOLDER — verify substitute notice provisions",
+    "verified": false
+  },
+  "TX": {
+    "state": "Texas",
+    "statute_citation": "PLACEHOLDER — verify current citation (Tex. Bus. & Com. Code §521.053)",
+    "notification_deadline": "PLACEHOLDER — verify (Texas requires notice as quickly as possible, no later than 60 days after determining a breach occurred)",
+    "ag_notice_threshold": "PLACEHOLDER — verify (notice to Texas AG generally required at 250+ affected Texas residents)",
+    "consumer_notice_required": "PLACEHOLDER — verify substitute notice provisions",
+    "verified": false
+  },
+  "VA": {
+    "state": "Virginia",
+    "statute_citation": "PLACEHOLDER — verify current citation (Va. Code Ann. §18.2-186.6)",
+    "notification_deadline": "PLACEHOLDER — verify (Virginia requires notice without unreasonable delay)",
+    "ag_notice_threshold": "PLACEHOLDER — verify (notice to Virginia AG generally required regardless of numeric threshold when notice to residents is required)",
+    "consumer_notice_required": "PLACEHOLDER — verify substitute notice provisions",
+    "verified": false
+  }
+}

@@ -14,8 +14,8 @@ document_applies() can be unit-tested with plain python3 against a fixture
 object standing in for `matters[i]`.
 
 Registered incrementally as the underlying data exists (see the project's
-phased build plan): only 'privacy_statement' and 'gap_analysis_memo' are
-live in Phase 1.
+phased build plan): 'privacy_statement' and 'gap_analysis_memo' went live in
+Phase 1; 'internal_privacy_policy' and 'ropa' in Phase 2.
 """
 
 DOCUMENT_TYPES = [
@@ -34,6 +34,25 @@ DOCUMENT_TYPES = [
         'template': 'gap_analysis_memo.docx',
         'attachment_var': 'gap_analysis_memo_doc',
         'applies': lambda m: m.gap_analysis['counts']['total'] > 0,
+    },
+    {
+        'key': 'internal_privacy_policy',
+        'label': 'Internal Privacy Policy',
+        'family': 'internal',
+        'template': 'internal_privacy_policy.docx',
+        'attachment_var': 'internal_privacy_policy_doc',
+        'applies': lambda m: True,
+    },
+    {
+        'key': 'ropa',
+        'label': 'Record of Processing Activities (ROPA)',
+        'family': 'internal',
+        'template': 'ropa.docx',
+        'attachment_var': 'ropa_doc',
+        # Over-inclusive on purpose: generate whenever GDPR applies rather
+        # than trying to detect the <250-employee Art. 30(5) exemption —
+        # attorney judges that, same posture as the gap analysis engine.
+        'applies': lambda m: 'GDPR' in m.confirmed_jurisdictions.true_values(),
     },
 ]
 
