@@ -1,7 +1,0 @@
-# -----------------------------------------------
-# DEPRECATED - DO NOT USE
-# This file has been superseded by the per-jurisdiction
-# logic files in includes/gdpr/logic.yml,
-# includes/ccpa_cpra/logic.yml, etc.
-# It is NOT included in main.yml.
-# -----------------------------------------------
