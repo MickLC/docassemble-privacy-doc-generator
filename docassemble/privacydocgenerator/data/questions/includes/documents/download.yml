@@ -1,0 +1,18 @@
+---
+# ===============================================
+# DOWNLOAD SCREEN
+# Referencing matters[i].document_list here triggers
+# assembly of exactly the documents that apply.
+# ===============================================
+event: matters[i].documents_generated
+question: |
+  Documents Ready — ${ matters[i].org.name.text }
+subquestion: |
+  The following documents have been generated for **${ matters[i].org.name.text }**.
+
+  **Matter:** ${ matters[i].matter_ref }
+  **Jurisdictions covered:** ${ comma_and_list(matters[i].confirmed_jurisdictions.true_values()) }
+
+  % for doc in matters[i].document_list:
+  ${ doc }
+  % endfor

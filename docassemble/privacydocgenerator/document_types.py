@@ -1,0 +1,45 @@
+"""
+document_types.py
+
+Registry of generated document types. Each entry describes what a document
+is, which template it uses, which attachment variable holds the assembled
+file, and when it applies to a given matter.
+
+Adding a new document type later = one template file, one entry here, one
+`attachment:` block with a matching `variable name:`, and one line in the
+`if document_applies(...)` chain in documents/document_list.yml.
+
+No docassemble.base.util import here on purpose, so DOCUMENT_TYPES and
+document_applies() can be unit-tested with plain python3 against a fixture
+object standing in for `matters[i]`.
+
+Registered incrementally as the underlying data exists (see the project's
+phased build plan): only 'privacy_statement' and 'gap_analysis_memo' are
+live in Phase 1.
+"""
+
+DOCUMENT_TYPES = [
+    {
+        'key': 'privacy_statement',
+        'label': 'Privacy Statement',
+        'family': 'collateral',
+        'template': 'privacy_statement.docx',
+        'attachment_var': 'privacy_statement_doc',
+        'applies': lambda m: bool(m.confirmed_jurisdictions.true_values()),
+    },
+    {
+        'key': 'gap_analysis_memo',
+        'label': 'Gap Analysis Memo',
+        'family': 'internal',
+        'template': 'gap_analysis_memo.docx',
+        'attachment_var': 'gap_analysis_memo_doc',
+        'applies': lambda m: m.gap_analysis['counts']['total'] > 0,
+    },
+]
+
+
+def document_applies(key, matter):
+    for dt in DOCUMENT_TYPES:
+        if dt['key'] == key:
+            return dt['applies'](matter)
+    raise KeyError('Unknown document type: {}'.format(key))

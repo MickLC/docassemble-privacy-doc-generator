@@ -23,3 +23,11 @@ code: |
     matters[i].tdpsa.role in ['Controller', 'Both controller and processor']
   )
 sets: matters[i].tdpsa.is_controller
+---
+code: |
+  matters[i].tdpsa.applicable_rights = tdpsa_consumer_rights()
+sets: matters[i].tdpsa.applicable_rights
+---
+code: |
+  matters[i].tdpsa.sensitive_data_categories_reference = tdpsa_sensitive_data_categories()
+sets: matters[i].tdpsa.sensitive_data_categories_reference

@@ -61,21 +61,36 @@ subquestion: |
   Processes sensitive data: ${ 'Yes' if matters[i].vcdpa.processes_sensitive_data else 'No' }
   PIAs completed: ${ 'Yes' if matters[i].vcdpa.pia_completed else 'No' }
   % endif
-continue button field: matters[i].review_done
----
-event: matters[i].document_generated
-question: |
-  Privacy Policy Ready — ${ matters[i].org.name.text }
-subquestion: |
-  The privacy policy for **${ matters[i].org.name.text }** has been generated.
-  Download the document below.
 
-  **Matter:** ${ matters[i].matter_ref }
-  **Jurisdictions covered:** ${ comma_and_list(matters[i].confirmed_jurisdictions.true_values()) }
-attachment:
-  name: Privacy Policy — ${ matters[i].org.name.text }
-  filename: privacy_policy_${ matters[i].matter_ref }
-  docx template file: privacy_policy.docx
-  valid formats:
-    - docx
-    - pdf
+  ---
+
+  **Compliance Gap Summary** (${ matters[i].gap_analysis['counts']['total'] } finding(s))
+
+  % if matters[i].gap_analysis['counts']['must_fix']:
+  Must Fix: ${ matters[i].gap_analysis['counts']['must_fix'] }
+  % for f in matters[i].gap_analysis['by_severity']['Must Fix']:
+  * **${ f['jurisdiction'] } — ${ f['requirement'] }** (${ f['authority'] })
+  % endfor
+  % endif
+
+  % if matters[i].gap_analysis['counts']['should_fix']:
+  Should Fix: ${ matters[i].gap_analysis['counts']['should_fix'] }
+  % for f in matters[i].gap_analysis['by_severity']['Should Fix']:
+  * **${ f['jurisdiction'] } — ${ f['requirement'] }** (${ f['authority'] })
+  % endfor
+  % endif
+
+  % if matters[i].gap_analysis['counts']['consider']:
+  Consider Fixing: ${ matters[i].gap_analysis['counts']['consider'] }
+  % for f in matters[i].gap_analysis['by_severity']['Consider Fixing']:
+  * **${ f['jurisdiction'] } — ${ f['requirement'] }** (${ f['authority'] })
+  % endfor
+  % endif
+
+  % if matters[i].gap_analysis['counts']['total'] == 0:
+  No gaps identified against the compliance posture questions answered above.
+  % endif
+
+  Full findings, with citations and descriptions, are in the Gap Analysis
+  Memo generated below.
+continue button field: matters[i].review_done

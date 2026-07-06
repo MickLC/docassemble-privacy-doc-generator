@@ -1,0 +1,25 @@
+---
+# ===============================================
+# DOCUMENT ATTACHMENTS
+# One attachment block per registered document type
+# in document_types.py. Each has a `variable name:`
+# so document_list.yml can assemble a per-matter list
+# of only the documents that apply.
+# ===============================================
+attachment:
+  variable name: privacy_statement_doc
+  name: Privacy Statement — ${ matters[i].org.name.text }
+  filename: privacy_statement_${ matters[i].matter_ref }
+  docx template file: privacy_statement.docx
+  valid formats:
+    - docx
+    - pdf
+---
+attachment:
+  variable name: gap_analysis_memo_doc
+  name: Gap Analysis Memo — ${ matters[i].org.name.text }
+  filename: gap_analysis_memo_${ matters[i].matter_ref }
+  docx template file: gap_analysis_memo.docx
+  valid formats:
+    - docx
+    - pdf

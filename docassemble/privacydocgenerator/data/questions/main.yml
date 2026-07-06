@@ -26,10 +26,14 @@ include:
   - docassemble.privacydocgenerator:data/questions/includes/vcdpa/questions.yml
   - docassemble.privacydocgenerator:data/questions/includes/vcdpa/logic.yml
   - docassemble.privacydocgenerator:data/questions/includes/review.yml
+  - docassemble.privacydocgenerator:data/questions/includes/documents/attachments.yml
+  - docassemble.privacydocgenerator:data/questions/includes/documents/document_list.yml
+  - docassemble.privacydocgenerator:data/questions/includes/documents/download.yml
 ---
 modules:
   - docassemble.privacydocgenerator.jurisdiction_engine
   - docassemble.privacydocgenerator.gap_analysis_engine
+  - docassemble.privacydocgenerator.content_library
 ---
 objects:
   - matters: DAList.using(object_type=DAObject, auto_gather=False)
@@ -182,7 +186,8 @@ code: |
   matters[i].review_done
 
   # --- Generate documents ---
-  matters[i].document_generated
+  matters[i].document_list
+  matters[i].documents_generated
 
   # Mark this matter complete for the DAList gather loop
   matters[i].complete = True

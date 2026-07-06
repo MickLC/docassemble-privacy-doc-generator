@@ -44,3 +44,11 @@ code: |
     matters[i].data.purposes
   )
 sets: matters[i].gdpr.requires_dpia
+---
+code: |
+  matters[i].gdpr.applicable_rights = gdpr_data_subject_rights()
+sets: matters[i].gdpr.applicable_rights
+---
+code: |
+  matters[i].gdpr.transfer_mechanisms_reference = gdpr_transfer_mechanisms()
+sets: matters[i].gdpr.transfer_mechanisms_reference

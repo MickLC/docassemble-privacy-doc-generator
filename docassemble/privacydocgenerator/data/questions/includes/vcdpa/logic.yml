@@ -25,3 +25,11 @@ code: |
     matters[i].vcdpa.role in ['Controller', 'Both']
   )
 sets: matters[i].vcdpa.is_controller
+---
+code: |
+  matters[i].vcdpa.applicable_rights = vcdpa_consumer_rights()
+sets: matters[i].vcdpa.applicable_rights
+---
+code: |
+  matters[i].vcdpa.sensitive_data_categories_reference = vcdpa_sensitive_data_categories()
+sets: matters[i].vcdpa.sensitive_data_categories_reference

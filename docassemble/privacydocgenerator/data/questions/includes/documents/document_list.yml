@@ -1,0 +1,17 @@
+---
+# ===============================================
+# DOCUMENT LIST
+# Builds the list of documents to deliver for this
+# matter, based on document_types.py's applicability
+# tests. Add a document type there, then one line here.
+# ===============================================
+modules:
+  - docassemble.privacydocgenerator.document_types
+---
+code: |
+  matters[i].document_list = []
+  if document_applies('privacy_statement', matters[i]):
+      matters[i].document_list.append(privacy_statement_doc)
+  if document_applies('gap_analysis_memo', matters[i]):
+      matters[i].document_list.append(gap_analysis_memo_doc)
+sets: matters[i].document_list

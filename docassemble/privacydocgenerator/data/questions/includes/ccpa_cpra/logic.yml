@@ -21,3 +21,11 @@ sets: matters[i].ccpa.include_spi_limit_link
 code: |
   matters[i].ccpa.include_gpc_notice = matters[i].ccpa.honours_gpc
 sets: matters[i].ccpa.include_gpc_notice
+---
+code: |
+  matters[i].ccpa.applicable_rights = ccpa_consumer_rights()
+sets: matters[i].ccpa.applicable_rights
+---
+code: |
+  matters[i].ccpa.sensitive_pi_categories_reference = ccpa_sensitive_pi_categories()
+sets: matters[i].ccpa.sensitive_pi_categories_reference

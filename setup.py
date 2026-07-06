@@ -26,6 +26,7 @@ setup(
             'data/questions/includes/ccpa_cpra/*.yml',
             'data/questions/includes/tdpsa/*.yml',
             'data/questions/includes/vcdpa/*.yml',
+            'data/questions/includes/documents/*.yml',
             'data/templates/*',
             'data/sources/*',
             'data/static/css/*',
