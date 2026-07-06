@@ -18,4 +18,8 @@ code: |
       matters[i].document_list.append(internal_privacy_policy_doc)
   if document_applies('ropa', matters[i]):
       matters[i].document_list.append(ropa_doc)
+  if document_applies('dpia_report', matters[i]):
+      matters[i].document_list.append(dpia_report_doc)
+  if document_applies('lia_report', matters[i]):
+      matters[i].document_list.append(lia_report_doc)
 sets: matters[i].document_list

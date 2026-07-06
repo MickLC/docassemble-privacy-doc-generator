@@ -1,0 +1,77 @@
+---
+# ===============================================
+# LIA ASSESSMENT
+# For each processing activity where
+# .relies_on_legitimate_interest (computed in
+# processing_activities.yml), gathers the standard
+# three-part legitimate-interests test — purpose,
+# necessity, balancing — plus a conclusion.
+#
+# One level of nesting only (activity.lia.* — plain
+# attributes, auto-vivified DAObjects the same way
+# matters[i].gdpr.dpo.* already works elsewhere in
+# this package) — lower risk than the DPIA risk
+# register's three-deep DAList. Same driving pattern
+# as dpia_assessment.yml: loop the already-gathered
+# processing_activities list by index and ask
+# follow-up questions only on the gated subset.
+# ===============================================
+code: |
+  for j in range(len(matters[i].processing_activities)):
+      if matters[i].processing_activities[j].relies_on_legitimate_interest:
+          matters[i].processing_activities[j].lia.purpose_test.legitimate_interest
+          matters[i].processing_activities[j].lia.purpose_test.is_lawful
+          matters[i].processing_activities[j].lia.necessity_test.is_necessary
+          matters[i].processing_activities[j].lia.necessity_test.alternatives_considered
+          matters[i].processing_activities[j].lia.balancing_test.data_sensitivity
+          matters[i].processing_activities[j].lia.balancing_test.reasonable_expectations
+          matters[i].processing_activities[j].lia.balancing_test.impact_on_individual
+          matters[i].processing_activities[j].lia.balancing_test.safeguards
+          matters[i].processing_activities[j].lia.balancing_test.would_individual_object
+          matters[i].processing_activities[j].lia.conclusion
+  matters[i].lia_assessments_done = True
+sets: matters[i].lia_assessments_done
+---
+question: |
+  Legitimate Interests Assessment — Purpose Test — ${ matters[i].processing_activities[j].name }
+subquestion: |
+  This activity relies on legitimate interests (Article 6(1)(f)) as its
+  lawful basis, so it requires a documented three-part test.
+fields:
+  - What is the legitimate interest being pursued?: matters[i].processing_activities[j].lia.purpose_test.legitimate_interest
+    input type: area
+  - Is this interest lawful, clearly articulated, and real (not speculative)?: matters[i].processing_activities[j].lia.purpose_test.is_lawful
+    datatype: yesnoradio
+---
+question: |
+  Legitimate Interests Assessment — Necessity Test — ${ matters[i].processing_activities[j].name }
+fields:
+  - Is this processing necessary to achieve the stated interest?: matters[i].processing_activities[j].lia.necessity_test.is_necessary
+    datatype: yesnoradio
+  - What less intrusive alternatives were considered, and why were they rejected?: matters[i].processing_activities[j].lia.necessity_test.alternatives_considered
+    input type: area
+---
+question: |
+  Legitimate Interests Assessment — Balancing Test — ${ matters[i].processing_activities[j].name }
+fields:
+  - How sensitive is the data involved in this activity?: matters[i].processing_activities[j].lia.balancing_test.data_sensitivity
+    input type: area
+  - What would data subjects reasonably expect regarding this use of their data?: matters[i].processing_activities[j].lia.balancing_test.reasonable_expectations
+    input type: area
+  - What is the impact of this processing on the individual?: matters[i].processing_activities[j].lia.balancing_test.impact_on_individual
+    input type: area
+  - What safeguards are in place to minimise this impact?: matters[i].processing_activities[j].lia.balancing_test.safeguards
+    input type: area
+  - Would a reasonable individual object to this processing if asked?: matters[i].processing_activities[j].lia.balancing_test.would_individual_object
+    datatype: yesnoradio
+---
+question: |
+  Legitimate Interests Assessment — Conclusion — ${ matters[i].processing_activities[j].name }
+fields:
+  - label: Does this activity's legitimate-interest basis survive the balancing test?
+    field: matters[i].processing_activities[j].lia.conclusion
+    datatype: radio
+    choices:
+      - Yes — legitimate interests basis supported
+      - No — an alternative lawful basis should be used
+      - Undetermined — needs further review

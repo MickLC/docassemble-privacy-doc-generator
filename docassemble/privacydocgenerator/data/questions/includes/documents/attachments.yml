@@ -41,3 +41,21 @@ attachment:
   valid formats:
     - docx
     - pdf
+---
+attachment:
+  variable name: dpia_report_doc
+  name: Data Protection Impact Assessment Report — ${ matters[i].org.name.text }
+  filename: dpia_report_${ matters[i].matter_ref }
+  docx template file: dpia_report.docx
+  valid formats:
+    - docx
+    - pdf
+---
+attachment:
+  variable name: lia_report_doc
+  name: Legitimate Interests Assessment Report — ${ matters[i].org.name.text }
+  filename: lia_report_${ matters[i].matter_ref }
+  docx template file: lia_report.docx
+  valid formats:
+    - docx
+    - pdf

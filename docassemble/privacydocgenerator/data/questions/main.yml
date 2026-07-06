@@ -18,6 +18,8 @@ include:
   - docassemble.privacydocgenerator:data/questions/includes/current_state_assessment.yml
   - docassemble.privacydocgenerator:data/questions/includes/data_map.yml
   - docassemble.privacydocgenerator:data/questions/includes/processing_activities.yml
+  - docassemble.privacydocgenerator:data/questions/includes/dpia_assessment.yml
+  - docassemble.privacydocgenerator:data/questions/includes/lia_assessment.yml
   - docassemble.privacydocgenerator:data/questions/includes/universal_data_questions.yml
   - docassemble.privacydocgenerator:data/questions/includes/gdpr/questions.yml
   - docassemble.privacydocgenerator:data/questions/includes/gdpr/logic.yml
@@ -118,6 +120,14 @@ code: |
   matters[i].processing_activities_initialized
   matters[i].processing_activities.gather()
   matters[i].processing_activities_derived
+
+  # --- DPIA / LIA assessments ---
+  # Only asked for the subset of activities flagged is_high_risk /
+  # relies_on_legitimate_interest above. See dpia_assessment.yml and
+  # lia_assessment.yml for the three-deep (dpia.risks[k]) and one-deep
+  # (lia.*) nesting mechanics respectively.
+  matters[i].dpia_assessments_done
+  matters[i].lia_assessments_done
 
   # --- Universal data processing ---
   # types_collected/purposes are now computed aggregates (see

@@ -11,6 +11,13 @@
 #   mechanic in the whole build. This is a SEPARATE screen
 #   from the main interview flow so it can be exercised in
 #   isolation before trusting main.yml's full flow.
+# - Phase 3: three-deep nested DAList gather
+#   (matters[i].processing_activities[j].dpia.risks[k]) — the
+#   single deepest nesting mechanic in the whole build. The
+#   first processing activity gathered above is force-flagged
+#   is_high_risk/relies_on_legitimate_interest here (regardless
+#   of its actual answers) purely to exercise dpia_assessment.yml
+#   and lia_assessment.yml end-to-end.
 #
 # Run at:
 # /interview?i=docassemble.privacydocgenerator:data/questions/test_load.yml
@@ -37,6 +44,18 @@ code: |
   matters[0].processing_activities_initialized
   matters[0].processing_activities.gather()
   nested_list_test_result
+  if len(matters[0].processing_activities) > 0:
+    # Force-flag the first activity so dpia_assessment.yml/lia_assessment.yml
+    # actually have a gated activity to run their follow-up questions and
+    # (for DPIA) the three-deep risks[k] gather against. Production flow
+    # computes these from requires_dpia()/lawful_basis in
+    # processing_activities.yml's trailing derived block, which this
+    # isolated harness deliberately bypasses.
+    matters[0].processing_activities[0].is_high_risk = True
+    matters[0].processing_activities[0].relies_on_legitimate_interest = True
+    matters[0].dpia_assessments_done
+    matters[0].lia_assessments_done
+    three_deep_test_result
   load_test_result
 ---
 question: Package Load Test
@@ -50,6 +69,8 @@ subquestion: |
   - Basic question rendering
   - Nested `DAList` gathering (`matters[0].systems[j]`,
     `matters[0].processing_activities[j]`)
+  - Three-deep nested `DAList` gathering
+    (`matters[0].processing_activities[j].dpia.risks[k]`)
 
   Click **Continue** to begin.
 continue button field: load_test_intro
@@ -68,6 +89,8 @@ sets: matters[0].confirmed_jurisdictions_test_ready
 include:
   - docassemble.privacydocgenerator:data/questions/includes/data_map.yml
   - docassemble.privacydocgenerator:data/questions/includes/processing_activities.yml
+  - docassemble.privacydocgenerator:data/questions/includes/dpia_assessment.yml
+  - docassemble.privacydocgenerator:data/questions/includes/lia_assessment.yml
 ---
 question: |
   ✅ Nested DAList Gather Test Passed
@@ -86,6 +109,24 @@ subquestion: |
 continue button field: nested_list_test_result
 ---
 question: |
+  ✅ Three-Deep Nested DAList Gather Test Passed
+subquestion: |
+  The first processing activity was force-flagged high-risk and reliant on
+  legitimate interests to exercise both assessment flows end-to-end.
+
+  - `matters[0].processing_activities[0].dpia` — necessity, consultation,
+    and sign-off fields captured
+  - `matters[0].processing_activities[0].dpia.risks` gathered
+    ${ matters[0].processing_activities[0].dpia.risks.number() } risk(s)
+  - `matters[0].processing_activities[0].lia` — purpose/necessity/balancing
+    test and conclusion captured
+
+  % for r in matters[0].processing_activities[0].dpia.risks:
+  * Risk: **${ r.description }** — ${ r.likelihood }/${ r.severity }, residual: ${ r.residual_outcome }
+  % endfor
+continue button field: three_deep_test_result
+---
+question: |
   ✅ Package Loaded Successfully
 subquestion: |
   The following checks passed:
@@ -96,6 +137,8 @@ subquestion: |
   - Question rendering working
   - Nested `DAList` gathering (`matters[0].systems[j]`,
     `matters[0].processing_activities[j]`) working
+  - Three-deep nested `DAList` gathering
+    (`matters[0].processing_activities[j].dpia.risks[k]`) working
   - Attorney name captured: **${ attorney.name.full() }**
 
   You can now test the full interview at:

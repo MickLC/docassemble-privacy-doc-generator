@@ -15,7 +15,8 @@ object standing in for `matters[i]`.
 
 Registered incrementally as the underlying data exists (see the project's
 phased build plan): 'privacy_statement' and 'gap_analysis_memo' went live in
-Phase 1; 'internal_privacy_policy' and 'ropa' in Phase 2.
+Phase 1; 'internal_privacy_policy' and 'ropa' in Phase 2; 'dpia_report' and
+'lia_report' in Phase 3.
 """
 
 DOCUMENT_TYPES = [
@@ -53,6 +54,25 @@ DOCUMENT_TYPES = [
         # than trying to detect the <250-employee Art. 30(5) exemption —
         # attorney judges that, same posture as the gap analysis engine.
         'applies': lambda m: 'GDPR' in m.confirmed_jurisdictions.true_values(),
+    },
+    {
+        'key': 'dpia_report',
+        'label': 'DPIA Report',
+        'family': 'internal',
+        'template': 'dpia_report.docx',
+        'attachment_var': 'dpia_report_doc',
+        'applies': lambda m: any(a.is_high_risk for a in m.processing_activities),
+    },
+    {
+        'key': 'lia_report',
+        'label': 'LIA Report',
+        'family': 'internal',
+        'template': 'lia_report.docx',
+        'attachment_var': 'lia_report_doc',
+        'applies': lambda m: (
+            'GDPR' in m.confirmed_jurisdictions.true_values()
+            and any(a.relies_on_legitimate_interest for a in m.processing_activities)
+        ),
     },
 ]
 

@@ -1,0 +1,100 @@
+---
+# ===============================================
+# DPIA ASSESSMENT
+# For each processing activity where .is_high_risk
+# (computed in processing_activities.yml), gathers a
+# full Data Protection Impact Assessment: necessity/
+# proportionality, consultation, sign-off, and a
+# per-activity risk register.
+#
+# THREE-DEEP NESTING: matters[i].processing_activities[j]
+# .dpia.risks[k] — the single deepest nested DAList in
+# this build (see BUILD_PLAN.md Phase 3). The outer
+# processing_activities list is already fully gathered
+# (Phase 2), so this file loops over it by index
+# (`for j in range(len(...))`) to ask follow-up questions
+# only on the high-risk subset, then initialises and
+# gathers a nested `risks` DAList per activity using `k`
+# as the third loop-variable letter — same mechanic as
+# `matters[i].systems`/`processing_activities`, one level
+# deeper. NEEDS LIVE-SERVER VERIFICATION — prototype this
+# first, before anything else in Phase 3.
+# ===============================================
+code: |
+  for j in range(len(matters[i].processing_activities)):
+      if matters[i].processing_activities[j].is_high_risk:
+          matters[i].processing_activities[j].dpia.necessity_explanation
+          matters[i].processing_activities[j].dpia.consultation_notes
+          matters[i].processing_activities[j].dpia.dpo_advice_given
+          if matters[i].processing_activities[j].dpia.dpo_advice_given:
+              matters[i].processing_activities[j].dpia.dpo_advice_accepted
+          matters[i].processing_activities[j].dpia.residual_risk_accepted_by
+          matters[i].processing_activities[j].dpia.sign_off_date
+          matters[i].processing_activities[j].dpia.risks_initialized
+          matters[i].processing_activities[j].dpia.risks.gather()
+  matters[i].dpia_assessments_done = True
+sets: matters[i].dpia_assessments_done
+---
+question: |
+  Data Protection Impact Assessment — ${ matters[i].processing_activities[j].name }
+subquestion: |
+  This activity was flagged as high-risk (Article 35 GDPR criteria), so it
+  requires a documented DPIA before the processing begins or continues.
+fields:
+  - Explain the necessity and proportionality of this processing: matters[i].processing_activities[j].dpia.necessity_explanation
+    input type: area
+  - Consultation notes (DPO, data subjects, or supervisory authority consulted): matters[i].processing_activities[j].dpia.consultation_notes
+    input type: area
+    required: False
+  - Was DPO advice given on this DPIA?: matters[i].processing_activities[j].dpia.dpo_advice_given
+    datatype: yesnoradio
+  - Was the DPO's advice accepted?: matters[i].processing_activities[j].dpia.dpo_advice_accepted
+    datatype: yesnoradio
+    show if: matters[i].processing_activities[j].dpia.dpo_advice_given
+  - Who accepted the residual risk (name and role)?: matters[i].processing_activities[j].dpia.residual_risk_accepted_by
+  - Sign-off date: matters[i].processing_activities[j].dpia.sign_off_date
+    datatype: date
+---
+code: |
+  matters[i].processing_activities[j].dpia.initializeAttribute('risks', DAList.using(object_type=DAObject))
+  matters[i].processing_activities[j].dpia.risks_initialized = True
+sets: matters[i].processing_activities[j].dpia.risks_initialized
+---
+question: |
+  Risk Register — ${ matters[i].processing_activities[j].name }
+subquestion: |
+  Identify each specific risk this processing poses to data subjects.
+yesno: matters[i].processing_activities[j].dpia.risks.there_are_any
+---
+question: |
+  Risk — ${ matters[i].processing_activities[j].name }
+fields:
+  - Risk description: matters[i].processing_activities[j].dpia.risks[k].description
+    input type: area
+  - label: Likelihood
+    field: matters[i].processing_activities[j].dpia.risks[k].likelihood
+    datatype: radio
+    choices:
+      - Remote
+      - Possible
+      - Probable
+  - label: Severity
+    field: matters[i].processing_activities[j].dpia.risks[k].severity
+    datatype: radio
+    choices:
+      - Minimal
+      - Significant
+      - Severe
+  - Mitigation measure(s): matters[i].processing_activities[j].dpia.risks[k].mitigation
+    input type: area
+  - label: Residual risk outcome after mitigation
+    field: matters[i].processing_activities[j].dpia.risks[k].residual_outcome
+    datatype: radio
+    choices:
+      - Low — acceptable
+      - Medium — accepted with sign-off
+      - High — processing should not proceed without further mitigation
+---
+question: |
+  Another risk to add for ${ matters[i].processing_activities[j].name }?
+yesno: matters[i].processing_activities[j].dpia.risks.there_is_another
