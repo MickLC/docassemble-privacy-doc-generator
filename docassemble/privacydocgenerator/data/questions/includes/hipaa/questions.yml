@@ -41,7 +41,7 @@ fields:
       - covered_entity: Covered entity
       - business_associate: Business associate
       - none: Not subject to HIPAA
-    default code: |
+    default: |
       matters[i].hipaa.auto_detected_status
 ---
 question: |
