@@ -45,7 +45,12 @@ modules:
   - docassemble.privacydocgenerator.hipaa_engine
 ---
 objects:
-  - matters: DAList.using(object_type=DAObject, auto_gather=False)
+  # complete_attribute='complete' is what makes matters.gather() actually
+  # seek matters[i].complete for each item — without it, gather() never
+  # asks for item completeness at all, so the whole per-matter question
+  # sequence below (org, footprint, gdpr, ...) never gets triggered and
+  # gather() just creates a blank item and asks "is there another?"
+  - matters: DAList.using(object_type=DAObject, auto_gather=False, complete_attribute='complete')
   - attorney: Individual
 ---
 # -----------------------------------------------
