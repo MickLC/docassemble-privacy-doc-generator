@@ -56,7 +56,7 @@ fields:
     datatype: date
 ---
 code: |
-  matters[i].processing_activities[j].dpia.initializeAttribute('risks', DAList.using(object_type=DAObject))
+  matters[i].processing_activities[j].dpia.initializeAttribute('risks', DAList.using(object_type=DAObject, complete_attribute='complete'))
   matters[i].processing_activities[j].dpia.risks_initialized = True
 sets: matters[i].processing_activities[j].dpia.risks_initialized
 ---
@@ -94,6 +94,16 @@ fields:
       - Low — acceptable
       - Medium — accepted with sign-off
       - High — processing should not proceed without further mitigation
+---
+# Referencing .description forces the whole fields question above to
+# run (all its fields live on one screen), then marks the item complete
+# so gather() advances to there_is_another instead of treating a blank
+# item as already done. Same fix as matters[i].systems / matters[i].
+# processing_activities — see data_map.yml.
+code: |
+  matters[i].processing_activities[j].dpia.risks[k].description
+  matters[i].processing_activities[j].dpia.risks[k].complete = True
+sets: matters[i].processing_activities[j].dpia.risks[k].complete
 ---
 question: |
   Another risk to add for ${ matters[i].processing_activities[j].name }?

@@ -13,15 +13,20 @@
 # VERIFICATION (see BUILD_PLAN.md).
 #
 # matters[i].data.types_collected / matters[i].data.purposes
-# are computed as aggregates of these activities — see
-# activity_aggregates.yml, included immediately after this
-# file in main.yml.
+# are computed as aggregates of these activities — see the
+# code blocks at the top of universal_data_questions.yml,
+# included later in main.yml.
+#
+# complete_attribute='complete' is required (same reasoning
+# as matters[i].systems in data_map.yml): object_type is a
+# plain DAObject, so without it gather() treats each new item
+# as immediately complete and never shows the fields screen.
 # ===============================================
 modules:
   - docassemble.privacydocgenerator.jurisdiction_engine
 ---
 code: |
-  matters[i].initializeAttribute('processing_activities', DAList.using(object_type=DAObject))
+  matters[i].initializeAttribute('processing_activities', DAList.using(object_type=DAObject, complete_attribute='complete'))
   matters[i].processing_activities_initialized = True
 sets: matters[i].processing_activities_initialized
 ---
@@ -140,6 +145,15 @@ fields:
       - Regular access reviews
       - Pseudonymisation or anonymisation
       - Other
+---
+# Referencing .name forces the whole fields question above to run (all
+# its fields live on one screen), then marks the item complete so
+# gather() advances to there_is_another instead of treating a blank
+# item as already done.
+code: |
+  matters[i].processing_activities[j].name
+  matters[i].processing_activities[j].complete = True
+sets: matters[i].processing_activities[j].complete
 ---
 question: |
   Another processing activity to add?

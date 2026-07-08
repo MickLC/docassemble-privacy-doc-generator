@@ -10,11 +10,22 @@
 # so every existing consumer (jurisdiction_engine.requires_dpia,
 # gdpr/logic.yml, review.yml) keeps working unmodified against a
 # real DADict with the same .get()/.true_values() interface.
-# See the two code blocks below, evaluated after
+# See the three code blocks below, evaluated after
 # processing_activities.yml in main.yml's per-matter flow.
+#
+# The first block exists solely to advertise `sets: matters[i].data` —
+# without it, resolving matters[i].data.types_collected fails at the
+# `.data` attribute access (raising on the intermediate path
+# "matters[0].data", not the full path) before docassemble ever reaches
+# a block whose `sets:` matches. Same gotcha as dpia/lia in
+# processing_activities.yml — nested attributes need their own explicit
+# initializer, one per level.
 # ===============================================
 code: |
   matters[i].initializeAttribute('data', DAObject)
+sets: matters[i].data
+---
+code: |
   matters[i].data.initializeAttribute('types_collected', DADict)
   for activity in matters[i].processing_activities:
       for key in activity.data_categories.true_values():

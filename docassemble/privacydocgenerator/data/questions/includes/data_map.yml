@@ -12,10 +12,18 @@
 # initializeAttribute so docassemble tracks its
 # instanceName correctly; the inner gather loop uses
 # `j` because `i` is already consumed by matters.gather().
-# NEEDS LIVE-SERVER VERIFICATION (see BUILD_PLAN.md).
+#
+# complete_attribute='complete' is required (same as the
+# outer `matters` list in main.yml) because object_type is
+# a plain DAObject: gather() only runs the there_are_any/
+# there_is_another existence loop, and a plain DAObject
+# reduces to text with no undefined attributes, so gather()
+# considers each new item complete on its own — the field
+# screen below never gets triggered without an explicit
+# complete_attribute forcing it.
 # ===============================================
 code: |
-  matters[i].initializeAttribute('systems', DAList.using(object_type=DAObject))
+  matters[i].initializeAttribute('systems', DAList.using(object_type=DAObject, complete_attribute='complete'))
   matters[i].systems_initialized = True
 sets: matters[i].systems_initialized
 ---
@@ -79,6 +87,15 @@ fields:
     hint: e.g. "Runs on AWS, which is already listed above"
   - Is a Data Processing Agreement (DPA) in place with this vendor?: matters[i].systems[j].dpa_in_place
     datatype: yesnoradio
+---
+# Referencing .name forces the whole fields question above to run (all
+# its fields live on one screen), then marks the item complete so
+# gather() advances to there_is_another instead of treating a blank
+# item as already done.
+code: |
+  matters[i].systems[j].name
+  matters[i].systems[j].complete = True
+sets: matters[i].systems[j].complete
 ---
 question: |
   Another system or vendor to add?
