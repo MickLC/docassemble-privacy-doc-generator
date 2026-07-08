@@ -8,7 +8,7 @@ metadata:
   documentation: https://github.com/MickLC/docassemble-privacy-doc-generator
   authors:
     - name: MickLC
-  revision_date: 2026-02-25
+  revision_date: 2026-07-07
 ---
 include:
   - docassemble.privacydocgenerator:data/questions/includes/matter_setup.yml

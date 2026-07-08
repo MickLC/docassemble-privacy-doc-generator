@@ -38,5 +38,5 @@ fields:
       - CCPA/CPRA
       - TDPSA
       - VCDPA
-    default code: |
+    default: |
       [j['name'] for j in matters[i].auto_detected_jurisdictions if j['applies']]
