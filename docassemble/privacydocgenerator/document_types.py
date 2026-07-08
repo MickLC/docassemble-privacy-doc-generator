@@ -19,6 +19,49 @@ Phase 1; 'internal_privacy_policy' and 'ropa' in Phase 2; 'dpia_report' and
 'lia_report' in Phase 3; 'hipaa_npp' in Phase 4.
 """
 
+# Each 'applies' value must be a named module-level function, not a lambda:
+# `modules:` blocks import this module's globals into the interview
+# namespace, and docassemble pickles that namespace between requests. Pickle
+# can only serialize a function by looking it up by name in its module, and
+# an anonymous lambda has no such name, so a lambda here breaks session save.
+
+
+def _applies_privacy_statement(m):
+    return bool(m.confirmed_jurisdictions.true_values())
+
+
+def _applies_gap_analysis_memo(m):
+    return m.gap_analysis['counts']['total'] > 0
+
+
+def _applies_internal_privacy_policy(m):
+    return True
+
+
+def _applies_ropa(m):
+    # Over-inclusive on purpose: generate whenever GDPR applies rather than
+    # trying to detect the <250-employee Art. 30(5) exemption — attorney
+    # judges that, same posture as the gap analysis engine.
+    return 'GDPR' in m.confirmed_jurisdictions.true_values()
+
+
+def _applies_dpia_report(m):
+    return any(a.is_high_risk for a in m.processing_activities)
+
+
+def _applies_lia_report(m):
+    return (
+        'GDPR' in m.confirmed_jurisdictions.true_values()
+        and any(a.relies_on_legitimate_interest for a in m.processing_activities)
+    )
+
+
+def _applies_hipaa_npp(m):
+    # Business-associate-only clients don't issue an NPP — only a covered
+    # entity does.
+    return m.hipaa.status == 'covered_entity'
+
+
 DOCUMENT_TYPES = [
     {
         'key': 'privacy_statement',
@@ -26,7 +69,7 @@ DOCUMENT_TYPES = [
         'family': 'collateral',
         'template': 'privacy_statement.docx',
         'attachment_var': 'privacy_statement_doc',
-        'applies': lambda m: bool(m.confirmed_jurisdictions.true_values()),
+        'applies': _applies_privacy_statement,
     },
     {
         'key': 'gap_analysis_memo',
@@ -34,7 +77,7 @@ DOCUMENT_TYPES = [
         'family': 'internal',
         'template': 'gap_analysis_memo.docx',
         'attachment_var': 'gap_analysis_memo_doc',
-        'applies': lambda m: m.gap_analysis['counts']['total'] > 0,
+        'applies': _applies_gap_analysis_memo,
     },
     {
         'key': 'internal_privacy_policy',
@@ -42,7 +85,7 @@ DOCUMENT_TYPES = [
         'family': 'internal',
         'template': 'internal_privacy_policy.docx',
         'attachment_var': 'internal_privacy_policy_doc',
-        'applies': lambda m: True,
+        'applies': _applies_internal_privacy_policy,
     },
     {
         'key': 'ropa',
@@ -50,10 +93,7 @@ DOCUMENT_TYPES = [
         'family': 'internal',
         'template': 'ropa.docx',
         'attachment_var': 'ropa_doc',
-        # Over-inclusive on purpose: generate whenever GDPR applies rather
-        # than trying to detect the <250-employee Art. 30(5) exemption —
-        # attorney judges that, same posture as the gap analysis engine.
-        'applies': lambda m: 'GDPR' in m.confirmed_jurisdictions.true_values(),
+        'applies': _applies_ropa,
     },
     {
         'key': 'dpia_report',
@@ -61,7 +101,7 @@ DOCUMENT_TYPES = [
         'family': 'internal',
         'template': 'dpia_report.docx',
         'attachment_var': 'dpia_report_doc',
-        'applies': lambda m: any(a.is_high_risk for a in m.processing_activities),
+        'applies': _applies_dpia_report,
     },
     {
         'key': 'lia_report',
@@ -69,10 +109,7 @@ DOCUMENT_TYPES = [
         'family': 'internal',
         'template': 'lia_report.docx',
         'attachment_var': 'lia_report_doc',
-        'applies': lambda m: (
-            'GDPR' in m.confirmed_jurisdictions.true_values()
-            and any(a.relies_on_legitimate_interest for a in m.processing_activities)
-        ),
+        'applies': _applies_lia_report,
     },
     {
         'key': 'hipaa_npp',
@@ -80,9 +117,7 @@ DOCUMENT_TYPES = [
         'family': 'collateral',
         'template': 'hipaa_npp.docx',
         'attachment_var': 'hipaa_npp_doc',
-        # Business-associate-only clients don't issue an NPP — only a
-        # covered entity does.
-        'applies': lambda m: m.hipaa.status == 'covered_entity',
+        'applies': _applies_hipaa_npp,
     },
 ]
 
