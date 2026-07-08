@@ -49,6 +49,6 @@ fields:
 question: |
   Add Another Client Matter?
 subquestion: |
-  The documents for **${ matters[i-1].org.name.text }** have been generated.
+  The documents for **${ matters[-1].org.name.text }** have been generated.
   Would you like to prepare documents for another client?
 yesno: matters.there_is_another
