@@ -79,9 +79,8 @@ fields:
   - If a website privacy policy exists, when was it last updated?: matters[i].current_state.last_policy_update
     datatype: date
     required: False
-    show if:
-      variable: matters[i].current_state.existing_docs
-      has: A published privacy policy or notice on their website
+    show if: |
+      matters[i].current_state.existing_docs['A published privacy policy or notice on their website']
 ---
 question: |
   Vendor and Third-Party Relationships — ${ matters[i].org.name.text }

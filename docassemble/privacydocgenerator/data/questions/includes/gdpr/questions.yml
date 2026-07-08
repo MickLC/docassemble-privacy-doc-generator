@@ -111,9 +111,8 @@ fields:
     datatype: yesnoradio
   - If legitimate interests is relied upon, is a Legitimate Interests Assessment (LIA) documented?: matters[i].gdpr.posture.lia_documented
     datatype: yesnoradio
-    show if:
-      variable: matters[i].gdpr.lawful_bases
-      has: Legitimate interests (Article 6(1)(f))
+    show if: |
+      matters[i].gdpr.lawful_bases['Legitimate interests (Article 6(1)(f))']
 ---
 question: |
   GDPR — Compliance Posture: Notices and Consent — ${ matters[i].org.name.text }
@@ -124,9 +123,8 @@ fields:
     datatype: yesnoradio
   - If consent is relied upon, is there a mechanism to record and evidence consent (Article 7)?: matters[i].gdpr.posture.consent_records_maintained
     datatype: yesnoradio
-    show if:
-      variable: matters[i].gdpr.lawful_bases
-      has: Consent (Article 6(1)(a))
+    show if: |
+      matters[i].gdpr.lawful_bases['Consent (Article 6(1)(a))']
 ---
 question: |
   GDPR — Compliance Posture: Rights and Contracts — ${ matters[i].org.name.text }
