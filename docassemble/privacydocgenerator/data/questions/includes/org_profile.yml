@@ -3,7 +3,21 @@
 # ORGANISATION PROFILE
 # Core client organisation details.
 # Universal across all jurisdictions.
+#
+# matters[i].org must be explicitly initialised as a
+# Person before any matters[i].org.* field is asked —
+# plain attribute access doesn't auto-create nested
+# objects, it just raises "matters[i].org is undefined".
+# Person.init() also creates .name (Name, giving the
+# .name.text used here for a single-string org name)
+# and .address (a real Address object, so
+# .org.address.on_one_line() works in review.yml).
 # ===============================================
+code: |
+  matters[i].initializeAttribute('org', Person)
+  matters[i].org_initialized = True
+sets: matters[i].org_initialized
+---
 question: |
   Organisation Details — ${ matters[i].matter_ref }
 subquestion: |

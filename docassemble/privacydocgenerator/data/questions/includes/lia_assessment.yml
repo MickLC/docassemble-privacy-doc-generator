@@ -8,10 +8,13 @@
 # necessity, balancing — plus a conclusion.
 #
 # One level of nesting only (activity.lia.* — plain
-# attributes, auto-vivified DAObjects the same way
-# matters[i].gdpr.dpo.* already works elsewhere in
-# this package) — lower risk than the DPIA risk
-# register's three-deep DAList. Same driving pattern
+# attributes on explicitly-initialised DAObjects, same
+# as matters[i].gdpr.dpo.* elsewhere in this package;
+# activity.lia and its purpose_test/necessity_test/
+# balancing_test children are initialised in
+# processing_activities.yml's derived-fields block) —
+# lower risk than the DPIA risk register's three-deep
+# DAList. Same driving pattern
 # as dpia_assessment.yml: loop the already-gathered
 # processing_activities list by index and ask
 # follow-up questions only on the gated subset.

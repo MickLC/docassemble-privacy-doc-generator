@@ -4,8 +4,17 @@
 # Part 1: Data processing details
 # Part 2: Compliance posture assessment
 # Only presented when VCDPA is confirmed.
+#
+# matters[i].vcdpa (and its .posture child) must be
+# explicitly initialised before any matters[i].vcdpa.* field
+# is asked — see the matching note in org_profile.yml.
 # ===============================================
-
+code: |
+  matters[i].initializeAttribute('vcdpa', DAObject)
+  matters[i].vcdpa.initializeAttribute('posture', DAObject)
+  matters[i].vcdpa_initialized = True
+sets: matters[i].vcdpa_initialized
+---
 # --- PART 1: DATA PROCESSING DETAILS ---
 
 question: |

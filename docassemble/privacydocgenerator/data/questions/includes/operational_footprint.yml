@@ -3,7 +3,16 @@
 # OPERATIONAL FOOTPRINT
 # Drives auto-detection of applicable
 # privacy laws for this client matter.
+#
+# matters[i].footprint must be explicitly initialised
+# before any matters[i].footprint.* field is asked — see
+# the matching note in org_profile.yml.
 # ===============================================
+code: |
+  matters[i].initializeAttribute('footprint', DAObject)
+  matters[i].footprint_initialized = True
+sets: matters[i].footprint_initialized
+---
 question: |
   Operational Footprint — ${ matters[i].org.name.text }
 subquestion: |

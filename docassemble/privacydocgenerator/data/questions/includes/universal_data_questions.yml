@@ -14,6 +14,7 @@
 # processing_activities.yml in main.yml's per-matter flow.
 # ===============================================
 code: |
+  matters[i].initializeAttribute('data', DAObject)
   matters[i].data.initializeAttribute('types_collected', DADict)
   for activity in matters[i].processing_activities:
       for key in activity.data_categories.true_values():

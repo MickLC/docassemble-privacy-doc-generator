@@ -10,7 +10,16 @@
 # matters[i].hipaa.status is requested (see main.yml);
 # the NPP-detail question is only asked for covered
 # entities — business associates don't issue an NPP.
+#
+# matters[i].hipaa must be explicitly initialised before
+# any matters[i].hipaa.* field is asked — see the matching
+# note in org_profile.yml.
 # ===============================================
+code: |
+  matters[i].initializeAttribute('hipaa', DAObject)
+  matters[i].hipaa_initialized = True
+sets: matters[i].hipaa_initialized
+---
 question: |
   HIPAA Applicability — ${ matters[i].org.name.text }
 subquestion: |

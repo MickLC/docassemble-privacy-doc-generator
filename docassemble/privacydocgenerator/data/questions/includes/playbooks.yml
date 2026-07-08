@@ -11,6 +11,14 @@ modules:
   - docassemble.privacydocgenerator.breach_notification_engine
   - docassemble.privacydocgenerator.jurisdiction_engine
 ---
+# matters[i].playbooks must be explicitly initialised before
+# any matters[i].playbooks.* field is asked — see the
+# matching note in org_profile.yml.
+code: |
+  matters[i].initializeAttribute('playbooks', DAObject)
+  matters[i].playbooks_initialized = True
+sets: matters[i].playbooks_initialized
+---
 # DRY hoist: one canonical high-risk-processing flag at the matter level,
 # regardless of which jurisdictions apply, reusing the same requires_dpia()
 # helper gdpr/logic.yml already wires up per-jurisdiction.

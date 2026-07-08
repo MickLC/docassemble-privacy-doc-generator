@@ -4,8 +4,20 @@
 # Part 1: Data processing details
 # Part 2: Compliance posture assessment
 # Only presented when GDPR is confirmed.
+#
+# matters[i].gdpr (and its .posture and .dpo children) must
+# be explicitly initialised before any matters[i].gdpr.*
+# field is asked — see the matching note in org_profile.yml.
+# .dpo is an Individual (not Person) so .dpo.name.first/.last
+# work, matching the fields below.
 # ===============================================
-
+code: |
+  matters[i].initializeAttribute('gdpr', DAObject)
+  matters[i].gdpr.initializeAttribute('posture', DAObject)
+  matters[i].gdpr.initializeAttribute('dpo', Individual)
+  matters[i].gdpr_initialized = True
+sets: matters[i].gdpr_initialized
+---
 # --- PART 1: DATA PROCESSING DETAILS ---
 
 question: |

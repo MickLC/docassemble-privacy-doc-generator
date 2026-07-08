@@ -8,8 +8,15 @@
 #
 # Client assumption: starting from zero.
 # No existing privacy programme assumed.
+#
+# matters[i].current_state must be explicitly initialised
+# before any matters[i].current_state.* field is asked —
+# see the matching note in org_profile.yml.
 # ===============================================
-
+code: |
+  matters[i].initializeAttribute('current_state', DAObject)
+  matters[i].current_state_initialized = True
+sets: matters[i].current_state_initialized
 ---
 question: |
   Data Collection Methods — ${ matters[i].org.name.text }

@@ -162,5 +162,15 @@ code: |
           'GDPR' in matters[i].confirmed_jurisdictions.true_values()
           and activity.lawful_basis.get('Legitimate interests (Article 6(1)(f))', False)
       )
+      # dpia/lia and lia's three sub-tests must be explicitly
+      # initialised here — plain attribute access does not
+      # auto-create nested objects, it just raises "X.dpia is
+      # undefined" the first time dpia_assessment.yml/
+      # lia_assessment.yml reference them (see org_profile.yml).
+      activity.initializeAttribute('dpia', DAObject)
+      activity.initializeAttribute('lia', DAObject)
+      activity.lia.initializeAttribute('purpose_test', DAObject)
+      activity.lia.initializeAttribute('necessity_test', DAObject)
+      activity.lia.initializeAttribute('balancing_test', DAObject)
   matters[i].processing_activities_derived = True
 sets: matters[i].processing_activities_derived

@@ -4,8 +4,17 @@
 # Part 1: Data processing details
 # Part 2: Compliance posture assessment
 # Only presented when CCPA/CPRA is confirmed.
+#
+# matters[i].ccpa (and its .posture child) must be
+# explicitly initialised before any matters[i].ccpa.* field
+# is asked — see the matching note in org_profile.yml.
 # ===============================================
-
+code: |
+  matters[i].initializeAttribute('ccpa', DAObject)
+  matters[i].ccpa.initializeAttribute('posture', DAObject)
+  matters[i].ccpa_initialized = True
+sets: matters[i].ccpa_initialized
+---
 # --- PART 1: DATA PROCESSING DETAILS ---
 
 question: |

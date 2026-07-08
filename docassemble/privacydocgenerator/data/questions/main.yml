@@ -74,6 +74,7 @@ code: |
 code: |
   # --- Organisation profile ---
   matters[i].matter_ref
+  matters[i].org_initialized
   matters[i].org.name.text
   matters[i].org.trading_name
   matters[i].org.industry
@@ -82,6 +83,7 @@ code: |
   matters[i].org.website
 
   # --- Operational footprint ---
+  matters[i].footprint_initialized
   matters[i].footprint.operating_regions
   matters[i].footprint.consumer_regions
   matters[i].footprint.annual_revenue
@@ -97,6 +99,7 @@ code: |
   # Entity-type gate, separate from confirmed_jurisdictions (see
   # hipaa_engine.py / hipaa/logic.yml). NPP-specific details are only
   # asked for covered entities — business associates don't issue an NPP.
+  matters[i].hipaa_initialized
   matters[i].hipaa.status
   if matters[i].hipaa.status == 'covered_entity':
     matters[i].hipaa.privacy_official_name
@@ -106,6 +109,7 @@ code: |
     matters[i].hipaa.involves_psychotherapy_notes
 
   # --- Current state assessment ---
+  matters[i].current_state_initialized
   matters[i].current_state.collection_methods
   matters[i].current_state.storage_systems
   matters[i].current_state.existing_docs
@@ -155,6 +159,7 @@ code: |
 
   # --- GDPR ---
   if 'GDPR' in matters[i].confirmed_jurisdictions.true_values():
+    matters[i].gdpr_initialized
     matters[i].gdpr.lawful_bases
     matters[i].gdpr.processes_special_category
     matters[i].gdpr.international_transfers
@@ -177,6 +182,7 @@ code: |
 
   # --- CCPA/CPRA ---
   if 'CCPA/CPRA' in matters[i].confirmed_jurisdictions.true_values():
+    matters[i].ccpa_initialized
     matters[i].ccpa.sells_pi
     matters[i].ccpa.shares_pi_for_advertising
     matters[i].ccpa.honours_gpc
@@ -196,6 +202,7 @@ code: |
 
   # --- TDPSA ---
   if 'TDPSA' in matters[i].confirmed_jurisdictions.true_values():
+    matters[i].tdpsa_initialized
     matters[i].tdpsa.role
     matters[i].tdpsa.targeted_advertising
     matters[i].tdpsa.sells_data
@@ -212,6 +219,7 @@ code: |
 
   # --- VCDPA ---
   if 'VCDPA' in matters[i].confirmed_jurisdictions.true_values():
+    matters[i].vcdpa_initialized
     matters[i].vcdpa.role
     matters[i].vcdpa.processes_sensitive_data
     matters[i].vcdpa.targeted_advertising
@@ -228,6 +236,7 @@ code: |
     matters[i].vcdpa.posture.third_party_contracts_updated
 
   # --- Playbooks: regulator/DSR/breach contacts, DPIA-trigger flag ---
+  matters[i].playbooks_initialized
   matters[i].requires_privacy_assessment
   matters[i].playbooks.regulator_contact
   matters[i].playbooks.dsr_intake_channel

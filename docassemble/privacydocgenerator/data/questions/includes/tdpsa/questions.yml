@@ -4,8 +4,17 @@
 # Part 1: Data processing details
 # Part 2: Compliance posture assessment
 # Only presented when TDPSA is confirmed.
+#
+# matters[i].tdpsa (and its .posture child) must be
+# explicitly initialised before any matters[i].tdpsa.* field
+# is asked — see the matching note in org_profile.yml.
 # ===============================================
-
+code: |
+  matters[i].initializeAttribute('tdpsa', DAObject)
+  matters[i].tdpsa.initializeAttribute('posture', DAObject)
+  matters[i].tdpsa_initialized = True
+sets: matters[i].tdpsa_initialized
+---
 # --- PART 1: DATA PROCESSING DETAILS ---
 
 question: |
