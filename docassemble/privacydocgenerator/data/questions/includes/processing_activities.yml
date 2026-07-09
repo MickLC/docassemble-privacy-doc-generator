@@ -9,8 +9,11 @@
 # Gathered after data_map.yml since each activity's
 # recipients are selected from matters[i].systems.
 # Same nested-DAList mechanic as matters[i].systems —
-# inner gather loop uses `j`. NEEDS LIVE-SERVER
-# VERIFICATION (see BUILD_PLAN.md).
+# inner gather loop uses `j`. Each activity can also add
+# missing systems/vendors inline (matters[i].systems is not
+# required to be complete before this file runs) — see the
+# new_systems block below, which merges into matters[i].systems.
+# NEEDS LIVE-SERVER VERIFICATION (see BUILD_PLAN.md).
 #
 # matters[i].data.types_collected / matters[i].data.purposes
 # are computed as aggregates of these activities — see the
@@ -24,6 +27,7 @@
 # ===============================================
 modules:
   - docassemble.privacydocgenerator.jurisdiction_engine
+  - docassemble.privacydocgenerator.data_map_objects
 ---
 code: |
   matters[i].initializeAttribute('processing_activities', DAList.using(object_type=DAObject, complete_attribute='complete'))
@@ -98,14 +102,69 @@ fields:
       - Business contacts / vendors
       - Minors
       - Other
+---
+# -----------------------------------------------
+# Inline vendor/system add — lets the attorney add a missing
+# system/vendor right when this activity turns out to need one,
+# instead of having to guess the whole inventory up front in
+# data_map.yml. new_systems is a fresh per-activity DAList (inner
+# loop letter `k`, since `j` is already bound to this activity by
+# processing_activities.gather()); its items are gathered by the
+# same generic SystemOrVendor block used for matters[i].systems
+# (see data_map.yml), then merged into matters[i].systems below —
+# matters[i].systems.gather() itself is never re-invoked.
+# -----------------------------------------------
+code: |
+  matters[i].processing_activities[j].initializeAttribute('new_systems', DAList.using(object_type=SystemOrVendor, complete_attribute='complete'))
+  matters[i].processing_activities[j].new_systems_initialized = True
+sets: matters[i].processing_activities[j].new_systems_initialized
+---
+question: |
+  New system or vendor for this activity?
+subquestion: |
+  Does "**${ matters[i].processing_activities[j].name }**" involve a system
+  or vendor that isn't yet in your Vendor & System Inventory?
+
+  % if matters[i].systems.number() > 0:
+  Already in the inventory: ${ comma_and_list([s.name for s in matters[i].systems]) }.
+  % endif
+
+  If so, add it now — it will be available to select as a recipient below,
+  and will stay in the inventory for later activities too.
+yesno: matters[i].processing_activities[j].new_systems.there_are_any
+---
+question: |
+  Another system or vendor to add for this activity?
+yesno: matters[i].processing_activities[j].new_systems.there_is_another
+---
+code: |
+  for new_sys in matters[i].processing_activities[j].new_systems:
+      merged = matters[i].systems.appendObject()
+      merged.name = new_sys.name
+      merged.category = new_sys.category
+      merged.hosting_location = new_sys.hosting_location
+      merged.data_categories = new_sys.data_categories
+      merged.is_sub_processor = new_sys.is_sub_processor
+      if new_sys.is_sub_processor:
+          merged.sub_processor_of = new_sys.sub_processor_of
+      merged.dpa_in_place = new_sys.dpa_in_place
+      merged.complete = True
+  matters[i].processing_activities[j].new_systems_merged = True
+sets: matters[i].processing_activities[j].new_systems_merged
+---
+question: |
+  Processing Activity — Recipients & Handling
+subquestion: |
+  ${ matters[i].processing_activities[j].name }
+fields:
   - label: Recipients (systems/vendors that receive this data)
     field: matters[i].processing_activities[j].recipients
     datatype: object_multiselect
     choices: matters[i].systems
     required: False
     hint: |
-      Selected from the Vendor & System Inventory. If a system is missing,
-      go back and add it there.
+      Selected from the Vendor & System Inventory, including anything you
+      just added above.
   - Does this activity involve transferring data internationally (outside the client's home jurisdiction)?: matters[i].processing_activities[j].international_transfer
     datatype: yesnoradio
   - Transfer mechanism used: matters[i].processing_activities[j].transfer_mechanism
@@ -146,12 +205,20 @@ fields:
       - Pseudonymisation or anonymisation
       - Other
 ---
-# Referencing .name forces the whole fields question above to run (all
-# its fields live on one screen), then marks the item complete so
-# gather() advances to there_is_another instead of treating a blank
-# item as already done.
+# Sequences the per-activity screens in order. Each reference here is
+# the FIRST field of its bundled screen only (never a show-if-gated
+# field standalone) — one reference pulls in that whole screen,
+# hidden fields included, the same way .name already pulls in the
+# first screen. This is deliberate: naming a conditionally-hidden
+# field on its own here would reproduce the bug fixed in main.yml
+# where matters[i].ccpa.posture.opt_out_mechanism_in_place was
+# required unconditionally despite being behind a show if.
 code: |
   matters[i].processing_activities[j].name
+  matters[i].processing_activities[j].new_systems_initialized
+  matters[i].processing_activities[j].new_systems.gather()
+  matters[i].processing_activities[j].new_systems_merged
+  matters[i].processing_activities[j].recipients
   matters[i].processing_activities[j].complete = True
 sets: matters[i].processing_activities[j].complete
 ---

@@ -14,34 +14,54 @@
 # `j` because `i` is already consumed by matters.gather().
 #
 # complete_attribute='complete' is required (same as the
-# outer `matters` list in main.yml) because object_type is
-# a plain DAObject: gather() only runs the there_are_any/
-# there_is_another existence loop, and a plain DAObject
-# reduces to text with no undefined attributes, so gather()
-# considers each new item complete on its own — the field
-# screen below never gets triggered without an explicit
-# complete_attribute forcing it.
+# outer `matters` list in main.yml) because object_type
+# (SystemOrVendor, a bare DAObject subclass — see
+# data_map_objects.py) reduces to text with no undefined
+# attributes on its own, so gather() would otherwise consider
+# each new item complete immediately — the field screen below
+# never gets triggered without an explicit complete_attribute
+# forcing it.
+#
+# The item fields/completeness blocks below use `generic
+# object: SystemOrVendor` rather than matters[i].systems[j].* so
+# the same blocks also gather
+# matters[i].processing_activities[j].new_systems[k] — systems
+# added inline while describing a processing activity (see
+# processing_activities.yml), which then get merged into this
+# list via appendObject().
 # ===============================================
+modules:
+  - docassemble.privacydocgenerator.data_map_objects
+---
 code: |
-  matters[i].initializeAttribute('systems', DAList.using(object_type=DAObject, complete_attribute='complete'))
+  matters[i].initializeAttribute('systems', DAList.using(object_type=SystemOrVendor, complete_attribute='complete'))
   matters[i].systems_initialized = True
 sets: matters[i].systems_initialized
 ---
 question: |
   Vendor & System Inventory — ${ matters[i].org.name.text }
 subquestion: |
-  List every system, vendor, or storage location where the client's
-  personal data lives — cloud platforms, on-premise servers, physical
-  records, and any third party that receives data. This becomes each
-  processing activity's list of recipients.
+  If you already know some of the systems, vendors, or storage locations
+  where personal data lives — cloud platforms, on-premise servers, physical
+  records, any third party that receives data — list them here now.
+
+  This is optional. You'll also get the chance to add a system or vendor on
+  the fly later, right when you're describing the processing activity that
+  uses it, so there's no need to guess or try to get the full inventory
+  right up front.
 yesno: matters[i].systems.there_are_any
 ---
+# Shared by matters[i].systems[j] (this file) and by
+# matters[i].processing_activities[j].new_systems[k] (processing_activities.yml)
+# — any SystemOrVendor item, wherever it's gathered, is asked with this same
+# block. Only `x` is bound here; do not reference matters[i]/i/j.
+generic object: SystemOrVendor
 question: |
-  System or Vendor — ${ matters[i].org.name.text }
+  System or Vendor
 fields:
-  - Name of the system, vendor, or storage location: matters[i].systems[j].name
+  - Name of the system, vendor, or storage location: x.name
     hint: e.g. Salesforce, AWS S3, Stripe, on-premise file server
-  - Category: matters[i].systems[j].category
+  - Category: x.category
     datatype: dropdown
     choices:
       - Cloud CRM
@@ -54,10 +74,10 @@ fields:
       - Payment processor
       - Physical records
       - Other
-  - Hosting location (country or region): matters[i].systems[j].hosting_location
+  - Hosting location (country or region): x.hosting_location
     hint: e.g. United States, European Union, unknown/multi-region
   - label: Which data categories live here?
-    field: matters[i].systems[j].data_categories
+    field: x.data_categories
     datatype: checkboxes
     choices:
       - Identifiers (name, email, phone, address)
@@ -79,23 +99,25 @@ fields:
       - Sexual orientation or gender identity
       - Criminal conviction data
       - Other
-  - Is this vendor a sub-processor of another system already listed?: matters[i].systems[j].is_sub_processor
+  - Is this vendor a sub-processor of another system already listed?: x.is_sub_processor
     datatype: yesnoradio
-  - If yes, which system is it a sub-processor of?: matters[i].systems[j].sub_processor_of
-    show if: matters[i].systems[j].is_sub_processor
+  - If yes, which system is it a sub-processor of?: x.sub_processor_of
+    show if: x.is_sub_processor
     required: False
     hint: e.g. "Runs on AWS, which is already listed above"
-  - Is a Data Processing Agreement (DPA) in place with this vendor?: matters[i].systems[j].dpa_in_place
+  - Is a Data Processing Agreement (DPA) in place with this vendor?: x.dpa_in_place
     datatype: yesnoradio
 ---
 # Referencing .name forces the whole fields question above to run (all
 # its fields live on one screen), then marks the item complete so
 # gather() advances to there_is_another instead of treating a blank
-# item as already done.
+# item as already done. Generic, so it covers matters[i].systems[j] and
+# matters[i].processing_activities[j].new_systems[k] alike.
+generic object: SystemOrVendor
 code: |
-  matters[i].systems[j].name
-  matters[i].systems[j].complete = True
-sets: matters[i].systems[j].complete
+  x.name
+  x.complete = True
+sets: x.complete
 ---
 question: |
   Another system or vendor to add?

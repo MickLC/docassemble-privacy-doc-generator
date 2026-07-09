@@ -130,10 +130,14 @@ code: |
   matters[i].current_state.uses_automated_decisions
 
   # --- Data map: vendor/system inventory ---
-  # Must come before processing_activities: each activity's recipients
-  # are selected from this list. systems_initialized runs the
-  # initializeAttribute code block that makes matters[i].systems an
-  # actual DAList before .gather() is called on it.
+  # Optional upfront pass — comes before processing_activities so any
+  # systems already known can be entered now, but the attorney can skip
+  # this (there_are_any = No) and instead add systems inline while
+  # describing each processing activity (see the new_systems/merge
+  # mechanic in processing_activities.yml, which appends into this same
+  # list). systems_initialized runs the initializeAttribute code block
+  # that makes matters[i].systems an actual DAList before .gather() is
+  # called on it.
   matters[i].systems_initialized
   matters[i].systems.gather()
 
@@ -198,7 +202,8 @@ code: |
     matters[i].ccpa.posture.notice_at_collection
     matters[i].ccpa.posture.policy_updated_12mo
     matters[i].ccpa.posture.policy_disclosures_complete
-    matters[i].ccpa.posture.opt_out_mechanism_in_place
+    if matters[i].ccpa.sells_pi:
+      matters[i].ccpa.posture.opt_out_mechanism_in_place
     matters[i].ccpa.posture.gpc_honoured
     matters[i].ccpa.posture.rights_procedure_45_days
     matters[i].ccpa.posture.service_provider_contracts_compliant
@@ -217,7 +222,8 @@ code: |
     matters[i].tdpsa.posture.privacy_notice_provided
     matters[i].tdpsa.posture.rights_procedure_45_days
     matters[i].tdpsa.posture.appeals_procedure
-    matters[i].tdpsa.posture.opt_out_mechanism_in_place
+    if matters[i].tdpsa.include_opt_out_section:
+      matters[i].tdpsa.posture.opt_out_mechanism_in_place
     matters[i].tdpsa.posture.uoom_supported
     matters[i].tdpsa.posture.dpa_contracts_in_place
     matters[i].tdpsa.posture.dpa_assessments_completed
@@ -234,7 +240,8 @@ code: |
     matters[i].vcdpa.posture.privacy_notice_provided
     matters[i].vcdpa.posture.rights_procedure_45_days
     matters[i].vcdpa.posture.appeals_procedure
-    matters[i].vcdpa.posture.opt_out_mechanism_in_place
+    if matters[i].vcdpa.include_opt_out_section:
+      matters[i].vcdpa.posture.opt_out_mechanism_in_place
     matters[i].vcdpa.posture.sensitive_data_consent_obtained
     matters[i].vcdpa.posture.dpa_contracts_in_place
     matters[i].vcdpa.posture.pia_assessments_completed
