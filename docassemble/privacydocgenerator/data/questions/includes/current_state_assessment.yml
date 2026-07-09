@@ -51,6 +51,7 @@ fields:
       - Cloud-based CRM (e.g. Salesforce, HubSpot)
       - Cloud file storage (e.g. Google Drive, OneDrive, Dropbox)
       - Cloud database (e.g. AWS, Azure, GCP)
+      - Self-managed / rented servers (VPS, dedicated hosting)
       - On-premise servers
       - Employee laptops or devices
       - Email systems (e.g. Gmail, Outlook)

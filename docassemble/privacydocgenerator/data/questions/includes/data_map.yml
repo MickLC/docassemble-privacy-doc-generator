@@ -67,6 +67,7 @@ fields:
       - Cloud CRM
       - Cloud file storage
       - Cloud database
+      - Self-managed / rented servers (VPS, dedicated hosting)
       - On-premise servers
       - Employee devices
       - Email system
