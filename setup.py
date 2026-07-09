@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='docassemble-privacy-doc-generator',
-    version='0.1.1',
+    version='0.1.1a',
     description='A Docassemble package for generating GDPR-compliant privacy policy documents',
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
