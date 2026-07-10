@@ -202,9 +202,11 @@ code: |
     matters[i].ccpa.posture.notice_at_collection
     matters[i].ccpa.posture.policy_updated_12mo
     matters[i].ccpa.posture.policy_disclosures_complete
-    if matters[i].ccpa.sells_pi:
+    if matters[i].ccpa.include_opt_out_section:
       matters[i].ccpa.posture.opt_out_mechanism_in_place
     matters[i].ccpa.posture.gpc_honoured
+    if matters[i].ccpa.include_spi_limit_link:
+      matters[i].ccpa.posture.spi_limit_mechanism_in_place
     matters[i].ccpa.posture.rights_procedure_45_days
     matters[i].ccpa.posture.service_provider_contracts_compliant
     matters[i].ccpa.posture.staff_trained

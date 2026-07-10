@@ -108,14 +108,12 @@ question: |
 fields:
   - Is a "Do Not Sell or Share My Personal Information" link or mechanism in place (§1798.120)?: matters[i].ccpa.posture.opt_out_mechanism_in_place
     datatype: yesnoradio
-    show if:
-      variable: matters[i].ccpa.sells_pi
-      is: True
+    show if: matters[i].ccpa.include_opt_out_section
   - Is the Global Privacy Control (GPC) signal honoured automatically?: matters[i].ccpa.posture.gpc_honoured
     datatype: yesnoradio
   - Is a "Limit Use of My Sensitive Personal Information" link or mechanism in place (§1798.121)?: matters[i].ccpa.posture.spi_limit_mechanism_in_place
     datatype: yesnoradio
-    show if: matters[i].ccpa.uses_spi_beyond_primary
+    show if: matters[i].ccpa.include_spi_limit_link
   - Is there a documented procedure to respond to consumer rights requests within 45 days (§1798.105)?: matters[i].ccpa.posture.rights_procedure_45_days
     datatype: yesnoradio
 ---
