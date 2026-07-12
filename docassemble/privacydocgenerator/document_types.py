@@ -39,10 +39,9 @@ def _applies_internal_privacy_policy(m):
 
 
 def _applies_ropa(m):
-    # Over-inclusive on purpose: generate whenever GDPR applies rather than
-    # trying to detect the <250-employee Art. 30(5) exemption — attorney
-    # judges that, same posture as the gap analysis engine.
-    return 'GDPR' in m.confirmed_jurisdictions.true_values()
+    # RoPA is generated for every matter as a recordkeeping best practice,
+    # not only where GDPR Art. 30 makes it a legal requirement.
+    return True
 
 
 def _applies_dpia_report(m):

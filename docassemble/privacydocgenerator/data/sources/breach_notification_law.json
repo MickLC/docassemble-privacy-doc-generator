@@ -1,7 +1,7 @@
 {
   "_meta": {
-    "status": "PLACEHOLDER — Phase 2 plumbing stub, not attorney-verified",
-    "note": "Only CA, TX, and VA are stubbed here to prove the state selection -> lookup -> template plumbing end-to-end. Phase 5 backfills full coverage of CA, CO, CT, DE, IA, IN, KY, MD, MN, MT, NE, NH, NJ, OR, RI, TN, TX, UT, VA with attorney-verified statute citations, deadlines, and thresholds. Do not rely on any value below for actual client advice until Phase 5 marks it verified."
+    "status": "Phase 5 in progress, not attorney-verified",
+    "note": "CA, TX, and VA are general-knowledge placeholders (not sourced from any statute text on file) that proved the state selection -> lookup -> template plumbing end-to-end. CO was added from the actual C.R.S. Title 6 text found in .claude/skills/Privacy/context/text/NAmerica/United States/States/CO/crs2024-title-06.txt — a materially different (higher) confidence level than CA/TX/VA, though still not attorney-verified. The remaining 15 target states (CT, DE, IA, IN, KY, MD, MN, MT, NE, NH, NJ, OR, RI, TN, UT) are intentionally left out of this file rather than filled from general knowledge: the Privacy skill folder only contains those states' comprehensive consumer privacy acts, not their separate breach notification statutes, so there is no source text to extract from yet. Iowa's SF262.txt cross-references its breach statute as Iowa Code §715C.1 in passing but doesn't contain its text. Full coverage target remains CA, CO, CT, DE, IA, IN, KY, MD, MN, MT, NE, NH, NJ, OR, RI, TN, TX, UT, VA (19 states) — add each state's actual breach notification statute text to the skill folder to unblock it. Do not rely on any value below for actual client advice until marked verified."
   },
   "CA": {
     "state": "California",
@@ -26,5 +26,14 @@
     "ag_notice_threshold": "PLACEHOLDER — verify (notice to Virginia AG generally required regardless of numeric threshold when notice to residents is required)",
     "consumer_notice_required": "PLACEHOLDER — verify substitute notice provisions",
     "verified": false
+  },
+  "CO": {
+    "state": "Colorado",
+    "statute_citation": "C.R.S. §6-1-716",
+    "notification_deadline": "Most expedient time possible and without unreasonable delay, but not later than 30 days after the date of determination that a security breach occurred.",
+    "ag_notice_threshold": "Notice to the Colorado Attorney General required within the same 30-day window if the breach is reasonably believed to have affected 500 or more Colorado residents.",
+    "consumer_notice_required": "Written, telephonic, or electronic notice to affected residents; substitute notice (email + conspicuous website posting + notice to major statewide media) available only if notice cost would exceed $250,000, the affected class exceeds 250,000 Colorado residents, or the covered entity lacks sufficient contact information. Notice to nationwide consumer reporting agencies also required if more than 1,000 Colorado residents are notified.",
+    "verified": false,
+    "source_note": "Extracted directly from the full C.R.S. Title 6 text in the skill folder (crs2024-title-06.txt, §6-1-716) — grounded in actual statutory text, not general recollection. Still needs attorney sign-off before client use, per _meta."
   }
 }
