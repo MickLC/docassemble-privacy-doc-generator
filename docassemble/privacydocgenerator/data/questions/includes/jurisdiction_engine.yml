@@ -13,7 +13,8 @@ code: |
     annual_revenue=matters[i].footprint.annual_revenue,
     consumer_volume=matters[i].footprint.consumer_volume,
     sells_data=matters[i].footprint.sells_data,
-    is_sba_small_business=matters[i].footprint.is_sba_small_business
+    is_sba_small_business=matters[i].footprint.is_sba_small_business,
+    processes_sensitive_data=matters[i].footprint.processes_sensitive_data
   )
 sets: matters[i].auto_detected_jurisdictions
 ---
@@ -26,7 +27,7 @@ subquestion: |
   the selection to reflect your professional judgment.
 
   % for j in matters[i].auto_detected_jurisdictions:
-  **${ j['name'] }** — ${ j['reason'] }
+  **${ j['name'] }** — ${ j['reason'] }${ '' if j['in_effect'] else ' *(not yet in effect — effective ' + j['effective_date'] + ')*' }
 
   % endfor
 fields:
@@ -38,5 +39,21 @@ fields:
       - CCPA/CPRA
       - TDPSA
       - VCDPA
+      - Colorado Privacy Act
+      - Connecticut Data Privacy Act
+      - Delaware Personal Data Privacy Act
+      - Iowa Consumer Data Protection Act
+      - Indiana Consumer Data Protection Act
+      - Kentucky Consumer Data Protection Act
+      - Maryland Online Data Privacy Act
+      - Minnesota Consumer Data Privacy Act
+      - Montana Consumer Data Privacy Act
+      - Nebraska Data Privacy Act
+      - New Hampshire Expectation of Privacy Act
+      - New Jersey Data Privacy Act
+      - Oregon Consumer Privacy Act
+      - Rhode Island Data Transparency and Privacy Protection Act
+      - Tennessee Information Protection Act
+      - Utah Consumer Privacy Act
     default: |
       [j['name'] for j in matters[i].auto_detected_jurisdictions if j['applies']]

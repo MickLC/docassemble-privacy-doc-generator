@@ -917,6 +917,38 @@ def analyse_dpia_lia_gaps(matter):
 
 
 # -----------------------------------------------
+# Upcoming obligations (enacted but not-yet-effective laws)
+# -----------------------------------------------
+def get_upcoming_obligations(matter):
+    """
+    Returns jurisdictions that jurisdiction_engine.py detected as applicable
+    (`applies: True`) but not yet in force (`in_effect: False`) as of today,
+    sorted soonest-first by effective date.
+
+    Deliberately independent of `matter.confirmed_jurisdictions` — the whole
+    point of this list is to flag a law before the attorney would otherwise
+    have reason to add it to the active jurisdiction set, so a client isn't
+    caught flat-footed on the day it takes effect. Kept separate from the
+    Must Fix / Should Fix / Consider Fixing severity buckets in
+    `run_gap_analysis()` since these aren't gaps against a current legal
+    duty yet.
+
+    Returns a list of dicts: {'name', 'effective_date', 'reason'}.
+    """
+    upcoming = [
+        {
+            'name': j['name'],
+            'effective_date': j['effective_date'],
+            'reason': j['reason'],
+        }
+        for j in matter.auto_detected_jurisdictions
+        if j['applies'] and not j['in_effect']
+    ]
+    upcoming.sort(key=lambda j: j['effective_date'])
+    return upcoming
+
+
+# -----------------------------------------------
 # Master gap analysis function (called from YAML)
 # -----------------------------------------------
 def run_gap_analysis(matter):
@@ -937,7 +969,10 @@ def run_gap_analysis(matter):
           'must_fix': int,
           'should_fix': int,
           'consider': int
-      }
+      },
+      'upcoming_obligations': [
+          {'name': str, 'effective_date': 'YYYY-MM-DD', 'reason': str}, ...
+      ]
     }
     """
     confirmed = matter.confirmed_jurisdictions.true_values()
@@ -984,4 +1019,5 @@ def run_gap_analysis(matter):
         'by_jurisdiction': by_jurisdiction,
         'by_severity': by_severity,
         'counts': counts,
+        'upcoming_obligations': get_upcoming_obligations(matter),
     }
