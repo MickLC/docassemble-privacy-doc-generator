@@ -1,0 +1,105 @@
+---
+# ===============================================
+# UTAH CONSUMER PRIVACY ACT (UCPA) — SPECIFIC QUESTIONS
+# Utah Code §§ 13-61-101 to -404
+# Part 1: Data processing details
+# Part 2: Compliance posture assessment
+# Only presented when Utah Consumer Privacy Act is confirmed.
+#
+# BESPOKE (not the shared state_privacy template) — Phase 3 step 4 research
+# found Utah has the most materially divergent rights model of any state
+# reviewed: no correction right, no profiling opt-out, deletion scoped only
+# to consumer-provided data, an opt-out (not opt-in) sensitive-data model,
+# NO appeals process anywhere in the statute, and NO Data Protection
+# Assessment requirement of any kind. Reusing VCDPA's shape here would ask
+# about rights, consents, and assessments Utah law does not require, and
+# would omit UCPA's actual opt-out sensitive-data framing. See
+# state_privacy_acts.py's module docstring / BUILD_PLAN_PHASE6.md for the
+# full classification.
+# ===============================================
+code: |
+  matters[i].initializeAttribute('ut', DAObject)
+  matters[i].ut.initializeAttribute('posture', DAObject)
+  matters[i].ut_initialized = True
+sets: matters[i].ut_initialized
+---
+# --- PART 1: DATA PROCESSING DETAILS ---
+
+question: |
+  Utah UCPA — Processing Roles — ${ matters[i].org.name.text }
+fields:
+  - Under the UCPA, the client primarily acts as a: matters[i].ut.role
+    choices:
+      - Controller
+      - Processor
+      - Both
+---
+question: |
+  Utah UCPA — Sensitive Data — ${ matters[i].org.name.text }
+subquestion: |
+  Like Iowa, Utah does **not** require opt-in consent for sensitive data —
+  a controller must instead give clear notice and an opportunity to opt
+  out before processing it (except COPPA-consistent handling for known
+  children) (Utah Code § 13-61-302(3)).
+fields:
+  - Does the client process sensitive data as defined by the UCPA?: matters[i].ut.processes_sensitive_data
+    datatype: yesnoradio
+  - Has the client provided clear notice and an opt-out opportunity for sensitive data processing?: matters[i].ut.sensitive_data_opt_out_provided
+    datatype: yesnoradio
+    show if: matters[i].ut.processes_sensitive_data
+---
+question: |
+  Utah UCPA — Targeted Advertising and Sale — ${ matters[i].org.name.text }
+subquestion: |
+  UCPA's consumer rights are narrower than most peer states: no right to
+  correct inaccurate data, no right to opt out of profiling, and the
+  deletion/portability rights cover only data the consumer directly
+  provided to the controller (Utah Code § 13-61-201).
+fields:
+  - Does the client process personal data for targeted advertising?: matters[i].ut.targeted_advertising
+    datatype: yesnoradio
+  - Does the client sell personal data?: matters[i].ut.sells_data
+    datatype: yesnoradio
+  - URL for Utah consumer rights requests: matters[i].ut.rights_request_url
+    required: False
+under: |
+  Utah Code §§ 13-61-301 to -305 impose no Data Protection Assessment
+  requirement of any kind — no assessment questions are asked for this
+  jurisdiction. The statute also has **no appeals process** for denied
+  consumer requests — no posture question is asked about one below.
+
+# --- PART 2: UCPA COMPLIANCE POSTURE ---
+
+---
+question: |
+  Utah UCPA — Compliance Posture: Notices and Rights — ${ matters[i].org.name.text }
+subquestion: |
+  Answer based on what the client **currently has in place**. Note: the
+  45-day response clock is suspended entirely if the controller reasonably
+  suspects fraud and cannot authenticate the request before the period
+  would expire (§ 13-61-203(2)(d)).
+fields:
+  - Is a privacy notice provided that meets UCPA requirements (§ 13-61-302)?: matters[i].ut.posture.privacy_notice_provided
+    datatype: yesnoradio
+  - Is there a documented procedure to respond to consumer rights requests within 45 days (§ 13-61-203(2))?: matters[i].ut.posture.rights_procedure_45_days
+    datatype: yesnoradio
+---
+question: |
+  Utah UCPA — Compliance Posture: Opt-Out and Sensitive Data — ${ matters[i].org.name.text }
+fields:
+  - Is a clear opt-out mechanism for targeted advertising and data sale in place (§ 13-61-302)?: matters[i].ut.posture.opt_out_mechanism_in_place
+    datatype: yesnoradio
+    show if: matters[i].ut.include_opt_out_section
+  - Is clear notice and an opt-out opportunity provided before processing sensitive data (§ 13-61-302(3))?: matters[i].ut.posture.sensitive_data_notice_in_place
+    datatype: yesnoradio
+    show if: matters[i].ut.processes_sensitive_data
+---
+question: |
+  Utah UCPA — Compliance Posture: Contracts — ${ matters[i].org.name.text }
+subquestion: |
+  Note: Utah's 30-day AG cure period is standing and non-expiring
+  (§ 13-61-402(3)) — a durable, permanent enforcement precondition, unlike
+  most peer states where cure periods have sunset or become discretionary.
+fields:
+  - Have contracts with third parties been reviewed and updated for UCPA compliance (§ 13-61-301)?: matters[i].ut.posture.third_party_contracts_updated
+    datatype: yesnoradio

@@ -1,0 +1,99 @@
+---
+# ===============================================
+# IOWA CONSUMER DATA PROTECTION ACT (ICDPA) — SPECIFIC QUESTIONS
+# Iowa Code ch. 715D
+# Part 1: Data processing details
+# Part 2: Compliance posture assessment
+# Only presented when Iowa Consumer Data Protection Act is confirmed.
+#
+# BESPOKE (not the shared state_privacy template) — Phase 3 step 4 research
+# found Iowa's rights model is actually NARROWER than VCDPA's: no
+# correction right, no opt-out of targeted advertising or profiling (sale
+# only), an opt-out (not opt-in) consent model for sensitive data, a
+# 90-day response deadline, and NO Data Protection Assessment requirement
+# of any kind. Reusing VCDPA's shape here would ask about consents and
+# assessments Iowa law does not require. See state_privacy_acts.py's
+# module docstring / BUILD_PLAN_PHASE6.md for the full classification.
+# ===============================================
+code: |
+  matters[i].initializeAttribute('ia', DAObject)
+  matters[i].ia.initializeAttribute('posture', DAObject)
+  matters[i].ia_initialized = True
+sets: matters[i].ia_initialized
+---
+# --- PART 1: DATA PROCESSING DETAILS ---
+
+question: |
+  Iowa ICDPA — Processing Roles — ${ matters[i].org.name.text }
+fields:
+  - Under the Iowa CDPA, the client primarily acts as a: matters[i].ia.role
+    choices:
+      - Controller
+      - Processor
+      - Both
+---
+question: |
+  Iowa ICDPA — Sensitive Data — ${ matters[i].org.name.text }
+subquestion: |
+  Unlike most comprehensive state privacy acts, Iowa Code ch. 715D does
+  **not** require opt-in consent for sensitive data — a controller must
+  instead give clear notice and an opportunity to opt out before processing
+  it (Iowa Code § 715D.4(2)).
+fields:
+  - Does the client process sensitive data as defined by Iowa Code ch. 715D?: matters[i].ia.processes_sensitive_data
+    datatype: yesnoradio
+  - Has the client provided clear notice and an opt-out opportunity for sensitive data processing?: matters[i].ia.sensitive_data_opt_out_provided
+    datatype: yesnoradio
+    show if: matters[i].ia.processes_sensitive_data
+---
+question: |
+  Iowa ICDPA — Sale of Personal Data — ${ matters[i].org.name.text }
+subquestion: |
+  Iowa consumers may opt out of the **sale** of personal data only —
+  unlike most peer states, Iowa's Act grants no right to opt out of
+  targeted advertising or profiling, and no right to correct inaccurate
+  data (Iowa Code § 715D.3(1)).
+fields:
+  - Does the client sell personal data?: matters[i].ia.sells_data
+    datatype: yesnoradio
+  - URL for Iowa consumer rights requests: matters[i].ia.rights_request_url
+    required: False
+under: |
+  Iowa Code ch. 715D has no Data Protection Assessment requirement of any
+  kind — no assessment questions are asked for this jurisdiction.
+
+# --- PART 2: ICDPA COMPLIANCE POSTURE ---
+
+---
+question: |
+  Iowa ICDPA — Compliance Posture: Notices and Rights — ${ matters[i].org.name.text }
+subquestion: |
+  Answer based on what the client **currently has in place**. Note Iowa's
+  response deadline is 90 days, not the 45 days used by most peer states.
+fields:
+  - Is a privacy notice provided that meets Iowa CDPA requirements (Iowa Code § 715D.4)?: matters[i].ia.posture.privacy_notice_provided
+    datatype: yesnoradio
+  - Is there a documented procedure to respond to consumer rights requests within 90 days (Iowa Code § 715D.3(2)(a))?: matters[i].ia.posture.rights_procedure_90_days
+    datatype: yesnoradio
+  - Is an appeals procedure in place for denied consumer requests, with a 60-day decision window (Iowa Code § 715D.3(3))?: matters[i].ia.posture.appeals_procedure
+    datatype: yesnoradio
+---
+question: |
+  Iowa ICDPA — Compliance Posture: Sale Opt-Out and Sensitive Data — ${ matters[i].org.name.text }
+fields:
+  - Is a clear mechanism for opting out of the sale of personal data in place (Iowa Code § 715D.3(1))?: matters[i].ia.posture.opt_out_mechanism_in_place
+    datatype: yesnoradio
+    show if: matters[i].ia.include_opt_out_section
+  - Is clear notice and an opt-out opportunity provided before processing sensitive data (Iowa Code § 715D.4(2))?: matters[i].ia.posture.sensitive_data_notice_in_place
+    datatype: yesnoradio
+    show if: matters[i].ia.processes_sensitive_data
+---
+question: |
+  Iowa ICDPA — Compliance Posture: Contracts — ${ matters[i].org.name.text }
+subquestion: |
+  Note: Iowa's 90-day AG cure right is permanent, with no sunset date
+  (Iowa Code § 715D.8) — unlike most peer states, this cure period does
+  not expire.
+fields:
+  - Have contracts with third parties been reviewed and updated for Iowa CDPA compliance (Iowa Code § 715D.5)?: matters[i].ia.posture.third_party_contracts_updated
+    datatype: yesnoradio

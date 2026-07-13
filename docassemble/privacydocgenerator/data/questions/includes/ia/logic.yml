@@ -1,0 +1,13 @@
+---
+# ===============================================
+# IOWA ICDPA CLAUSE LOGIC
+# ===============================================
+code: |
+  matters[i].ia.include_opt_out_section = matters[i].ia.sells_data
+sets: matters[i].ia.include_opt_out_section
+---
+code: |
+  matters[i].ia.is_controller = (
+      matters[i].ia.role in ['Controller', 'Both']
+  )
+sets: matters[i].ia.is_controller

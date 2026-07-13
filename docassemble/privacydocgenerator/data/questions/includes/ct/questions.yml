@@ -1,0 +1,155 @@
+---
+# ===============================================
+# CONNECTICUT DATA PRIVACY ACT (CTDPA) — SPECIFIC QUESTIONS
+# Conn. Gen. Stat. Ch. 743jj, §§ 42-515 et seq., as amended by P.A. 25-113
+# (eff. 2026-07-01, already in force)
+# Part 1: Data processing details
+# Part 2: Compliance posture assessment
+# Only presented when Connecticut Data Privacy Act is confirmed.
+#
+# BESPOKE (not the shared state_privacy template) — Phase 3 step 4 research
+# found CT layers on a Kids Code minor-account right and a mandatory
+# universal opt-out signal already in force. See state_privacy_acts.py's
+# module docstring / BUILD_PLAN_PHASE6.md for the full classification.
+#
+# KNOWN SOURCE GAP: the operative text of Conn. Gen. Stat. § 42-526
+# (Consumer Health Data controller duties) is cited repeatedly in the
+# source file on file but was never itself reproduced there. Per this
+# project's extraction-from-source-only convention, the CHD-specific
+# compliance fields below are a placeholder flag only — they do NOT model
+# the actual CHD substantive restrictions (which likely mirror Maryland's
+# necessity-based/geofencing regime, but that must not be assumed without
+# reading § 42-526 directly). Source that section before treating CT's CHD
+# posture as complete.
+# ===============================================
+code: |
+  matters[i].initializeAttribute('ct', DAObject)
+  matters[i].ct.initializeAttribute('posture', DAObject)
+  matters[i].ct_initialized = True
+sets: matters[i].ct_initialized
+---
+# --- PART 1: DATA PROCESSING DETAILS ---
+
+question: |
+  Connecticut CTDPA — Processing Roles — ${ matters[i].org.name.text }
+fields:
+  - Under the CTDPA, the client primarily acts as a: matters[i].ct.role
+    choices:
+      - Controller
+      - Processor
+      - Both
+---
+question: |
+  Connecticut CTDPA — Sensitive Data — ${ matters[i].org.name.text }
+subquestion: |
+  The CTDPA requires opt-in consent before processing sensitive data
+  (Conn. Gen. Stat. § 42-520(a)(4)). CT's sensitive-data definition is
+  broader than most peer states — it separately includes "consumer health
+  data" (§ 42-515(38)(B)) and, as of the 2026 amendment, financial account
+  numbers and government ID numbers.
+fields:
+  - Does the client process sensitive data as defined by the CTDPA?: matters[i].ct.processes_sensitive_data
+    datatype: yesnoradio
+  - Has the client obtained opt-in consent for sensitive data processing?: matters[i].ct.sensitive_data_consent
+    datatype: yesnoradio
+    show if: matters[i].ct.processes_sensitive_data
+  - Does the client process "consumer health data" as CT defines it (e.g., reproductive/sexual health, gender-affirming care information)?: matters[i].ct.processes_consumer_health_data
+    datatype: yesnoradio
+---
+question: |
+  Connecticut CTDPA — Targeted Advertising and Profiling — ${ matters[i].org.name.text }
+subquestion: |
+  As of the 2026 amendment, CT consumers also have a right to a list of
+  third parties data was disclosed to and a right to question/review
+  profiling-based decisions (§ 42-518(a), amended).
+fields:
+  - Does the client process personal data for targeted advertising?: matters[i].ct.targeted_advertising
+    datatype: yesnoradio
+  - Does the client sell personal data?: matters[i].ct.sells_data
+    datatype: yesnoradio
+  - Does the client use personal data for profiling producing significant decisions?: matters[i].ct.profiling_opt_out
+    datatype: yesnoradio
+  - URL for Connecticut consumer rights requests: matters[i].ct.rights_request_url
+    required: False
+---
+question: |
+  Connecticut CTDPA — Kids Code — ${ matters[i].org.name.text }
+subquestion: |
+  Connecticut's "Kids Code" requires social media platforms to unpublish a
+  minor's account within 15 business days, and delete it within 45 business
+  days, of a qualifying request (§ 42-528). Enforced as an unfair trade
+  practice; no private right of action.
+fields:
+  - Does the client operate a social media platform as defined by Connecticut's Kids Code?: matters[i].ct.operates_social_media_platform
+    datatype: yesnoradio
+---
+question: |
+  Connecticut CTDPA — Data Protection Assessments — ${ matters[i].org.name.text }
+subquestion: |
+  As of the 2026 amendment, CT requires a **separate** impact assessment
+  specifically for profiling used in decisions producing legal or similarly
+  significant effects, in addition to the standard Data Protection
+  Assessment (§ 42-522(c)).
+fields:
+  - Has the client completed required Data Protection Assessments?: matters[i].ct.pia_completed
+    datatype: yesnoradio
+  - Activities covered by assessments: matters[i].ct.pia_activities
+    datatype: checkboxes
+    show if: matters[i].ct.pia_completed
+    choices:
+      - Targeted advertising
+      - Sale of personal data
+      - Profiling with significant effects
+      - Processing sensitive data
+      - Processing children's data
+  - Has a separate impact assessment been completed for profiling used in legal or similarly significant-effect decisions?: matters[i].ct.profiling_impact_assessment_completed
+    datatype: yesnoradio
+    show if: matters[i].ct.profiling_opt_out
+
+# --- PART 2: CTDPA COMPLIANCE POSTURE ---
+
+---
+question: |
+  Connecticut CTDPA — Compliance Posture: Notices and Rights — ${ matters[i].org.name.text }
+subquestion: |
+  Answer based on what the client **currently has in place**.
+fields:
+  - Is a privacy notice provided that meets CTDPA requirements (§ 42-520)?: matters[i].ct.posture.privacy_notice_provided
+    datatype: yesnoradio
+  - Is there a documented procedure to respond to consumer rights requests within 45 days (§ 42-518(c)(1))?: matters[i].ct.posture.rights_procedure_45_days
+    datatype: yesnoradio
+  - Is an appeals procedure in place, with a 60-day decision window (§ 42-518(d))?: matters[i].ct.posture.appeals_procedure
+    datatype: yesnoradio
+---
+question: |
+  Connecticut CTDPA — Compliance Posture: Opt-Out, Sensitive Data, and Kids Code — ${ matters[i].org.name.text }
+fields:
+  - Is a clear opt-out mechanism for targeted advertising, data sale, and profiling in place (§ 42-520)?: matters[i].ct.posture.opt_out_mechanism_in_place
+    datatype: yesnoradio
+    show if: matters[i].ct.include_opt_out_section
+  - Does the client honor a universal opt-out preference signal, already mandatory since 2025-01-01 (§ 42-520(e)(1)(A)(ii))?: matters[i].ct.posture.uoom_honored
+    datatype: yesnoradio
+    show if: matters[i].ct.include_opt_out_section
+  - Is opt-in consent obtained before processing sensitive data (§ 42-520(a)(4))?: matters[i].ct.posture.sensitive_data_consent_obtained
+    datatype: yesnoradio
+    show if: matters[i].ct.processes_sensitive_data
+  - Is a procedure in place to unpublish a minor's account within 15 business days and delete it within 45 business days of a qualifying request (§ 42-528)?: matters[i].ct.posture.kids_code_procedure_in_place
+    datatype: yesnoradio
+    show if: matters[i].ct.operates_social_media_platform
+  - "PLACEHOLDER — Consumer Health Data compliance status (see file header: § 42-526's operative text is not yet sourced; this does not reflect a verified compliance determination)": matters[i].ct.posture.chd_compliance_note
+    datatype: area
+    required: False
+    show if: matters[i].ct.processes_consumer_health_data
+---
+question: |
+  Connecticut CTDPA — Compliance Posture: Assessments and Contracts — ${ matters[i].org.name.text }
+subquestion: |
+  Note: CT's 30-day cure period sunset 2024-12-31 — the AG now has
+  discretion to offer cure, but no obligation to do so. Factor this into
+  risk discussions.
+fields:
+  - Have required Data Protection Assessments been completed, including the separate profiling impact assessment where applicable (§ 42-522)?: matters[i].ct.posture.pia_assessments_completed
+    datatype: yesnoradio
+    show if: matters[i].ct.pia_completed
+  - Have contracts with third parties been reviewed and updated for CTDPA compliance (§ 42-521)?: matters[i].ct.posture.third_party_contracts_updated
+    datatype: yesnoradio

@@ -19,6 +19,7 @@ include:
   - docassemble.privacydocgenerator:data/questions/includes/hipaa/logic.yml
   - docassemble.privacydocgenerator:data/questions/includes/current_state_assessment.yml
   - docassemble.privacydocgenerator:data/questions/includes/data_map.yml
+  - docassemble.privacydocgenerator:data/questions/includes/business_functions.yml
   - docassemble.privacydocgenerator:data/questions/includes/processing_activities.yml
   - docassemble.privacydocgenerator:data/questions/includes/dpia_assessment.yml
   - docassemble.privacydocgenerator:data/questions/includes/lia_assessment.yml
@@ -31,6 +32,18 @@ include:
   - docassemble.privacydocgenerator:data/questions/includes/tdpsa/logic.yml
   - docassemble.privacydocgenerator:data/questions/includes/vcdpa/questions.yml
   - docassemble.privacydocgenerator:data/questions/includes/vcdpa/logic.yml
+  - docassemble.privacydocgenerator:data/questions/includes/state_privacy/questions.yml
+  - docassemble.privacydocgenerator:data/questions/includes/state_privacy/logic.yml
+  - docassemble.privacydocgenerator:data/questions/includes/md/questions.yml
+  - docassemble.privacydocgenerator:data/questions/includes/md/logic.yml
+  - docassemble.privacydocgenerator:data/questions/includes/mn/questions.yml
+  - docassemble.privacydocgenerator:data/questions/includes/mn/logic.yml
+  - docassemble.privacydocgenerator:data/questions/includes/ct/questions.yml
+  - docassemble.privacydocgenerator:data/questions/includes/ct/logic.yml
+  - docassemble.privacydocgenerator:data/questions/includes/ia/questions.yml
+  - docassemble.privacydocgenerator:data/questions/includes/ia/logic.yml
+  - docassemble.privacydocgenerator:data/questions/includes/ut/questions.yml
+  - docassemble.privacydocgenerator:data/questions/includes/ut/logic.yml
   - docassemble.privacydocgenerator:data/questions/includes/playbooks.yml
   - docassemble.privacydocgenerator:data/questions/includes/review.yml
   - docassemble.privacydocgenerator:data/questions/includes/documents/attachments.yml
@@ -43,6 +56,7 @@ modules:
   - docassemble.privacydocgenerator.content_library
   - docassemble.privacydocgenerator.breach_notification_engine
   - docassemble.privacydocgenerator.hipaa_engine
+  - docassemble.privacydocgenerator.state_privacy_acts
 ---
 objects:
   # complete_attribute='complete' is what makes matters.gather() actually
@@ -145,7 +159,42 @@ code: |
   # The central data model every downstream document reads from. Must
   # come before the universal data aggregate below, since
   # data.types_collected/data.purposes are unions across these activities.
+  # Initialized here (before business_functions) rather than left to
+  # processing_activities.yml's own init block, since business_functions'
+  # seeding code needs the list to already exist to append into.
   matters[i].processing_activities_initialized
+
+  # --- Business functions: conversational front door (Phase 4) ---
+  # Every biz.* variable is referenced individually here, ahead of
+  # business_functions_seeded, so all of it is fully resolved before that
+  # code block runs. That code block calls
+  # matters[i].processing_activities.appendObject() with side effects; if
+  # any biz.* reference inside it were still undefined when it first ran,
+  # docassemble would ask that question, restart the whole code block from
+  # the top, and append duplicate processing-activity entries. Referencing
+  # everything here first — plain variable lookups, no side effects — is
+  # safe to restart and matches the existing if-guarded pattern used for
+  # matters[i].gdpr.dpo.* below.
+  matters[i].biz_initialized
+  matters[i].biz.payroll_applies
+  if matters[i].biz.payroll_applies:
+    matters[i].biz.payroll_data_types
+    matters[i].biz.payroll_job_applicants
+  matters[i].biz.sales_applies
+  if matters[i].biz.sales_applies:
+    matters[i].biz.sales_data_types
+  matters[i].biz.marketing_applies
+  if matters[i].biz.marketing_applies:
+    matters[i].biz.marketing_data_types
+    matters[i].biz.marketing_targeted_ads
+  matters[i].biz.support_applies
+  if matters[i].biz.support_applies:
+    matters[i].biz.support_data_types
+  matters[i].biz.webit_applies
+  if matters[i].biz.webit_applies:
+    matters[i].biz.webit_data_types
+  matters[i].business_functions_seeded
+
   matters[i].processing_activities.gather()
   matters[i].processing_activities_derived
 
@@ -237,6 +286,174 @@ code: |
     matters[i].vcdpa.posture.sensitive_data_consent_obtained
     matters[i].vcdpa.posture.pia_assessments_completed
     matters[i].vcdpa.posture.third_party_contracts_updated
+
+  # --- Shared-model state privacy acts (Phase 3 step 4 REUSE/ADAPT bucket:
+  # IN, KY, CO, DE, MT, NE, NH, NJ, OR, RI, TN) ---
+  # See docassemble/privacydocgenerator/state_privacy_acts.py for the
+  # per-state citation/UOOM config this generic-object question set reads,
+  # and BUILD_PLAN_PHASE6.md Phase 3 step 4 for the reuse-vs-bespoke
+  # classification across all 16 new jurisdictions.
+  matters[i].initializeAttribute('state_acts', DADict.using(object_type=StatePrivacyAct))
+  for _spa_name in applicable_state_privacy_acts(matters[i]):
+    matters[i].state_acts[_spa_name].jurisdiction_name = _spa_name
+    matters[i].state_acts[_spa_name].matter = matters[i]
+    matters[i].state_acts[_spa_name].initializeAttribute('posture', DAObject)
+    matters[i].state_acts[_spa_name].role
+    matters[i].state_acts[_spa_name].processes_sensitive_data
+    if matters[i].state_acts[_spa_name].processes_sensitive_data:
+      matters[i].state_acts[_spa_name].sensitive_data_consent
+    matters[i].state_acts[_spa_name].targeted_advertising
+    matters[i].state_acts[_spa_name].sells_data
+    matters[i].state_acts[_spa_name].profiling_opt_out
+    matters[i].state_acts[_spa_name].pia_completed
+    if matters[i].state_acts[_spa_name].pia_completed:
+      matters[i].state_acts[_spa_name].pia_activities
+    matters[i].state_acts[_spa_name].posture.privacy_notice_provided
+    matters[i].state_acts[_spa_name].posture.rights_procedure_45_days
+    matters[i].state_acts[_spa_name].posture.appeals_procedure
+    if matters[i].state_acts[_spa_name].include_opt_out_section:
+      matters[i].state_acts[_spa_name].posture.opt_out_mechanism_in_place
+    if matters[i].state_acts[_spa_name].requires_uoom:
+      matters[i].state_acts[_spa_name].posture.uoom_honored
+    if matters[i].state_acts[_spa_name].processes_sensitive_data:
+      matters[i].state_acts[_spa_name].posture.sensitive_data_consent_obtained
+    if matters[i].state_acts[_spa_name].pia_completed:
+      matters[i].state_acts[_spa_name].posture.pia_assessments_completed
+    matters[i].state_acts[_spa_name].posture.third_party_contracts_updated
+
+  # --- Maryland Online Data Privacy Act (bespoke — Phase 3 step 4) ---
+  if 'Maryland Online Data Privacy Act' in matters[i].confirmed_jurisdictions.true_values():
+    matters[i].md_initialized
+    matters[i].md.role
+    matters[i].md.processes_sensitive_data
+    if matters[i].md.processes_sensitive_data:
+      matters[i].md.sensitive_data_necessity_only
+      matters[i].md.sells_sensitive_data
+    matters[i].md.processes_consumer_health_data
+    if matters[i].md.processes_consumer_health_data:
+      matters[i].md.uses_health_facility_geofencing
+    matters[i].md.targeted_advertising
+    matters[i].md.sells_data
+    matters[i].md.profiling_opt_out
+    matters[i].md.knows_processes_under_18
+    matters[i].md.pia_completed
+    if matters[i].md.pia_completed:
+      matters[i].md.pia_activities
+    matters[i].md.posture.privacy_notice_provided
+    matters[i].md.posture.rights_procedure_45_days
+    matters[i].md.posture.appeals_procedure
+    if matters[i].md.include_opt_out_section:
+      matters[i].md.posture.opt_out_mechanism_in_place
+      matters[i].md.posture.uoom_honored
+    if matters[i].md.processes_sensitive_data:
+      matters[i].md.posture.sensitive_data_restriction_honored
+    if matters[i].md.uses_health_facility_geofencing:
+      matters[i].md.posture.geofencing_restriction_honored
+    if matters[i].md.knows_processes_under_18:
+      matters[i].md.posture.under_18_restriction_honored
+    if matters[i].md.pia_completed:
+      matters[i].md.posture.pia_assessments_completed
+    matters[i].md.posture.third_party_contracts_updated
+
+  # --- Minnesota Consumer Data Privacy Act (bespoke — Phase 3 step 4) ---
+  if 'Minnesota Consumer Data Privacy Act' in matters[i].confirmed_jurisdictions.true_values():
+    matters[i].mn_initialized
+    matters[i].mn.role
+    matters[i].mn.processes_sensitive_data
+    if matters[i].mn.processes_sensitive_data:
+      matters[i].mn.sensitive_data_consent
+    matters[i].mn.processes_teen_13_16_data
+    if matters[i].mn.processes_teen_13_16_data:
+      matters[i].mn.teen_ad_sale_consent_obtained
+    matters[i].mn.targeted_advertising
+    matters[i].mn.sells_data
+    matters[i].mn.profiling_opt_out
+    matters[i].mn.pia_completed
+    if matters[i].mn.pia_completed:
+      matters[i].mn.pia_activities
+    matters[i].mn.has_documented_privacy_program
+    matters[i].mn.posture.privacy_notice_provided
+    matters[i].mn.posture.rights_procedure_45_days
+    matters[i].mn.posture.appeals_procedure
+    if matters[i].mn.include_opt_out_section:
+      matters[i].mn.posture.opt_out_mechanism_in_place
+      matters[i].mn.posture.uoom_honored
+    if matters[i].mn.profiling_opt_out:
+      matters[i].mn.posture.profiling_explanation_procedure_in_place
+    if matters[i].mn.processes_sensitive_data:
+      matters[i].mn.posture.sensitive_data_consent_obtained
+    if matters[i].mn.pia_completed:
+      matters[i].mn.posture.pia_assessments_completed
+    if matters[i].mn.has_documented_privacy_program:
+      matters[i].mn.posture.privacy_program_documented
+    matters[i].mn.posture.third_party_contracts_updated
+
+  # --- Connecticut Data Privacy Act (bespoke — Phase 3 step 4) ---
+  if 'Connecticut Data Privacy Act' in matters[i].confirmed_jurisdictions.true_values():
+    matters[i].ct_initialized
+    matters[i].ct.role
+    matters[i].ct.processes_sensitive_data
+    if matters[i].ct.processes_sensitive_data:
+      matters[i].ct.sensitive_data_consent
+    matters[i].ct.processes_consumer_health_data
+    matters[i].ct.targeted_advertising
+    matters[i].ct.sells_data
+    matters[i].ct.profiling_opt_out
+    matters[i].ct.operates_social_media_platform
+    matters[i].ct.pia_completed
+    if matters[i].ct.pia_completed:
+      matters[i].ct.pia_activities
+    if matters[i].ct.profiling_opt_out:
+      matters[i].ct.profiling_impact_assessment_completed
+    matters[i].ct.posture.privacy_notice_provided
+    matters[i].ct.posture.rights_procedure_45_days
+    matters[i].ct.posture.appeals_procedure
+    if matters[i].ct.include_opt_out_section:
+      matters[i].ct.posture.opt_out_mechanism_in_place
+      matters[i].ct.posture.uoom_honored
+    if matters[i].ct.processes_sensitive_data:
+      matters[i].ct.posture.sensitive_data_consent_obtained
+    if matters[i].ct.operates_social_media_platform:
+      matters[i].ct.posture.kids_code_procedure_in_place
+    if matters[i].ct.processes_consumer_health_data:
+      matters[i].ct.posture.chd_compliance_note
+    if matters[i].ct.pia_completed:
+      matters[i].ct.posture.pia_assessments_completed
+    matters[i].ct.posture.third_party_contracts_updated
+
+  # --- Iowa Consumer Data Protection Act (bespoke — Phase 3 step 4) ---
+  if 'Iowa Consumer Data Protection Act' in matters[i].confirmed_jurisdictions.true_values():
+    matters[i].ia_initialized
+    matters[i].ia.role
+    matters[i].ia.processes_sensitive_data
+    if matters[i].ia.processes_sensitive_data:
+      matters[i].ia.sensitive_data_opt_out_provided
+    matters[i].ia.sells_data
+    matters[i].ia.posture.privacy_notice_provided
+    matters[i].ia.posture.rights_procedure_90_days
+    matters[i].ia.posture.appeals_procedure
+    if matters[i].ia.include_opt_out_section:
+      matters[i].ia.posture.opt_out_mechanism_in_place
+    if matters[i].ia.processes_sensitive_data:
+      matters[i].ia.posture.sensitive_data_notice_in_place
+    matters[i].ia.posture.third_party_contracts_updated
+
+  # --- Utah Consumer Privacy Act (bespoke — Phase 3 step 4) ---
+  if 'Utah Consumer Privacy Act' in matters[i].confirmed_jurisdictions.true_values():
+    matters[i].ut_initialized
+    matters[i].ut.role
+    matters[i].ut.processes_sensitive_data
+    if matters[i].ut.processes_sensitive_data:
+      matters[i].ut.sensitive_data_opt_out_provided
+    matters[i].ut.targeted_advertising
+    matters[i].ut.sells_data
+    matters[i].ut.posture.privacy_notice_provided
+    matters[i].ut.posture.rights_procedure_45_days
+    if matters[i].ut.include_opt_out_section:
+      matters[i].ut.posture.opt_out_mechanism_in_place
+    if matters[i].ut.processes_sensitive_data:
+      matters[i].ut.posture.sensitive_data_notice_in_place
+    matters[i].ut.posture.third_party_contracts_updated
 
   # --- Playbooks: regulator/DSR/breach contacts, DPIA-trigger flag ---
   matters[i].playbooks_initialized

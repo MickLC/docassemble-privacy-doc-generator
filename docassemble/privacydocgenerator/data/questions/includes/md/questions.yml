@@ -1,0 +1,155 @@
+---
+# ===============================================
+# MARYLAND ONLINE DATA PRIVACY ACT (MODPA) — SPECIFIC QUESTIONS
+# Md. Code Com. Law §§14-4701 to -4714, eff. 2025-10-01
+# Part 1: Data processing details
+# Part 2: Compliance posture assessment
+# Only presented when Maryland Online Data Privacy Act is confirmed.
+#
+# BESPOKE (not the shared state_privacy template) — Phase 3 step 4 research
+# found MD's rights/obligations diverge materially from VCDPA's model:
+# a necessity-based (not consent-based) sensitive-data restriction, a
+# standalone Consumer Health Data/geofencing regime, a mandatory universal
+# opt-out signal, an under-18 ad/sale ban, and an added consumer right.
+# See state_privacy_acts.py's module docstring / BUILD_PLAN_PHASE6.md for
+# the full reuse-vs-bespoke classification across all 16 new jurisdictions.
+# ===============================================
+code: |
+  matters[i].initializeAttribute('md', DAObject)
+  matters[i].md.initializeAttribute('posture', DAObject)
+  matters[i].md_initialized = True
+sets: matters[i].md_initialized
+---
+# --- PART 1: DATA PROCESSING DETAILS ---
+
+question: |
+  Maryland MODPA — Processing Roles — ${ matters[i].org.name.text }
+fields:
+  - Under MODPA, the client primarily acts as a: matters[i].md.role
+    choices:
+      - Controller
+      - Processor
+      - Both
+---
+question: |
+  Maryland MODPA — Sensitive Data — ${ matters[i].org.name.text }
+subquestion: |
+  MODPA does **not** use an opt-in consent model for sensitive data. Instead,
+  a controller may not collect, process, or share sensitive data **except
+  where strictly necessary** to provide a specific product or service the
+  consumer requested, and may **never sell** sensitive data at all
+  (Md. Code Com. Law § 14-4707(a)(1)-(2)).
+fields:
+  - Does the client process sensitive data as defined by MODPA?: matters[i].md.processes_sensitive_data
+    datatype: yesnoradio
+  - Is sensitive data processing limited to what is strictly necessary to provide a product or service the consumer requested?: matters[i].md.sensitive_data_necessity_only
+    datatype: yesnoradio
+    show if: matters[i].md.processes_sensitive_data
+  - Does the client sell sensitive data (prohibited under MODPA regardless of consent)?: matters[i].md.sells_sensitive_data
+    datatype: yesnoradio
+    show if: matters[i].md.processes_sensitive_data
+---
+question: |
+  Maryland MODPA — Consumer Health Data — ${ matters[i].org.name.text }
+subquestion: |
+  MODPA defines a "consumer health data" subcategory (e.g., reproductive or
+  sexual health information, gender-affirming care) with its own standalone
+  restrictions: a ban on employee/contractor access without confidentiality
+  duties, and a ban on geofencing within 1,750 feet of a mental-health or
+  reproductive/sexual-health facility for tracking or notification purposes
+  (Md. Code Com. Law § 14-4704).
+fields:
+  - Does the client process "consumer health data" as MODPA defines it?: matters[i].md.processes_consumer_health_data
+    datatype: yesnoradio
+  - Does the client use geofencing technology near mental-health or reproductive/sexual-health facilities to track consumers or send them notifications?: matters[i].md.uses_health_facility_geofencing
+    datatype: yesnoradio
+    show if: matters[i].md.processes_consumer_health_data
+---
+question: |
+  Maryland MODPA — Targeted Advertising, Sale, and Profiling — ${ matters[i].org.name.text }
+subquestion: |
+  MODPA bans targeted advertising to, and sale of data of, any consumer the
+  client knew or should have known is under 18 — broader than the
+  under-13 "known child" standard used by most peer states
+  (Md. Code Com. Law § 14-4707(a)(4)-(5)).
+fields:
+  - Does the client process personal data for targeted advertising?: matters[i].md.targeted_advertising
+    datatype: yesnoradio
+  - Does the client sell personal data?: matters[i].md.sells_data
+    datatype: yesnoradio
+  - Does the client use personal data for profiling producing significant decisions?: matters[i].md.profiling_opt_out
+    datatype: yesnoradio
+  - Does the client know, or should it reasonably know, that it processes data of consumers under 18?: matters[i].md.knows_processes_under_18
+    datatype: yesnoradio
+  - URL for Maryland consumer rights requests: matters[i].md.rights_request_url
+    required: False
+---
+question: |
+  Maryland MODPA — Data Protection Assessments — ${ matters[i].org.name.text }
+subquestion: |
+  MODPA requires an assessment for **each algorithm used**, in addition to
+  the standard trigger categories (Md. Code Com. Law § 14-4710(b)).
+fields:
+  - Has the client completed required Data Protection Assessments?: matters[i].md.pia_completed
+    datatype: yesnoradio
+  - Activities covered by assessments: matters[i].md.pia_activities
+    datatype: checkboxes
+    show if: matters[i].md.pia_completed
+    choices:
+      - Targeted advertising
+      - Sale of personal data
+      - Profiling with significant effects
+      - Processing sensitive data
+      - Algorithmic decision-making processes
+
+# --- PART 2: MODPA COMPLIANCE POSTURE ---
+
+---
+question: |
+  Maryland MODPA — Compliance Posture: Notices and Rights — ${ matters[i].org.name.text }
+subquestion: |
+  Answer based on what the client **currently has in place**. MODPA also
+  grants consumers a right to a list of categories of third parties data
+  was disclosed to (§ 14-4705(b)(6)), and allows a guardian or conservator
+  (not just a parent of a minor) to exercise rights on an incapacitated
+  consumer's behalf (§ 14-4705(d)(3)) — confirm both are covered by the
+  client's rights-request procedure.
+fields:
+  - Is a privacy notice provided that meets MODPA requirements (§ 14-4705)?: matters[i].md.posture.privacy_notice_provided
+    datatype: yesnoradio
+  - Is there a documented procedure to respond to consumer rights requests within 45 days (§ 14-4705(e)(2))?: matters[i].md.posture.rights_procedure_45_days
+    datatype: yesnoradio
+  - Is an appeals procedure in place for denied consumer requests, with a 60-day decision window (§ 14-4705(f))?: matters[i].md.posture.appeals_procedure
+    datatype: yesnoradio
+---
+question: |
+  Maryland MODPA — Compliance Posture: Opt-Out and Sensitive Data — ${ matters[i].org.name.text }
+fields:
+  - Is a clear opt-out mechanism for targeted advertising, data sale, and profiling in place (§ 14-4707)?: matters[i].md.posture.opt_out_mechanism_in_place
+    datatype: yesnoradio
+    show if: matters[i].md.include_opt_out_section
+  - Does the client honor a universal opt-out preference signal, per MODPA's mandatory technical specifications (§ 14-4707(f)(3)-(5))?: matters[i].md.posture.uoom_honored
+    datatype: yesnoradio
+    show if: matters[i].md.include_opt_out_section
+  - Is sensitive data processing confirmed limited to strict necessity, with no sale of sensitive data (§ 14-4707(a)(1)-(2))?: matters[i].md.posture.sensitive_data_restriction_honored
+    datatype: yesnoradio
+    show if: matters[i].md.processes_sensitive_data
+  - Has geofencing near mental-health or reproductive/sexual-health facilities been discontinued (§ 14-4704)?: matters[i].md.posture.geofencing_restriction_honored
+    datatype: yesnoradio
+    show if: matters[i].md.uses_health_facility_geofencing
+  - Has targeted advertising to, and sale of data of, known-under-18 consumers been stopped (§ 14-4707(a)(4)-(5))?: matters[i].md.posture.under_18_restriction_honored
+    datatype: yesnoradio
+    show if: matters[i].md.knows_processes_under_18
+---
+question: |
+  Maryland MODPA — Compliance Posture: Assessments and Contracts — ${ matters[i].org.name.text }
+subquestion: |
+  Note: MODPA's cure right is discretionary (the Division decides whether
+  cure is possible) and sunsets 2027-04-01 (§ 14-4714) — don't assume a
+  guaranteed cure period past that date.
+fields:
+  - Have required Data Protection Assessments, including per-algorithm assessments, been completed (§ 14-4710)?: matters[i].md.posture.pia_assessments_completed
+    datatype: yesnoradio
+    show if: matters[i].md.pia_completed
+  - Have contracts with third parties been reviewed and updated for MODPA compliance (§ 14-4708)?: matters[i].md.posture.third_party_contracts_updated
+    datatype: yesnoradio

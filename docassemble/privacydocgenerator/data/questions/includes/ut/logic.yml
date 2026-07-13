@@ -1,0 +1,15 @@
+---
+# ===============================================
+# UTAH UCPA CLAUSE LOGIC
+# ===============================================
+code: |
+  matters[i].ut.include_opt_out_section = (
+      matters[i].ut.targeted_advertising or matters[i].ut.sells_data
+  )
+sets: matters[i].ut.include_opt_out_section
+---
+code: |
+  matters[i].ut.is_controller = (
+      matters[i].ut.role in ['Controller', 'Both']
+  )
+sets: matters[i].ut.is_controller

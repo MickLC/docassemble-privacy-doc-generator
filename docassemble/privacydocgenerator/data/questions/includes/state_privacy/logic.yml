@@ -1,0 +1,14 @@
+---
+# ===============================================
+# SHARED STATE PRIVACY ACT LOGIC ("standard model" tier)
+# Generic-object logic applying to every StatePrivacyAct instance —
+# see state_privacy_acts.py for which 11 states use this shared file
+# vs. their own dedicated questions.yml/logic.yml (BUILD_PLAN_PHASE6.md
+# Phase 3 step 4).
+# ===============================================
+generic object: StatePrivacyAct
+code: |
+  x.include_opt_out_section = (
+      x.targeted_advertising or x.sells_data or x.profiling_opt_out
+  )
+sets: x.include_opt_out_section

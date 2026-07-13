@@ -1,0 +1,17 @@
+---
+# ===============================================
+# MARYLAND MODPA CLAUSE LOGIC
+# ===============================================
+code: |
+  matters[i].md.include_opt_out_section = (
+      matters[i].md.targeted_advertising or
+      matters[i].md.sells_data or
+      matters[i].md.profiling_opt_out
+  )
+sets: matters[i].md.include_opt_out_section
+---
+code: |
+  matters[i].md.is_controller = (
+      matters[i].md.role in ['Controller', 'Both']
+  )
+sets: matters[i].md.is_controller

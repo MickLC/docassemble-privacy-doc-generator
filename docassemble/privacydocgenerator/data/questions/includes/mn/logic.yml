@@ -1,0 +1,17 @@
+---
+# ===============================================
+# MINNESOTA MCDPA CLAUSE LOGIC
+# ===============================================
+code: |
+  matters[i].mn.include_opt_out_section = (
+      matters[i].mn.targeted_advertising or
+      matters[i].mn.sells_data or
+      matters[i].mn.profiling_opt_out
+  )
+sets: matters[i].mn.include_opt_out_section
+---
+code: |
+  matters[i].mn.is_controller = (
+      matters[i].mn.role in ['Controller', 'Both']
+  )
+sets: matters[i].mn.is_controller

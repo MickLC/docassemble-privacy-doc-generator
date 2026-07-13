@@ -24,6 +24,15 @@
 # as matters[i].systems in data_map.yml): object_type is a
 # plain DAObject, so without it gather() treats each new item
 # as immediately complete and never shows the fields screen.
+#
+# The name/purposes/data_categories/data_subject_categories
+# fields below carry a `default:` sourced from
+# suggested_name/suggested_purposes/suggested_data_categories/
+# suggested_data_subject_categories — set (only on items
+# pre-seeded via a business function) by business_functions.yml,
+# included just before this file in main.yml. Manually-added
+# items never get those suggested_* attributes at all, hence
+# the hasattr() guard in each default: block.
 # ===============================================
 modules:
   - docassemble.privacydocgenerator.jurisdiction_engine
@@ -49,12 +58,16 @@ question: |
 fields:
   - Activity name: matters[i].processing_activities[j].name
     hint: e.g. Email marketing to customers, Payroll processing
+    default: |
+      matters[i].processing_activities[j].suggested_name if hasattr(matters[i].processing_activities[j], 'suggested_name') else ''
   - Description: matters[i].processing_activities[j].description
     input type: area
     required: False
   - label: Purpose(s) of this activity
     field: matters[i].processing_activities[j].purposes
     datatype: checkboxes
+    default: |
+      matters[i].processing_activities[j].suggested_purposes if hasattr(matters[i].processing_activities[j], 'suggested_purposes') else []
     choices:
       - Providing products or services
       - Processing payments and transactions
@@ -71,6 +84,8 @@ fields:
   - label: Categor(y/ies) of data involved
     field: matters[i].processing_activities[j].data_categories
     datatype: checkboxes
+    default: |
+      matters[i].processing_activities[j].suggested_data_categories if hasattr(matters[i].processing_activities[j], 'suggested_data_categories') else []
     choices:
       - Identifiers (name, email, phone, address)
       - Government-issued ID numbers
@@ -94,6 +109,8 @@ fields:
   - label: Categor(y/ies) of data subjects involved
     field: matters[i].processing_activities[j].data_subject_categories
     datatype: checkboxes
+    default: |
+      matters[i].processing_activities[j].suggested_data_subject_categories if hasattr(matters[i].processing_activities[j], 'suggested_data_subject_categories') else []
     choices:
       - Customers
       - Employees

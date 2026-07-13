@@ -1,0 +1,123 @@
+---
+# ===============================================
+# SHARED STATE PRIVACY ACT QUESTIONS ("standard model" tier)
+# One generic-object question set covering 11 states whose rights/
+# obligations track VCDPA's model closely enough to reuse (BUILD_PLAN_PHASE6.md
+# Phase 3 step 4): IN, KY, CO, DE, MT, NE, NH, NJ, OR, RI, TN.
+#
+# `x` is bound to whichever StatePrivacyAct instance is being gathered
+# (see state_privacy_acts.py). `x.jurisdiction_name` and `x.matter` are set
+# by the per-matter init loop in main.yml before any of these are asked.
+# Citations/UOOM/notes are pulled per-state from STATE_PRIVACY_CONFIG so
+# this single file renders correct statute references for every state.
+#
+# Maryland, Minnesota, Connecticut, Iowa, and Utah are NOT part of this
+# tier — their rights/obligations diverge enough (see build plan) to need
+# their own dedicated question/logic files instead.
+# ===============================================
+
+# --- PART 1: DATA PROCESSING DETAILS ---
+
+---
+generic object: StatePrivacyAct
+question: |
+  ${ x.full_name } — Processing Roles — ${ x.matter.org.name.text }
+fields:
+  - Under the ${ x.full_name }, the client primarily acts as a: x.role
+    choices:
+      - Controller
+      - Processor
+      - Both
+---
+generic object: StatePrivacyAct
+question: |
+  ${ x.full_name } — Sensitive Data and Consent — ${ x.matter.org.name.text }
+subquestion: |
+  The ${ x.full_name } requires opt-in consent before processing sensitive
+  data (${ x.citation('sensitive_data') }).
+fields:
+  - Does the client process sensitive data as defined by the ${ x.full_name }?: x.processes_sensitive_data
+    datatype: yesnoradio
+  - Has the client obtained opt-in consent for sensitive data processing?: x.sensitive_data_consent
+    datatype: yesnoradio
+    show if: x.processes_sensitive_data
+---
+generic object: StatePrivacyAct
+question: |
+  ${ x.full_name } — Targeted Advertising and Profiling — ${ x.matter.org.name.text }
+fields:
+  - Does the client process personal data for targeted advertising?: x.targeted_advertising
+    datatype: yesnoradio
+  - Does the client sell personal data?: x.sells_data
+    datatype: yesnoradio
+  - Does the client use personal data for profiling producing significant decisions?: x.profiling_opt_out
+    datatype: yesnoradio
+  - URL for ${ x.code } consumer rights requests: x.rights_request_url
+    required: False
+---
+generic object: StatePrivacyAct
+question: |
+  ${ x.full_name } — Data Protection Assessments — ${ x.matter.org.name.text }
+subquestion: |
+  Controllers must conduct Data Protection Assessments for high-risk
+  processing under the ${ x.full_name } (${ x.citation('dpa') }).
+
+  % if x.notes:
+  **Attorney notes for ${ x.code } — verify manually:**
+
+  % for note in x.notes:
+  * ${ note }
+  % endfor
+  % endif
+fields:
+  - Has the client completed required Data Protection Assessments?: x.pia_completed
+    datatype: yesnoradio
+  - Activities covered by assessments: x.pia_activities
+    datatype: checkboxes
+    show if: x.pia_completed
+    choices:
+      - Targeted advertising
+      - Sale of personal data
+      - Profiling with significant effects
+      - Processing sensitive data
+      - Processing children's data
+
+# --- PART 2: STATE PRIVACY ACT COMPLIANCE POSTURE ---
+
+---
+generic object: StatePrivacyAct
+question: |
+  ${ x.full_name } — Compliance Posture: Notices and Rights — ${ x.matter.org.name.text }
+subquestion: |
+  Answer based on what the client **currently has in place**.
+fields:
+  - Is a privacy notice provided that meets ${ x.full_name } requirements (${ x.citation('notice') })?: x.posture.privacy_notice_provided
+    datatype: yesnoradio
+  - Is there a documented procedure to respond to consumer rights requests within 45 days (${ x.citation('deadline') })?: x.posture.rights_procedure_45_days
+    datatype: yesnoradio
+  - Is an appeals procedure in place for denied consumer requests (${ x.citation('appeal') })?: x.posture.appeals_procedure
+    datatype: yesnoradio
+---
+generic object: StatePrivacyAct
+question: |
+  ${ x.full_name } — Compliance Posture: Opt-Out and Sensitive Data — ${ x.matter.org.name.text }
+fields:
+  - Is a clear opt-out mechanism for targeted advertising, data sale, and profiling in place (${ x.citation('notice') })?: x.posture.opt_out_mechanism_in_place
+    datatype: yesnoradio
+    show if: x.include_opt_out_section
+  - Does the client honor a universal opt-out preference signal (${ x.uoom_citation })?: x.posture.uoom_honored
+    datatype: yesnoradio
+    show if: x.requires_uoom
+  - Is opt-in consent obtained before processing sensitive data (${ x.citation('sensitive_data') })?: x.posture.sensitive_data_consent_obtained
+    datatype: yesnoradio
+    show if: x.processes_sensitive_data
+---
+generic object: StatePrivacyAct
+question: |
+  ${ x.full_name } — Compliance Posture: Contracts and Assessments — ${ x.matter.org.name.text }
+fields:
+  - Have required Data Protection Assessments been completed (${ x.citation('dpa') })?: x.posture.pia_assessments_completed
+    datatype: yesnoradio
+    show if: x.pia_completed
+  - Have contracts with third parties been reviewed and updated for ${ x.code } compliance (${ x.citation('contracts') })?: x.posture.third_party_contracts_updated
+    datatype: yesnoradio

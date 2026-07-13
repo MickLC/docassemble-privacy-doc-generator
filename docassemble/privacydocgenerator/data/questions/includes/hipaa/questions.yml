@@ -21,19 +21,25 @@ code: |
 sets: matters[i].hipaa_initialized
 ---
 question: |
-  HIPAA Applicability — ${ matters[i].org.name.text }
+  A few questions about health information — ${ matters[i].org.name.text }
 subquestion: |
-  These answers determine whether HIPAA's Privacy Rule applies to the
-  client as a covered entity, a business associate, or not at all.
+  A handful of yes/no questions to figure out whether HIPAA applies to the
+  client's business, and if so, in what capacity. The legal labels
+  (covered entity, business associate) get sorted out on the next screen —
+  for now, just describe what the client actually does.
 fields:
-  - Is the client a health plan (insurer, HMO, employer-sponsored group health plan, government health program, etc.)?: matters[i].hipaa.is_health_plan
+  - Does the client provide or administer health insurance coverage — for example, as an insurer, HMO, or an employer's group health plan?: matters[i].hipaa.is_health_plan
     datatype: yesnoradio
-  - Is the client a healthcare provider that conducts electronic transactions covered by HIPAA (claims, eligibility checks, referral authorizations, etc.)?: matters[i].hipaa.is_healthcare_provider_conducting_transactions
+    hint: Legal category — health plan (45 CFR § 160.103)
+  - Does the client provide healthcare and electronically bill insurance, check patient eligibility, or handle referral authorizations?: matters[i].hipaa.is_healthcare_provider_conducting_transactions
     datatype: yesnoradio
-  - Is the client a healthcare clearinghouse?: matters[i].hipaa.is_healthcare_clearinghouse
+    hint: Legal category — healthcare provider conducting HIPAA-covered transactions
+  - Does the client process or reformat health information passing between healthcare providers and insurers — for example, running a billing or claims clearinghouse?: matters[i].hipaa.is_healthcare_clearinghouse
     datatype: yesnoradio
-  - Does the client create, receive, maintain, or transmit protected health information (PHI) on behalf of a covered entity (e.g., as a vendor or service provider)?: matters[i].hipaa.handles_phi_for_covered_entity
+    hint: Legal category — healthcare clearinghouse
+  - Does the client handle patient health information as a vendor or service provider to a healthcare provider or insurer — for example, billing, IT, or software services?: matters[i].hipaa.handles_phi_for_covered_entity
     datatype: yesnoradio
+    hint: Legal category — business associate handling PHI on behalf of a covered entity
 ---
 question: |
   HIPAA Status — ${ matters[i].org.name.text }

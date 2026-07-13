@@ -1,0 +1,17 @@
+---
+# ===============================================
+# CONNECTICUT CTDPA CLAUSE LOGIC
+# ===============================================
+code: |
+  matters[i].ct.include_opt_out_section = (
+      matters[i].ct.targeted_advertising or
+      matters[i].ct.sells_data or
+      matters[i].ct.profiling_opt_out
+  )
+sets: matters[i].ct.include_opt_out_section
+---
+code: |
+  matters[i].ct.is_controller = (
+      matters[i].ct.role in ['Controller', 'Both']
+  )
+sets: matters[i].ct.is_controller

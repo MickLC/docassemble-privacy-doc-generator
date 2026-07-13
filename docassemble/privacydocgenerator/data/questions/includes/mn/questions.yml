@@ -1,0 +1,145 @@
+---
+# ===============================================
+# MINNESOTA CONSUMER DATA PRIVACY ACT (MCDPA) — SPECIFIC QUESTIONS
+# Minn. Stat. §§ 325M.10-325M.21, eff. 2025-07-31
+# Part 1: Data processing details
+# Part 2: Compliance posture assessment
+# Only presented when Minnesota Consumer Data Privacy Act is confirmed.
+#
+# BESPOKE (not the shared state_privacy template) — Phase 3 step 4 research
+# found MN adds a profiling-explanation right, a mandatory universal
+# opt-out signal, a distinct 13-16 teen-consent rule, a standalone
+# documented-privacy-program obligation, materially expanded notice-content
+# requirements, and an already-expired cure period (2026-01-31) that
+# changes the enforcement-risk posture. See state_privacy_acts.py's module
+# docstring / BUILD_PLAN_PHASE6.md for the full classification.
+# ===============================================
+code: |
+  matters[i].initializeAttribute('mn', DAObject)
+  matters[i].mn.initializeAttribute('posture', DAObject)
+  matters[i].mn_initialized = True
+sets: matters[i].mn_initialized
+---
+# --- PART 1: DATA PROCESSING DETAILS ---
+
+question: |
+  Minnesota MCDPA — Processing Roles — ${ matters[i].org.name.text }
+fields:
+  - Under the MCDPA, the client primarily acts as a: matters[i].mn.role
+    choices:
+      - Controller
+      - Processor
+      - Both
+---
+question: |
+  Minnesota MCDPA — Sensitive Data and Teen Data — ${ matters[i].org.name.text }
+subquestion: |
+  MCDPA requires opt-in consent before processing sensitive data
+  (Minn. Stat. § 325M.16 subd. 2(d)), and separately restricts targeted
+  advertising or sale of data for consumers the controller knows are ages
+  13-16 without consent (§ 325M.16 subd. 2(f)) — a distinct teen age band
+  from the standard under-13 "known child" framework.
+fields:
+  - Does the client process sensitive data as defined by the MCDPA?: matters[i].mn.processes_sensitive_data
+    datatype: yesnoradio
+  - Has the client obtained opt-in consent for sensitive data processing?: matters[i].mn.sensitive_data_consent
+    datatype: yesnoradio
+    show if: matters[i].mn.processes_sensitive_data
+  - Does the client know it processes data of consumers ages 13 to 16?: matters[i].mn.processes_teen_13_16_data
+    datatype: yesnoradio
+  - Has consent been obtained before using that data for targeted advertising or sale?: matters[i].mn.teen_ad_sale_consent_obtained
+    datatype: yesnoradio
+    show if: matters[i].mn.processes_teen_13_16_data
+---
+question: |
+  Minnesota MCDPA — Targeted Advertising and Profiling — ${ matters[i].org.name.text }
+subquestion: |
+  MCDPA also grants consumers a right to question and receive an
+  explanation of automated profiling decisions, including what data was
+  used and what could change the outcome (§ 325M.14 subd. 1(g)), and a
+  right to a list of specific third parties data was disclosed to
+  (subd. 1(h)) — beyond the standard rights model.
+fields:
+  - Does the client process personal data for targeted advertising?: matters[i].mn.targeted_advertising
+    datatype: yesnoradio
+  - Does the client sell personal data?: matters[i].mn.sells_data
+    datatype: yesnoradio
+  - Does the client use personal data for profiling producing significant decisions?: matters[i].mn.profiling_opt_out
+    datatype: yesnoradio
+  - URL for Minnesota consumer rights requests: matters[i].mn.rights_request_url
+    required: False
+---
+question: |
+  Minnesota MCDPA — Data Protection Assessments and Privacy Program — ${ matters[i].org.name.text }
+subquestion: |
+  MCDPA separately requires controllers to document and maintain a full
+  privacy-compliance program — naming a responsible individual/chief
+  privacy officer and describing policies on security, data minimization,
+  retention limits, and violation remediation — which must be incorporated
+  into each Data Protection Assessment (§ 325M.18(a), (e)).
+fields:
+  - Has the client completed required Data Protection Assessments?: matters[i].mn.pia_completed
+    datatype: yesnoradio
+  - Activities covered by assessments: matters[i].mn.pia_activities
+    datatype: checkboxes
+    show if: matters[i].mn.pia_completed
+    choices:
+      - Targeted advertising
+      - Sale of personal data
+      - Profiling with significant effects
+      - Processing sensitive data
+      - Processing children's data
+  - Has the client documented a privacy compliance program (named responsible individual, written policies on security/minimization/retention/remediation)?: matters[i].mn.has_documented_privacy_program
+    datatype: yesnoradio
+
+# --- PART 2: MCDPA COMPLIANCE POSTURE ---
+
+---
+question: |
+  Minnesota MCDPA — Compliance Posture: Notices and Rights — ${ matters[i].org.name.text }
+subquestion: |
+  Answer based on what the client **currently has in place**. Note:
+  MCDPA's notice-content mandate is more detailed than most peer states —
+  it requires a retention-policy description, a last-updated date,
+  multi-language posting, accessibility for people with disabilities, and
+  notice of material policy changes with a chance to withdraw consent for
+  previously collected data (§ 325M.16 subd. 1).
+fields:
+  - Is a privacy notice meeting MCDPA's detailed content requirements provided (§ 325M.16 subd. 1)?: matters[i].mn.posture.privacy_notice_provided
+    datatype: yesnoradio
+  - Is there a documented procedure to respond to consumer rights requests within 45 days, with opt-out requests handled "as soon as feasibly possible" (§ 325M.14 subd. 4)?: matters[i].mn.posture.rights_procedure_45_days
+    datatype: yesnoradio
+  - Is an appeals procedure in place, including retaining appeal records for 24 months for AG production on request (§ 325M.14 subd. 5)?: matters[i].mn.posture.appeals_procedure
+    datatype: yesnoradio
+---
+question: |
+  Minnesota MCDPA — Compliance Posture: Opt-Out, Profiling, and Sensitive Data — ${ matters[i].org.name.text }
+fields:
+  - Is a clear opt-out mechanism for targeted advertising, data sale, and profiling in place (§ 325M.16)?: matters[i].mn.posture.opt_out_mechanism_in_place
+    datatype: yesnoradio
+    show if: matters[i].mn.include_opt_out_section
+  - Does the client honor a universal opt-out preference signal (§ 325M.14 subd. 3)?: matters[i].mn.posture.uoom_honored
+    datatype: yesnoradio
+    show if: matters[i].mn.include_opt_out_section
+  - Is a procedure in place for consumers to question and receive an explanation of automated profiling decisions (§ 325M.14 subd. 1(g))?: matters[i].mn.posture.profiling_explanation_procedure_in_place
+    datatype: yesnoradio
+    show if: matters[i].mn.profiling_opt_out
+  - Is opt-in consent obtained before processing sensitive data (§ 325M.16 subd. 2(d))?: matters[i].mn.posture.sensitive_data_consent_obtained
+    datatype: yesnoradio
+    show if: matters[i].mn.processes_sensitive_data
+---
+question: |
+  Minnesota MCDPA — Compliance Posture: Assessments, Program, and Contracts — ${ matters[i].org.name.text }
+subquestion: |
+  Note: MCDPA's 30-day cure period **expired 2026-01-31** (§ 325M.20(a)) —
+  as of today, the Minnesota AG can enforce without offering cure. Factor
+  this into risk discussions; don't assume a cure right still applies.
+fields:
+  - Have required Data Protection Assessments been completed, incorporating the documented privacy program description (§ 325M.18)?: matters[i].mn.posture.pia_assessments_completed
+    datatype: yesnoradio
+    show if: matters[i].mn.pia_completed
+  - Is the documented privacy compliance program (responsible individual, written policies) current?: matters[i].mn.posture.privacy_program_documented
+    datatype: yesnoradio
+    show if: matters[i].mn.has_documented_privacy_program
+  - Have contracts with third parties been reviewed and updated for MCDPA compliance (§ 325M.13)?: matters[i].mn.posture.third_party_contracts_updated
+    datatype: yesnoradio

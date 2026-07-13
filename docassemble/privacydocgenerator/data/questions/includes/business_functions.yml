@@ -1,0 +1,229 @@
+---
+# ===============================================
+# BUSINESS FUNCTIONS — conversational front door to
+# Processing Activities (Phase 4, BUILD_PLAN_PHASE6.md).
+#
+# Purpose: replace "add a Processing Activity" cold-start
+# (a blank activity-name field + a wall of checkboxes) with
+# plain business-language questions an attorney would
+# actually ask a client ("How do you pay your employees?").
+# Each function that applies pre-seeds ONE incomplete item
+# into matters[i].processing_activities carrying
+# suggested_name/suggested_purposes/suggested_data_categories/
+# suggested_data_subject_categories — read as `default:`
+# values by the existing fields screen in
+# processing_activities.yml, never written directly to the
+# real fields. This is deliberate: per BUILD_PLAN_PHASE6.md's
+# hard constraint, a pre-seeded item must still show its
+# fields screen (for attorney confirm/edit), not skip it as
+# "already complete."
+#
+# Gathered after data_map.yml (matters[i].systems) and before
+# processing_activities.yml so the seeded items exist before
+# matters[i].processing_activities.gather() starts iterating.
+# Anything not captured by these 5 functions is still added
+# the original way — gather() asks there_is_another after the
+# seeded items, same as always.
+#
+# Flat attribute naming (matters[i].biz.payroll_applies, not
+# matters[i].biz.payroll.applies) mirrors current_state.yml's
+# convention deliberately: a nested DAObject one level under
+# matters[i].biz would itself need an explicit
+# initializeAttribute before use, same rule noted in
+# org_profile.yml — flat avoids that entirely.
+# ===============================================
+code: |
+  matters[i].initializeAttribute('biz', DAObject)
+  matters[i].biz_initialized = True
+sets: matters[i].biz_initialized
+---
+question: |
+  Payroll & HR — ${ matters[i].org.name.text }
+subquestion: |
+  Let's start with people. Does the client pay employees or
+  contractors, or handle other HR matters — hiring, benefits,
+  performance records?
+yesno: matters[i].biz.payroll_applies
+---
+question: |
+  Payroll & HR details — ${ matters[i].org.name.text }
+fields:
+  - label: Which of these show up in payroll or HR records?
+    field: matters[i].biz.payroll_data_types
+    datatype: checkboxes
+    choices:
+      - Bank account or direct deposit details
+      - Social Security numbers or other government ID numbers
+      - Health or benefits information
+      - Background check or criminal history results
+    required: False
+  - Do you also keep records on job applicants who weren't hired?: matters[i].biz.payroll_job_applicants
+    datatype: yesnoradio
+---
+question: |
+  Sales & Billing — ${ matters[i].org.name.text }
+subquestion: |
+  Does the client sell products or services and bill customers
+  directly — invoices, subscriptions, online checkout?
+yesno: matters[i].biz.sales_applies
+---
+question: |
+  Sales & Billing details — ${ matters[i].org.name.text }
+fields:
+  - label: Which of these does the client collect to sell to or bill customers?
+    field: matters[i].biz.sales_data_types
+    datatype: checkboxes
+    choices:
+      - Payment card or bank account numbers
+      - Government-issued ID numbers (for regulated or high-value transactions)
+    required: False
+---
+question: |
+  Marketing — ${ matters[i].org.name.text }
+subquestion: |
+  Does the client market to customers or prospects — email
+  campaigns, social ads, a mailing list?
+yesno: matters[i].biz.marketing_applies
+---
+question: |
+  Marketing details — ${ matters[i].org.name.text }
+fields:
+  - label: Which of these are involved in the client's marketing?
+    field: matters[i].biz.marketing_data_types
+    datatype: checkboxes
+    choices:
+      - Website browsing or ad-tracking data (cookies, pixels)
+      - Precise location, used for local or geo-targeted marketing
+    required: False
+  - Does the client run targeted or retargeting ads based on someone's browsing activity?: matters[i].biz.marketing_targeted_ads
+    datatype: yesnoradio
+---
+question: |
+  Customer Support — ${ matters[i].org.name.text }
+subquestion: |
+  Does the client provide customer support — a help desk, live
+  chat, phone support, support tickets?
+yesno: matters[i].biz.support_applies
+---
+question: |
+  Customer Support details — ${ matters[i].org.name.text }
+fields:
+  - label: What shows up in a typical support interaction?
+    field: matters[i].biz.support_data_types
+    datatype: checkboxes
+    choices:
+      - Call or chat recordings or transcripts
+      - Health or other sensitive details customers sometimes share
+    required: False
+---
+question: |
+  Website & IT — ${ matters[i].org.name.text }
+subquestion: |
+  Does the client have a website, app, or IT systems that collect
+  or store data about visitors or the business itself?
+yesno: matters[i].biz.webit_applies
+---
+question: |
+  Website & IT details — ${ matters[i].org.name.text }
+fields:
+  - label: Which of these does the client's website or IT setup collect or store?
+    field: matters[i].biz.webit_data_types
+    datatype: checkboxes
+    choices:
+      - Cookies or website analytics data
+      - IP addresses or device information
+    required: False
+---
+# -----------------------------------------------
+# Seed suggested processing-activity entries from the answers
+# above. Runs once all 5 applies/details screens have resolved.
+# Each block below only sets suggested_* attributes (read as
+# `default:` values in processing_activities.yml) — never the
+# real name/purposes/data_categories/data_subject_categories
+# fields themselves, so the item's fields screen still shows.
+# -----------------------------------------------
+code: |
+  _seeded_any = False
+
+  if matters[i].biz.payroll_applies:
+      pa = matters[i].processing_activities.appendObject()
+      pa.suggested_name = "Payroll and HR administration"
+      pa.suggested_purposes = ['Employment and HR administration']
+      _cats = {'Employment and HR data', 'Identifiers (name, email, phone, address)'}
+      if matters[i].biz.payroll_data_types.get('Bank account or direct deposit details'):
+          _cats.add('Financial information (account numbers, payment card data)')
+      if matters[i].biz.payroll_data_types.get('Social Security numbers or other government ID numbers'):
+          _cats.add('Government-issued ID numbers')
+      if matters[i].biz.payroll_data_types.get('Health or benefits information'):
+          _cats.add('Health or medical data')
+      if matters[i].biz.payroll_data_types.get('Background check or criminal history results'):
+          _cats.add('Criminal conviction data')
+      pa.suggested_data_categories = list(_cats)
+      _subjects = ['Employees']
+      if matters[i].biz.payroll_job_applicants:
+          _subjects.append('Job applicants')
+      pa.suggested_data_subject_categories = _subjects
+      _seeded_any = True
+
+  if matters[i].biz.sales_applies:
+      pa = matters[i].processing_activities.appendObject()
+      pa.suggested_name = "Sales and billing"
+      pa.suggested_purposes = ['Providing products or services', 'Processing payments and transactions']
+      _cats = {'Identifiers (name, email, phone, address)'}
+      if matters[i].biz.sales_data_types.get('Payment card or bank account numbers'):
+          _cats.add('Financial information (account numbers, payment card data)')
+      if matters[i].biz.sales_data_types.get('Government-issued ID numbers (for regulated or high-value transactions)'):
+          _cats.add('Government-issued ID numbers')
+      pa.suggested_data_categories = list(_cats)
+      pa.suggested_data_subject_categories = ['Customers']
+      _seeded_any = True
+
+  if matters[i].biz.marketing_applies:
+      pa = matters[i].processing_activities.appendObject()
+      pa.suggested_name = "Marketing to customers and prospects"
+      _purposes = ['Marketing and promotional communications']
+      if matters[i].biz.marketing_targeted_ads:
+          _purposes.append('Targeted or behavioural advertising')
+      pa.suggested_purposes = _purposes
+      _cats = {'Identifiers (name, email, phone, address)'}
+      if matters[i].biz.marketing_data_types.get('Website browsing or ad-tracking data (cookies, pixels)'):
+          _cats.add('Cookies and usage data')
+      if matters[i].biz.marketing_data_types.get('Precise location, used for local or geo-targeted marketing'):
+          _cats.add('Precise geolocation data')
+      pa.suggested_data_categories = list(_cats)
+      pa.suggested_data_subject_categories = ['Customers', 'Website visitors']
+      _seeded_any = True
+
+  if matters[i].biz.support_applies:
+      pa = matters[i].processing_activities.appendObject()
+      pa.suggested_name = "Customer support"
+      pa.suggested_purposes = ['Customer support and communication']
+      _cats = {'Identifiers (name, email, phone, address)'}
+      if matters[i].biz.support_data_types.get('Health or other sensitive details customers sometimes share'):
+          _cats.add('Health or medical data')
+      pa.suggested_data_categories = list(_cats)
+      pa.suggested_data_subject_categories = ['Customers']
+      _seeded_any = True
+
+  if matters[i].biz.webit_applies:
+      pa = matters[i].processing_activities.appendObject()
+      pa.suggested_name = "Website and IT operations"
+      pa.suggested_purposes = ['Analytics and service improvement']
+      _cats = {'Internet / network activity data'}
+      if matters[i].biz.webit_data_types.get('Cookies or website analytics data'):
+          _cats.add('Cookies and usage data')
+      if matters[i].biz.webit_data_types.get('IP addresses or device information'):
+          _cats.add('Internet / network activity data')
+      pa.suggested_data_categories = list(_cats)
+      pa.suggested_data_subject_categories = ['Website visitors']
+      _seeded_any = True
+
+  # Pre-answers "are there any processing activities?" only when we
+  # actually seeded at least one — otherwise leave it unanswered so
+  # the original yesno in processing_activities.yml still fires for
+  # a client with no activity in any of the 5 business functions.
+  if _seeded_any:
+      matters[i].processing_activities.there_are_any = True
+
+  matters[i].business_functions_seeded = True
+sets: matters[i].business_functions_seeded
