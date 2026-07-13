@@ -243,6 +243,12 @@ code: |
           'GDPR' in matters[i].confirmed_jurisdictions.true_values()
           and activity.lawful_basis.get('Legitimate interests (Article 6(1)(f))', False)
       )
+      activity.no_lawful_basis = (
+          'GDPR' in matters[i].confirmed_jurisdictions.true_values()
+          and not any(activity.lawful_basis.values())
+      )
+      activity.missing_retention_period = not activity.retention_period
+      activity.no_security_measures = not any(activity.security_measures.values())
       # dpia/lia and lia's three sub-tests must be explicitly
       # initialised here — plain attribute access does not
       # auto-create nested objects, it just raises "X.dpia is

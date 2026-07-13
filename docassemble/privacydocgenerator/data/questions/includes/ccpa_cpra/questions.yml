@@ -118,11 +118,7 @@ fields:
     datatype: yesnoradio
 ---
 question: |
-  CCPA/CPRA — Compliance Posture: Contracts and Training — ${ matters[i].org.name.text }
+  CCPA/CPRA — Compliance Posture: Deletion Requests — ${ matters[i].org.name.text }
 fields:
-  - Do all service provider and contractor agreements include required CPRA data protection provisions (§1798.140)?: matters[i].ccpa.posture.service_provider_contracts_compliant
-    datatype: yesnoradio
-  - Have staff who handle consumer rights requests been trained on CCPA/CPRA requirements?: matters[i].ccpa.posture.staff_trained
-    datatype: yesnoradio
   - Has the client implemented a two-step verification process for deletion requests?: matters[i].ccpa.posture.deletion_verification_in_place
     datatype: yesnoradio

@@ -178,16 +178,9 @@ code: |
       matters[i].gdpr.dpo.name.last
       matters[i].gdpr.dpo.email
     matters[i].gdpr.supervisory_authority
-    matters[i].gdpr.posture.lawful_basis_documented
-    matters[i].gdpr.posture.ropa_maintained
-    matters[i].gdpr.posture.retention_schedule_documented
     matters[i].gdpr.posture.privacy_notice_provided
     matters[i].gdpr.posture.cookie_consent_compliant
     matters[i].gdpr.posture.rights_procedure_documented
-    matters[i].gdpr.posture.article28_contracts_in_place
-    matters[i].gdpr.posture.breach_procedure_documented
-    matters[i].gdpr.posture.privacy_by_design
-    matters[i].gdpr.posture.staff_training_current
 
   # --- CCPA/CPRA ---
   if 'CCPA/CPRA' in matters[i].confirmed_jurisdictions.true_values():
@@ -208,8 +201,6 @@ code: |
     if matters[i].ccpa.include_spi_limit_link:
       matters[i].ccpa.posture.spi_limit_mechanism_in_place
     matters[i].ccpa.posture.rights_procedure_45_days
-    matters[i].ccpa.posture.service_provider_contracts_compliant
-    matters[i].ccpa.posture.staff_trained
     matters[i].ccpa.posture.deletion_verification_in_place
 
   # --- TDPSA ---
@@ -227,7 +218,6 @@ code: |
     if matters[i].tdpsa.include_opt_out_section:
       matters[i].tdpsa.posture.opt_out_mechanism_in_place
     matters[i].tdpsa.posture.uoom_supported
-    matters[i].tdpsa.posture.dpa_contracts_in_place
     matters[i].tdpsa.posture.dpa_assessments_completed
 
   # --- VCDPA ---
@@ -245,7 +235,6 @@ code: |
     if matters[i].vcdpa.include_opt_out_section:
       matters[i].vcdpa.posture.opt_out_mechanism_in_place
     matters[i].vcdpa.posture.sensitive_data_consent_obtained
-    matters[i].vcdpa.posture.dpa_contracts_in_place
     matters[i].vcdpa.posture.pia_assessments_completed
     matters[i].vcdpa.posture.third_party_contracts_updated
 
@@ -259,6 +248,7 @@ code: |
   matters[i].playbooks.breach_escalation_contact
   matters[i].playbooks.breach_notification_states
   matters[i].playbooks.breach_requirements
+  matters[i].playbooks.staff_trained
 
   # --- Run gap analysis ---
   matters[i].gap_analysis = run_gap_analysis(matters[i])

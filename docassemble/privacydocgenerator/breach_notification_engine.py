@@ -3,9 +3,9 @@ breach_notification_engine.py
 
 Looks up per-state breach notification requirements for the states an
 interview says a matter's affected consumers are in. The source JSON is a
-deliberately incomplete Phase 2 stub (CA/TX/VA only, clearly marked
-placeholder values) — see data/sources/breach_notification_law.json and
-BUILD_PLAN.md Phase 5 for the full attorney-verified backfill.
+deliberately incomplete, not-yet-attorney-verified dataset (see its own
+_meta block for current coverage) — see data/sources/breach_notification_law.json
+and BUILD_PLAN_PHASE6.md Phase 2 for the full attorney-verified backfill.
 
 No docassemble.base.util import here on purpose, so this module can be
 unit-tested with plain python3.

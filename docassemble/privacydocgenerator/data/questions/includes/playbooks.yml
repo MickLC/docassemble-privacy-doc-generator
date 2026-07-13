@@ -51,6 +51,21 @@ fields:
     hint: Name and role, e.g. "John Doe, IT Director"
 ---
 question: |
+  Staff Training — ${ matters[i].org.name.text }
+subquestion: |
+  Covers both GDPR's Article 39(1)(b) awareness-raising/training obligation
+  and CCPA/CPRA's staff-training requirement — the same underlying practice
+  under different statutory language, so it's asked once here rather than
+  once per jurisdiction.
+fields:
+  - label: |
+      Have staff involved in processing personal data (including anyone
+      who handles data subject/consumer rights requests) received data
+      protection training within the last 12 months?
+    field: matters[i].playbooks.staff_trained
+    datatype: yesnoradio
+---
+question: |
   Affected Consumer States — ${ matters[i].org.name.text }
 subquestion: |
   Separate from the operational-footprint states above, list every US state

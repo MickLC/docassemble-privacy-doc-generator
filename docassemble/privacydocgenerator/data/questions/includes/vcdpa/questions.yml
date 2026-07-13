@@ -95,8 +95,6 @@ fields:
 question: |
   VCDPA — Compliance Posture: Contracts and Assessments — ${ matters[i].org.name.text }
 fields:
-  - Are Data Processing Agreements in place with all processors meeting VCDPA requirements (§59.1-580)?: matters[i].vcdpa.posture.dpa_contracts_in_place
-    datatype: yesnoradio
   - Have required Data Protection Impact Assessments (PIAs) been completed (§59.1-582)?: matters[i].vcdpa.posture.pia_assessments_completed
     datatype: yesnoradio
     show if: matters[i].vcdpa.include_opt_out_section

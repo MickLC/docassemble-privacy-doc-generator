@@ -91,8 +91,6 @@ fields:
 question: |
   TDPSA — Compliance Posture: Contracts and Assessments — ${ matters[i].org.name.text }
 fields:
-  - Are Data Processing Agreements in place with all processors meeting TDPSA requirements (§541.104)?: matters[i].tdpsa.posture.dpa_contracts_in_place
-    datatype: yesnoradio
   - Have required Data Protection Assessments been completed for high-risk processing (§541.105)?: matters[i].tdpsa.posture.dpa_assessments_completed
     datatype: yesnoradio
     show if:
