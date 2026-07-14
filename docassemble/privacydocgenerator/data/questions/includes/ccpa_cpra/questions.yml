@@ -18,32 +18,37 @@ sets: matters[i].ccpa_initialized
 # --- PART 1: DATA PROCESSING DETAILS ---
 
 question: |
-  CCPA/CPRA — Sale and Sharing of Personal Information — ${ matters[i].org.name.text }
+  Selling or sharing data for ads — ${ matters[i].org.name.text }
 subquestion: |
-  Under CCPA/CPRA, consumers have the right to opt out of the sale or
-  sharing of their personal information.
+  California law gives consumers the right to opt out when a business sells
+  personal information or shares it for targeted advertising.
 fields:
-  - Does the client sell personal information (receive valuable consideration in exchange)?: matters[i].ccpa.sells_pi
+  - Does the client get money or anything of value in exchange for giving another company access to people's personal information?: matters[i].ccpa.sells_pi
     datatype: yesnoradio
-  - Does the client share personal information for cross-context behavioural advertising?: matters[i].ccpa.shares_pi_for_advertising
+    hint: Legal category — sale of personal information (CCPA/CPRA)
+  - Does the client let ad companies use its customer data to target ads across different sites and apps, even without any payment changing hands?: matters[i].ccpa.shares_pi_for_advertising
     datatype: yesnoradio
-  - URL of the client's "Do Not Sell or Share My Personal Information" page: matters[i].ccpa.opt_out_link
+    hint: Legal category — sharing for cross-context behavioral advertising
+  - Does the client have a "Do Not Sell or Share My Personal Information" page? What's the URL?: matters[i].ccpa.opt_out_link
     required: False
     show if:
       variable: matters[i].ccpa.sells_pi
       is: True
-  - Does the client honour the Global Privacy Control (GPC) signal?: matters[i].ccpa.honours_gpc
+  - Does the client automatically honor the "Global Privacy Control" browser signal that tells sites not to sell or share a visitor's data?: matters[i].ccpa.honours_gpc
     datatype: yesnoradio
+    hint: Legal category — Global Privacy Control (GPC)
 ---
 question: |
-  CCPA/CPRA — Sensitive Personal Information — ${ matters[i].org.name.text }
+  Especially sensitive information — ${ matters[i].org.name.text }
 subquestion: |
-  CPRA creates a separate category of Sensitive Personal Information (SPI)
-  with enhanced protections.
+  California law creates a separate, more protected category for certain
+  especially sensitive types of information.
 fields:
-  - Does the client collect or process Sensitive Personal Information (SPI)?: matters[i].ccpa.collects_spi
+  - Does the client collect any of these especially sensitive kinds of information?: matters[i].ccpa.collects_spi
     datatype: yesnoradio
-  - Categories of SPI collected: matters[i].ccpa.spi_categories
+    hint: Legal category — Sensitive Personal Information (SPI) under CPRA
+  - label: Which kinds?
+    field: matters[i].ccpa.spi_categories
     datatype: checkboxes
     show if: matters[i].ccpa.collects_spi
     choices:
@@ -58,17 +63,18 @@ fields:
       - Biometric data for identification
       - Health information
       - Sexual orientation or sex life
-  - Does the client use SPI beyond what is necessary for the primary purpose?: matters[i].ccpa.uses_spi_beyond_primary
+  - Does the client use that sensitive information for anything beyond what's strictly needed to provide the product or service — for example, using health data to target ads?: matters[i].ccpa.uses_spi_beyond_primary
     datatype: yesnoradio
     show if: matters[i].ccpa.collects_spi
-  - URL of the client's "Limit the Use of My Sensitive Personal Information" page: matters[i].ccpa.spi_limit_link
+    hint: Legal category — use of SPI beyond what's necessary (triggers CPRA's "limit use" right)
+  - Does the client have a "Limit the Use of My Sensitive Personal Information" page? What's the URL?: matters[i].ccpa.spi_limit_link
     required: False
     show if: matters[i].ccpa.uses_spi_beyond_primary
 ---
 question: |
-  CCPA/CPRA — Service Providers and Contractors — ${ matters[i].org.name.text }
+  Who processes this data on the client's behalf? — ${ matters[i].org.name.text }
 fields:
-  - Describe the client's key service providers and contractors: matters[i].ccpa.service_providers
+  - Briefly describe the vendors that process this data for the client: matters[i].ccpa.service_providers
     input type: area
     hint: |
       e.g. "Payment processing: Stripe (service provider);
@@ -77,16 +83,17 @@ fields:
     required: False
 ---
 question: |
-  CCPA/CPRA — Consumer Rights Mechanisms — ${ matters[i].org.name.text }
+  How can Californians reach out with a privacy request? — ${ matters[i].org.name.text }
 subquestion: |
   How can California consumers exercise their privacy rights?
 fields:
-  - URL for submitting consumer rights requests: matters[i].ccpa.rights_request_url
+  - Where can consumers submit a rights request? (URL): matters[i].ccpa.rights_request_url
     required: False
   - Toll-free number for consumer rights requests: matters[i].ccpa.rights_request_phone
     required: False
-  - Does the client offer a two-step verification process for deletion requests?: matters[i].ccpa.uses_verification
+  - Does the client verify a person's identity in two separate steps before deleting their data?: matters[i].ccpa.uses_verification
     datatype: yesnoradio
+    hint: Legal category — two-step verification for deletion requests
 
 # --- PART 2: CCPA/CPRA COMPLIANCE POSTURE ---
 

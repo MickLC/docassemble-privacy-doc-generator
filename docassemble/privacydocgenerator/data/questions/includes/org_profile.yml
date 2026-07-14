@@ -19,16 +19,17 @@ code: |
 sets: matters[i].org_initialized
 ---
 question: |
-  Organisation Details — ${ matters[i].matter_ref }
+  Tell me about the client — ${ matters[i].matter_ref }
 subquestion: |
-  Enter the client organisation's legal details.
+  A few basics about the business itself.
 fields:
-  - Legal Name: matters[i].org.name.text
-  - Trading Name (if different): matters[i].org.trading_name
+  - What's the client's official registered/legal name?: matters[i].org.name.text
+    hint: Legal category — legal name of the organization
+  - Does the client do business under a different name (a DBA or trade name)?: matters[i].org.trading_name
     required: False
-  - Company / Registration Number: matters[i].org.reg_number
+  - What's the client's business registration or company number, if it has one?: matters[i].org.reg_number
     required: False
-  - Industry / Sector: matters[i].org.industry
+  - What industry is the client in?: matters[i].org.industry
     choices:
       - Technology / SaaS
       - E-commerce / Retail
@@ -41,7 +42,7 @@ fields:
       - Other
 ---
 question: |
-  Organisation Address — ${ matters[i].org.name.text }
+  Where is the client located? — ${ matters[i].org.name.text }
 fields:
   - Address Line 1: matters[i].org.address.address
   - Address Line 2: matters[i].org.address.unit
@@ -53,10 +54,10 @@ fields:
   - Country: matters[i].org.address.country
 ---
 question: |
-  Organisation Contact Details — ${ matters[i].org.name.text }
+  Who should we contact about privacy matters? — ${ matters[i].org.name.text }
 fields:
-  - Privacy Contact Email: matters[i].org.contact_email
+  - What email address should people use for privacy-related questions or requests?: matters[i].org.contact_email
     datatype: email
     hint: The email address for privacy-related enquiries
-  - Website URL: matters[i].org.website
+  - Does the client have a website? What's the URL?: matters[i].org.website
     required: False

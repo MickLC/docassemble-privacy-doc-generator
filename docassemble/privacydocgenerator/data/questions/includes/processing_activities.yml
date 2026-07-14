@@ -44,26 +44,26 @@ code: |
 sets: matters[i].processing_activities_initialized
 ---
 question: |
-  Processing Activities — ${ matters[i].org.name.text }
+  What does the client do with people's data? — ${ matters[i].org.name.text }
 subquestion: |
-  A processing activity is a distinct purpose for which personal data is
-  collected and used — e.g. "email marketing to customers," "payroll
+  Think of this as a list of the distinct things the client does that
+  involve personal data — e.g. "email marketing to customers," "payroll
   processing," "website analytics." Every downstream document (Privacy
-  Statement, ROPA, DPIA, LIA) is built from this list, so capture each
-  activity separately rather than describing the business as a whole.
+  Statement, ROPA, DPIA, LIA) is built from this list, so capture each one
+  separately rather than describing the business as a whole.
 yesno: matters[i].processing_activities.there_are_any
 ---
 question: |
-  Processing Activity — ${ matters[i].org.name.text }
+  Tell me about this activity — ${ matters[i].org.name.text }
 fields:
-  - Activity name: matters[i].processing_activities[j].name
+  - What would you call this activity?: matters[i].processing_activities[j].name
     hint: e.g. Email marketing to customers, Payroll processing
     default: |
       matters[i].processing_activities[j].suggested_name if hasattr(matters[i].processing_activities[j], 'suggested_name') else ''
-  - Description: matters[i].processing_activities[j].description
+  - Briefly describe what this involves (optional): matters[i].processing_activities[j].description
     input type: area
     required: False
-  - label: Purpose(s) of this activity
+  - label: Why does the client collect or use this data?
     field: matters[i].processing_activities[j].purposes
     datatype: checkboxes
     default: |
@@ -81,7 +81,7 @@ fields:
       - Research and development
       - Sharing or selling to third parties
       - Other
-  - label: Categor(y/ies) of data involved
+  - label: What kinds of information are involved?
     field: matters[i].processing_activities[j].data_categories
     datatype: checkboxes
     default: |
@@ -106,7 +106,7 @@ fields:
       - Sexual orientation or gender identity
       - Criminal conviction data
       - Other
-  - label: Categor(y/ies) of data subjects involved
+  - label: Whose information is this — customers, employees, etc.?
     field: matters[i].processing_activities[j].data_subject_categories
     datatype: checkboxes
     default: |
@@ -140,7 +140,7 @@ question: |
   New system or vendor for this activity?
 subquestion: |
   Does "**${ matters[i].processing_activities[j].name }**" involve a system
-  or vendor that isn't yet in your Vendor & System Inventory?
+  or vendor you haven't listed yet?
 
   % if matters[i].systems.number() > 0:
   Already in the inventory: ${ comma_and_list([s.name for s in matters[i].systems]) }.
@@ -170,11 +170,11 @@ code: |
 sets: matters[i].processing_activities[j].new_systems_merged
 ---
 question: |
-  Processing Activity — Recipients & Handling
+  Who gets this data, and how is it handled? — ${ matters[i].org.name.text }
 subquestion: |
   ${ matters[i].processing_activities[j].name }
 fields:
-  - label: Recipients (systems/vendors that receive this data)
+  - label: Which systems or vendors get access to this data?
     field: matters[i].processing_activities[j].recipients
     datatype: object_multiselect
     choices: matters[i].systems
@@ -182,11 +182,14 @@ fields:
     hint: |
       Selected from the Vendor & System Inventory, including anything you
       just added above.
-  - Does this activity involve transferring data internationally (outside the client's home jurisdiction)?: matters[i].processing_activities[j].international_transfer
+  - Does this ever send data outside the country/region where the client is based?: matters[i].processing_activities[j].international_transfer
     datatype: yesnoradio
-  - Transfer mechanism used: matters[i].processing_activities[j].transfer_mechanism
+    hint: Legal category — international data transfer
+  - label: How is that international transfer legally covered?
+    field: matters[i].processing_activities[j].transfer_mechanism
     datatype: checkboxes
     show if: matters[i].processing_activities[j].international_transfer
+    hint: Attorney determination — the transfer mechanism relied upon
     choices:
       - Adequacy decision
       - Standard Contractual Clauses (SCCs)
@@ -194,14 +197,15 @@ fields:
       - UK International Data Transfer Agreement (IDTA)
       - Derogations under Article 49
       - Other / not yet determined
-  - Retention period for this activity's data: matters[i].processing_activities[j].retention_period
+  - How long does the client keep this data?: matters[i].processing_activities[j].retention_period
     hint: e.g. "3 years after last purchase" or "duration of employment plus 7 years"
-  - label: Lawful basis relied upon (GDPR Article 6)
+  - label: Which legal basis supports this activity?
     field: matters[i].processing_activities[j].lawful_basis
     datatype: checkboxes
     show if:
       code: |
         'GDPR' in matters[i].confirmed_jurisdictions.true_values()
+    hint: Attorney determination — lawful basis under GDPR Article 6, based on the facts already gathered
     choices:
       - Consent (Article 6(1)(a))
       - Contract performance (Article 6(1)(b))
@@ -209,7 +213,7 @@ fields:
       - Vital interests (Article 6(1)(d))
       - Public task (Article 6(1)(e))
       - Legitimate interests (Article 6(1)(f))
-  - label: Security measures in place for this activity's data
+  - label: What security measures protect this data?
     field: matters[i].processing_activities[j].security_measures
     datatype: checkboxes
     choices:

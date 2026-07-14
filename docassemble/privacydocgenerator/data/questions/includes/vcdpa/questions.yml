@@ -18,46 +18,55 @@ sets: matters[i].vcdpa_initialized
 # --- PART 1: DATA PROCESSING DETAILS ---
 
 question: |
-  VCDPA — Processing Roles — ${ matters[i].org.name.text }
+  The client's role under Virginia law — ${ matters[i].org.name.text }
 fields:
-  - Under the VCDPA, the client primarily acts as a: matters[i].vcdpa.role
+  - label: For Virginia consumers, is the client the one deciding how/why data is used, just following someone else's instructions, or both?
+    field: matters[i].vcdpa.role
+    hint: Legal category — controller vs. processor role
     choices:
       - Controller
       - Processor
       - Both
 ---
 question: |
-  VCDPA — Sensitive Data and Consent — ${ matters[i].org.name.text }
+  Sensitive data and consent — ${ matters[i].org.name.text }
 subquestion: |
-  The VCDPA requires opt-in consent before processing sensitive data.
+  Virginia law requires the client to get opt-in consent before processing
+  certain especially sensitive data.
 fields:
-  - Does the client process sensitive data as defined by the VCDPA?: matters[i].vcdpa.processes_sensitive_data
+  - Does the client process any especially sensitive data, as Virginia law defines it (health, biometric, precise location, children's data, etc.)?: matters[i].vcdpa.processes_sensitive_data
     datatype: yesnoradio
-  - Has the client obtained opt-in consent for sensitive data processing?: matters[i].vcdpa.sensitive_data_consent
+    hint: Legal category — sensitive data under VCDPA
+  - Has the client gotten explicit opt-in consent before processing that sensitive data?: matters[i].vcdpa.sensitive_data_consent
     datatype: yesnoradio
     show if: matters[i].vcdpa.processes_sensitive_data
 ---
 question: |
-  VCDPA — Targeted Advertising and Profiling — ${ matters[i].org.name.text }
+  Advertising, selling data, and profiling — ${ matters[i].org.name.text }
 fields:
-  - Does the client process personal data for targeted advertising?: matters[i].vcdpa.targeted_advertising
+  - Does the client use personal data to target ads at specific people?: matters[i].vcdpa.targeted_advertising
     datatype: yesnoradio
-  - Does the client sell personal data?: matters[i].vcdpa.sells_data
+    hint: Legal category — targeted advertising
+  - Does the client sell personal data to other companies?: matters[i].vcdpa.sells_data
     datatype: yesnoradio
-  - Does the client use personal data for profiling producing significant decisions?: matters[i].vcdpa.profiling_opt_out
+    hint: Legal category — sale of personal data
+  - Does the client use automated profiling to make significant decisions about people — for example, denying credit, housing, or a job?: matters[i].vcdpa.profiling_opt_out
     datatype: yesnoradio
-  - URL for Virginia consumer rights requests: matters[i].vcdpa.rights_request_url
+    hint: Legal category — profiling producing legal or similarly significant effects
+  - Where can Virginia consumers submit a rights request? (URL): matters[i].vcdpa.rights_request_url
     required: False
 ---
 question: |
-  VCDPA — Data Protection Assessments — ${ matters[i].org.name.text }
+  Risk assessments for higher-risk activities — ${ matters[i].org.name.text }
 subquestion: |
-  Controllers must conduct Data Protection Impact Assessments (PIAs)
-  for high-risk processing under the VCDPA.
+  Virginia law requires a documented risk assessment (a Data Protection
+  Impact Assessment, or PIA) before certain higher-risk activities.
 fields:
-  - Has the client completed required Privacy Impact Assessments (PIAs)?: matters[i].vcdpa.pia_completed
+  - Has the client done a written risk assessment for any of these higher-risk activities?: matters[i].vcdpa.pia_completed
     datatype: yesnoradio
-  - Activities covered by PIAs: matters[i].vcdpa.pia_activities
+    hint: Legal category — Data Protection Impact Assessment (PIA)
+  - label: Which activities?
+    field: matters[i].vcdpa.pia_activities
     datatype: checkboxes
     show if: matters[i].vcdpa.pia_completed
     choices:

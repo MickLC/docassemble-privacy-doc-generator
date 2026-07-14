@@ -42,11 +42,13 @@ code: |
 sets: matters[i].data.purposes
 ---
 question: |
-  Data Retention — ${ matters[i].org.name.text }
+  How long does the client keep data, overall? — ${ matters[i].org.name.text }
 subquestion: |
-  Describe the client's data retention policy.
+  You've already described retention for each specific activity — this is
+  the chance to describe the client's overall approach, if there's a general
+  policy that ties it together.
 fields:
-  - Retention Policy: matters[i].data.retention_period
+  - Overall retention approach: matters[i].data.retention_period
     input type: area
     hint: |
       Describe how long different categories of data are kept and why,
@@ -54,13 +56,14 @@ fields:
       Marketing data: until opt-out or 2 years of inactivity."
 ---
 question: |
-  Third-Party Data Sharing — ${ matters[i].org.name.text }
+  Sharing data outside the company — ${ matters[i].org.name.text }
 subquestion: |
-  Provide details of third parties with whom personal data is shared.
+  A few more details about who outside the company gets access to personal
+  data, beyond what's already captured per activity.
 fields:
   - Does the client share personal data with third parties?: matters[i].data.third_party_sharing
     datatype: yesnoradio
-  - If yes, describe the categories of third parties and the purpose of sharing: matters[i].data.third_party_details
+  - If so, who are they and why does data go to them?: matters[i].data.third_party_details
     input type: area
     show if: matters[i].data.third_party_sharing
     hint: |

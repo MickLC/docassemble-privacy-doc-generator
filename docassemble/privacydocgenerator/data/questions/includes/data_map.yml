@@ -39,7 +39,7 @@ code: |
 sets: matters[i].systems_initialized
 ---
 question: |
-  Vendor & System Inventory — ${ matters[i].org.name.text }
+  Where does the client's data live? — ${ matters[i].org.name.text }
 subquestion: |
   If you already know some of the systems, vendors, or storage locations
   where personal data lives — cloud platforms, on-premise servers, physical
@@ -61,7 +61,7 @@ question: |
 fields:
   - Name of the system, vendor, or storage location: x.name
     hint: e.g. Salesforce, AWS S3, Stripe, on-premise file server
-  - Category: x.category
+  - What type of system is this?: x.category
     datatype: dropdown
     choices:
       - Cloud CRM
@@ -100,14 +100,16 @@ fields:
       - Sexual orientation or gender identity
       - Criminal conviction data
       - Other
-  - Is this vendor a sub-processor of another system already listed?: x.is_sub_processor
+  - Does this vendor actually run on top of another system already on this list — for example, a piece of software that's hosted on AWS, which you've already listed?: x.is_sub_processor
     datatype: yesnoradio
-  - If yes, which system is it a sub-processor of?: x.sub_processor_of
+    hint: Legal category — sub-processor
+  - Which system does it run on?: x.sub_processor_of
     show if: x.is_sub_processor
     required: False
     hint: e.g. "Runs on AWS, which is already listed above"
-  - Is a Data Processing Agreement (DPA) in place with this vendor?: x.dpa_in_place
+  - Does the client have a signed data-handling agreement with this vendor?: x.dpa_in_place
     datatype: yesnoradio
+    hint: Legal category — Data Processing Agreement (DPA)
 ---
 # Referencing .name forces the whole fields question above to run (all
 # its fields live on one screen), then marks the item complete so

@@ -21,13 +21,16 @@ sets: matters[i].gdpr_initialized
 # --- PART 1: DATA PROCESSING DETAILS ---
 
 question: |
-  GDPR — Lawful Basis for Processing — ${ matters[i].org.name.text }
+  What's the legal basis for this? — ${ matters[i].org.name.text }
 subquestion: |
-  Under GDPR Article 6, the client must identify a lawful basis for each
-  processing activity. Select all that apply.
+  GDPR requires a lawful basis for every use of personal data. Based on what
+  we've discussed about the client's activities, select every basis that
+  applies somewhere in the business.
 fields:
-  - no label: matters[i].gdpr.lawful_bases
+  - label: Lawful basis (or bases) relied upon
+    field: matters[i].gdpr.lawful_bases
     datatype: checkboxes
+    hint: Legal category — GDPR Article 6 lawful basis
     choices:
       - Consent (Article 6(1)(a))
       - Contract performance (Article 6(1)(b))
@@ -37,16 +40,20 @@ fields:
       - Legitimate interests (Article 6(1)(f))
 ---
 question: |
-  GDPR — Special Category Data — ${ matters[i].org.name.text }
+  Especially sensitive data — ${ matters[i].org.name.text }
 subquestion: |
-  If the client processes special category data (Article 9), select
-  the applicable Article 9(2) condition(s).
+  GDPR singles out certain highly sensitive types of data — health, racial or
+  ethnic origin, religious beliefs, sexual orientation, biometric data, and
+  similar — for extra protection.
 fields:
-  - Does the client process special category data?: matters[i].gdpr.processes_special_category
+  - Does the client collect or use any of this kind of especially sensitive data?: matters[i].gdpr.processes_special_category
     datatype: yesnoradio
-  - Article 9(2) condition(s): matters[i].gdpr.special_category_basis
+    hint: Legal category — special category data (GDPR Article 9)
+  - label: Which legal condition justifies processing it?
+    field: matters[i].gdpr.special_category_basis
     datatype: checkboxes
     show if: matters[i].gdpr.processes_special_category
+    hint: Legal category — GDPR Article 9(2) condition
     choices:
       - Explicit consent (Article 9(2)(a))
       - Employment / social security obligations (Article 9(2)(b))
@@ -60,30 +67,33 @@ fields:
       - Archiving / research / statistics (Article 9(2)(j))
 ---
 question: |
-  GDPR — International Data Transfers — ${ matters[i].org.name.text }
+  Sending data outside the UK/EU — ${ matters[i].org.name.text }
 fields:
-  - Does the client transfer personal data outside the UK or EEA?: matters[i].gdpr.international_transfers
+  - Does the client send personal data to countries outside the UK or European Economic Area?: matters[i].gdpr.international_transfers
     datatype: yesnoradio
-  - Transfer mechanism(s) used: matters[i].gdpr.transfer_mechanisms
+  - label: What legal mechanism covers that transfer?
+    field: matters[i].gdpr.transfer_mechanisms
     datatype: checkboxes
     show if: matters[i].gdpr.international_transfers
+    hint: Attorney determination — GDPR Article 46 transfer mechanism
     choices:
       - Adequacy decision
       - Standard Contractual Clauses (SCCs)
       - Binding Corporate Rules (BCRs)
       - UK International Data Transfer Agreement (IDTA)
       - Derogations under Article 49
-  - Countries or regions to which data is transferred: matters[i].gdpr.transfer_destinations
+  - Which countries or regions receive this data?: matters[i].gdpr.transfer_destinations
     input type: area
     show if: matters[i].gdpr.international_transfers
     required: False
     hint: e.g. United States (SCCs in place), India (SCCs in place)
 ---
 question: |
-  GDPR — Data Protection Officer — ${ matters[i].org.name.text }
+  Does the client have a Data Protection Officer? — ${ matters[i].org.name.text }
 fields:
-  - Has the client appointed a Data Protection Officer (DPO)?: matters[i].gdpr.dpo_exists
+  - Has the client officially appointed a Data Protection Officer (DPO)?: matters[i].gdpr.dpo_exists
     datatype: yesnoradio
+    hint: Legal category — GDPR Article 37 DPO appointment
   - DPO First Name: matters[i].gdpr.dpo.name.first
     show if: matters[i].gdpr.dpo_exists
   - DPO Last Name: matters[i].gdpr.dpo.name.last
@@ -96,9 +106,9 @@ fields:
     required: False
 ---
 question: |
-  GDPR — Supervisory Authority — ${ matters[i].org.name.text }
+  Who's the regulator? — ${ matters[i].org.name.text }
 subquestion: |
-  Identify the relevant supervisory authority for complaints.
+  Which data protection authority would handle complaints about the client?
 fields:
   - Lead Supervisory Authority: matters[i].gdpr.supervisory_authority
     hint: e.g. Information Commissioner's Office (ICO) — UK; CNIL — France

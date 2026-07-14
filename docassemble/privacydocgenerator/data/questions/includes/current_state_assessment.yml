@@ -19,7 +19,7 @@ code: |
 sets: matters[i].current_state_initialized
 ---
 question: |
-  Data Collection Methods — ${ matters[i].org.name.text }
+  How does the client collect information? — ${ matters[i].org.name.text }
 subquestion: |
   How does the client currently collect personal data?
   Select all that apply.
@@ -41,7 +41,7 @@ fields:
       - Other
 ---
 question: |
-  Data Storage and Systems — ${ matters[i].org.name.text }
+  Where is that information stored? — ${ matters[i].org.name.text }
 subquestion: |
   Where does the client currently store personal data?
 fields:
@@ -65,7 +65,7 @@ fields:
     label above field: True
 ---
 question: |
-  Existing Privacy Documentation — ${ matters[i].org.name.text }
+  What privacy paperwork already exists? — ${ matters[i].org.name.text }
 subquestion: |
   What privacy-related documentation does the client currently have?
   Check all that exist in any form, even if informal or out of date.
@@ -91,7 +91,7 @@ fields:
       matters[i].current_state.existing_docs['A published privacy policy or notice on their website']
 ---
 question: |
-  Vendor and Third-Party Relationships — ${ matters[i].org.name.text }
+  The client's vendors and who else touches this data — ${ matters[i].org.name.text }
 subquestion: |
   Describe the client's current vendor and data-sharing landscape.
 fields:
@@ -102,19 +102,22 @@ fields:
       - 6–20
       - More than 20
       - Unknown
-  - Do any vendor contracts currently include data processing or data protection terms?: matters[i].current_state.vendor_contracts_include_dp_terms
+  - Do any of the client's vendor contracts already include specific language about how the vendor can use, protect, or must return/delete the data?: matters[i].current_state.vendor_contracts_include_dp_terms
     datatype: yesnoradio
-  - Does the client share or sell personal data with third parties for their own use (not as a service provider)?: matters[i].current_state.shares_data_commercially
+    hint: Legal category — data processing agreement (DPA) terms
+  - Does the client give other companies access to personal data for their own separate use — not just to perform a service for the client?: matters[i].current_state.shares_data_commercially
     datatype: yesnoradio
+    hint: Legal category — sale or sharing of personal data with third parties
 ---
 question: |
-  Consumer / Data Subject Interactions — ${ matters[i].org.name.text }
+  Requests from customers or employees — ${ matters[i].org.name.text }
 subquestion: |
   How does the client currently handle privacy-related requests from individuals?
 fields:
-  - Has the client ever received a data subject access request (DSAR) or consumer rights request?: matters[i].current_state.has_received_rights_requests
+  - Has anyone ever asked the client to see, get a copy of, correct, or delete their personal information?: matters[i].current_state.has_received_rights_requests
     datatype: yesnoradio
-  - Does the client have a documented procedure for handling rights requests?: matters[i].current_state.has_rights_request_procedure
+    hint: Legal category — data subject access request (DSAR) / consumer rights request
+  - Does the client have a written process for handling those kinds of requests?: matters[i].current_state.has_rights_request_procedure
     datatype: yesnoradio
   - Does the client currently have any mechanism for individuals to opt out of marketing or data processing?: matters[i].current_state.has_opt_out_mechanism
     datatype: yesnoradio
@@ -124,17 +127,18 @@ fields:
     datatype: yesnoradio
 ---
 question: |
-  Staff and Training — ${ matters[i].org.name.text }
+  Staff awareness — ${ matters[i].org.name.text }
 subquestion: |
   What is the current state of data protection awareness within the organisation?
 fields:
-  - Does any individual within the organisation have designated responsibility for data protection or privacy?: matters[i].current_state.has_privacy_lead
+  - Does anyone at the company own privacy or data protection as part of their job?: matters[i].current_state.has_privacy_lead
     datatype: yesnoradio
   - If yes, describe their role: matters[i].current_state.privacy_lead_role
     required: False
     show if: matters[i].current_state.has_privacy_lead
     hint: e.g. General Counsel, IT Manager, Operations Director
-  - Have staff received any data protection or privacy training in the last 12 months?: matters[i].current_state.has_staff_training
+  - Have staff had any privacy or data-handling training in the last 12 months?: matters[i].current_state.has_staff_training
     datatype: yesnoradio
-  - Does the client use automated decision-making or profiling that could significantly affect individuals?: matters[i].current_state.uses_automated_decisions
+  - Does the client use automated systems (algorithms, AI/ML models, etc.) to make decisions about people that could meaningfully affect them — for example, automatically approving or denying something?: matters[i].current_state.uses_automated_decisions
     datatype: yesnoradio
+    hint: Legal category — automated decision-making / profiling with legal or similarly significant effects
