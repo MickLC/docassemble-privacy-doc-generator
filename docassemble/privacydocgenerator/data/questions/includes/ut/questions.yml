@@ -7,8 +7,8 @@
 # Only presented when Utah Consumer Privacy Act is confirmed.
 #
 # BESPOKE (not the shared state_privacy template) — Phase 3 step 4 research
-# found Utah has the most materially divergent rights model of any state
-# reviewed: no correction right, no profiling opt-out, deletion scoped only
+# found Utah has one of the most materially divergent rights models of any
+# state reviewed: no profiling opt-out, deletion/portability scoped only
 # to consumer-provided data, an opt-out (not opt-in) sensitive-data model,
 # NO appeals process anywhere in the statute, and NO Data Protection
 # Assessment requirement of any kind. Reusing VCDPA's shape here would ask
@@ -16,6 +16,18 @@
 # would omit UCPA's actual opt-out sensitive-data framing. See
 # state_privacy_acts.py's module docstring / BUILD_PLAN_PHASE6.md for the
 # full classification.
+#
+# CORRECTION (2026-07-14): the "no correction right" claim above is now
+# STALE. Utah Code § 13-61-201(4), added by the 2025 General Session
+# (Chapter 468), added a correction right that did not exist in the 2022
+# original enactment this file was first built against — confirmed by
+# reading the current codified text directly. The Privacy Statement
+# content in data/sources/state_privacy_clauses.json (key "UT") already
+# reflects this and includes a Right to Correct. This questions.yml file's
+# Part 2 posture screen and gap_analysis_engine.py's analyse_ut_gaps()
+# do NOT yet ask about/check a correction-request procedure — that is a
+# follow-up still owed (out of scope for the pass that added this note),
+# not a modeled gap today.
 # ===============================================
 code: |
   matters[i].initializeAttribute('ut', DAObject)

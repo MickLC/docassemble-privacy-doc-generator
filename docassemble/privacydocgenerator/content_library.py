@@ -54,3 +54,11 @@ def vcdpa_consumer_rights():
 
 def vcdpa_sensitive_data_categories():
     return _load('vcdpa_clauses.json')['sensitive_data_categories']
+
+
+def state_privacy_consumer_rights(code):
+    return _load('state_privacy_clauses.json')[code]['consumer_rights']
+
+
+def state_privacy_sensitive_data_categories(code):
+    return _load('state_privacy_clauses.json')[code]['sensitive_data_categories']

@@ -293,13 +293,19 @@ STATE_PRIVACY_CONFIG = {
     'Tennessee Information Protection Act': dict(
         code='TN',
         citations=dict(
-            rights='Tenn. Code Ann. § 47-18-3203(a)(2)',
-            deadline='Tenn. Code Ann. § 47-18-3203(b)(1)',
-            appeal='Tenn. Code Ann. § 47-18-3203(c)',
-            notice='Tenn. Code Ann. § 47-18-3204(e)',
-            sensitive_data='Tenn. Code Ann. § 47-18-3204(a)(6)',
-            dpa='Tenn. Code Ann. § 47-18-3206(a)',
-            contracts='Tenn. Code Ann. § 47-18-3205',
+            # Corrected 2026-07-14: TIPA is codified at §§ 47-18-3301 to
+            # -3314 (2023 Pub. Acts, c. 408, eff. 2025-07-01), not the
+            # 47-18-32xx range originally recorded here — confirmed by
+            # reading the actual statute text in the Privacy skill's
+            # database (every section below is the correct one +101 from
+            # the earlier, wrong numbering). See BUILD_PLAN_PHASE6.md.
+            rights='Tenn. Code Ann. § 47-18-3304(a)(2)',
+            deadline='Tenn. Code Ann. § 47-18-3304(b)(1)',
+            appeal='Tenn. Code Ann. § 47-18-3304(c)',
+            notice='Tenn. Code Ann. § 47-18-3305(e)',
+            sensitive_data='Tenn. Code Ann. § 47-18-3305(a)(6)',
+            dpa='Tenn. Code Ann. § 47-18-3307(a)',
+            contracts='Tenn. Code Ann. § 47-18-3306(b)',
         ),
         requires_uoom=False,
         uoom_citation=None,
@@ -308,15 +314,16 @@ STATE_PRIVACY_CONFIG = {
             'floor on top of the consumer-volume test (already reflected '
             'in detect_tn()).',
             'Mandatory 60-day AG cure period is a standing precondition '
-            'to all enforcement (§ 47-18-3212(b)), not a sunsetting one.',
+            'to all enforcement (§ 47-18-3313(b)), not a sunsetting one.',
             'Maintaining a NIST Privacy Framework-conformant written '
             'privacy program is an affirmative defense against '
-            'enforcement (§ 47-18-3213) — worth flagging to clients as a '
+            'enforcement (§ 47-18-3314) — worth flagging to clients as a '
             'voluntary compliance opportunity.',
-            'Appeal decision deadline is 60 days, not 45; consumers get '
-            'two free responses per year, not one (§ 47-18-3203(b)(3)).',
+            'Appeal decision deadline is 60 days (§ 47-18-3304(c)); '
+            'consumers get two free responses per year, not one '
+            '(§ 47-18-3304(b)(3)).',
             'The DPA trigger list includes an open-ended "heightened '
-            'risk of harm" catch-all (§ 47-18-3206(a)(5)) beyond the '
+            'risk of harm" catch-all (§ 47-18-3307(a)(5)) beyond the '
             'standard four categories.',
         ],
     ),

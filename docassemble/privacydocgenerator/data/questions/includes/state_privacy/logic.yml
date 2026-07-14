@@ -12,3 +12,11 @@ code: |
       x.targeted_advertising or x.sells_data or x.profiling_opt_out
   )
 sets: x.include_opt_out_section
+---
+code: |
+  x.applicable_rights = state_privacy_consumer_rights(x.code)
+sets: x.applicable_rights
+---
+code: |
+  x.sensitive_data_categories_reference = state_privacy_sensitive_data_categories(x.code)
+sets: x.sensitive_data_categories_reference

@@ -13,3 +13,11 @@ code: |
       matters[i].ut.role in ['Controller', 'Both']
   )
 sets: matters[i].ut.is_controller
+---
+code: |
+  matters[i].ut.applicable_rights = state_privacy_consumer_rights('UT')
+sets: matters[i].ut.applicable_rights
+---
+code: |
+  matters[i].ut.sensitive_data_categories_reference = state_privacy_sensitive_data_categories('UT')
+sets: matters[i].ut.sensitive_data_categories_reference

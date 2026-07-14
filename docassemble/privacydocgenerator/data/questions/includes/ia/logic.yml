@@ -11,3 +11,11 @@ code: |
       matters[i].ia.role in ['Controller', 'Both']
   )
 sets: matters[i].ia.is_controller
+---
+code: |
+  matters[i].ia.applicable_rights = state_privacy_consumer_rights('IA')
+sets: matters[i].ia.applicable_rights
+---
+code: |
+  matters[i].ia.sensitive_data_categories_reference = state_privacy_sensitive_data_categories('IA')
+sets: matters[i].ia.sensitive_data_categories_reference

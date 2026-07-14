@@ -1,0 +1,739 @@
+{
+  "_meta": {
+    "status": "Phase 3 follow-up (BUILD_PLAN_PHASE6.md) — Privacy Statement wiring for the 16 new states, extracted 2026-07-14, not attorney-verified",
+    "note": "Consumer-rights and sensitive-data-category content for the 11 shared-template states (IN, KY, CO, DE, MT, NE, NH, NJ, OR, RI, TN) and 5 bespoke states (MD, MN, CT, IA, UT), extracted directly from primary statute text via the Privacy skill's privacy.sqlite database (never from memory), matching the existing vcdpa_clauses.json/tdpsa_clauses.json schema/tone. Every citation given to the extraction agents as a starting point was independently checked against body text; several were wrong (duty sections mistaken for definitions sections) and corrected — see each entry's source_note. Notable findings: Utah's consumer-rights model now includes a correction right (Utah Code § 13-61-201(4), added by the 2025 General Session, Ch. 468) that this codebase's existing build notes/questions.yml comments describe as absent — that is now stale and the questions.yml/gap-analysis posture for Utah should be revisited to ask about it. Connecticut's Consumer Health Data gap (Conn. Gen. Stat. § 42-526 never sourced) was independently reconfirmed — no CHD-specific rights/restrictions are modeled for CT beyond what the sourced definitions section supports. Tennessee's citations in state_privacy_acts.py were found and fixed to be off by a whole \"Part\" (old numbering assumed §§ 47-18-3201-3299; the actual, current codification is §§ 47-18-3301-3314) — fixed in this same pass. Do not rely on any value below for actual client advice until marked verified."
+  },
+  "IN": {
+    "consumer_rights": [
+      {
+        "right": "Right to Access",
+        "description": "You have the right to confirm whether we are processing your personal data and to access that personal data."
+      },
+      {
+        "right": "Right to Correct",
+        "description": "You have the right to correct inaccuracies in your personal data, taking into account the nature of the data and the purposes of processing it."
+      },
+      {
+        "right": "Right to Delete",
+        "description": "You have the right to delete personal data you provided to us or that we obtained about you."
+      },
+      {
+        "right": "Right to Data Portability",
+        "description": "You have the right to obtain a copy or a representative summary of your personal data in a portable and, to the extent technically practicable, readily usable format."
+      },
+      {
+        "right": "Right to Opt Out of Targeted Advertising",
+        "description": "You have the right to opt out of the processing of your personal data for purposes of targeted advertising."
+      },
+      {
+        "right": "Right to Opt Out of Sale",
+        "description": "You have the right to opt out of the sale of your personal data."
+      },
+      {
+        "right": "Right to Opt Out of Profiling",
+        "description": "You have the right to opt out of profiling in furtherance of decisions that produce legal or similarly significant effects concerning you."
+      }
+    ],
+    "sensitive_data_categories": [
+      "Racial or ethnic origin",
+      "Religious beliefs",
+      "Mental or physical health diagnosis made by a health care provider",
+      "Sexual orientation",
+      "Citizenship or immigration status",
+      "Genetic or biometric data processed for the purpose of uniquely identifying a specific individual",
+      "Personal data collected from a known child",
+      "Precise geolocation data"
+    ],
+    "verified": false,
+    "source_note": "Rights: IC 24-15-3-1(b) (confirmed as given). Sensitive data: IC 24-15-2-28 (definitions section), not IC 24-15-4-1(5) as originally cited -- IC 24-15-4-1 is the controller-duties chapter (data minimization/purpose limitation), not where 'sensitive data' is defined; the actual enumerated definition lives in the Chapter 2 definitions section, Sec. 28."
+  },
+  "KY": {
+    "consumer_rights": [
+      {
+        "right": "Right to Access",
+        "description": "You have the right to confirm whether we are processing your personal data and to access that personal data, unless doing so would require us to reveal a trade secret."
+      },
+      {
+        "right": "Right to Correct",
+        "description": "You have the right to correct inaccuracies in your personal data, taking into account the nature of the data and the purposes of processing it."
+      },
+      {
+        "right": "Right to Delete",
+        "description": "You have the right to delete personal data you provided to us or that we obtained about you."
+      },
+      {
+        "right": "Right to Data Portability",
+        "description": "You have the right to obtain a copy of your personal data in a portable and, to the extent technically practicable, readily usable format that allows you to transmit the data to another controller."
+      },
+      {
+        "right": "Right to Opt Out of Targeted Advertising",
+        "description": "You have the right to opt out of the processing of your personal data for purposes of targeted advertising."
+      },
+      {
+        "right": "Right to Opt Out of Sale",
+        "description": "You have the right to opt out of the sale of your personal data."
+      },
+      {
+        "right": "Right to Opt Out of Profiling",
+        "description": "You have the right to opt out of profiling in furtherance of decisions that produce legal or similarly significant effects concerning you."
+      }
+    ],
+    "sensitive_data_categories": [
+      "Racial or ethnic origin",
+      "Religious beliefs",
+      "Mental or physical health diagnosis",
+      "Sexual orientation",
+      "Citizenship or immigration status",
+      "Genetic or biometric data processed for the purpose of uniquely identifying a specific natural person",
+      "Personal data collected from a known child",
+      "Precise geolocation data"
+    ],
+    "verified": false,
+    "source_note": "Rights: KRS 367.3615(2)(a)-(e) (confirmed as given -- note the statute numbers sensitive data as subsection (29), not (1)(e); the citation given, KRS 367.3617(1)(e), is actually within the controller-duties/privacy-notice section, not the definitions section). Sensitive data: KRS 367.3611(29) (definitions section)."
+  },
+  "CO": {
+    "consumer_rights": [
+      {
+        "right": "Right to Opt Out of Targeted Advertising",
+        "description": "You have the right to opt out of the processing of your personal data for purposes of targeted advertising."
+      },
+      {
+        "right": "Right to Opt Out of Sale",
+        "description": "You have the right to opt out of the sale of your personal data."
+      },
+      {
+        "right": "Right to Opt Out of Profiling",
+        "description": "You have the right to opt out of the processing of your personal data for purposes of profiling in furtherance of decisions that produce legal or similarly significant effects concerning you."
+      },
+      {
+        "right": "Right to Access",
+        "description": "You have the right to confirm whether we are processing your personal data and to access that personal data."
+      },
+      {
+        "right": "Right to Correct",
+        "description": "You have the right to correct inaccuracies in your personal data, taking into account the nature of the data and the purposes of processing it."
+      },
+      {
+        "right": "Right to Delete",
+        "description": "You have the right to delete personal data concerning you."
+      },
+      {
+        "right": "Right to Data Portability",
+        "description": "You have the right to obtain your personal data in a portable and, to the extent technically feasible, readily usable format that allows you to transmit the data to another entity, up to twice per calendar year."
+      }
+    ],
+    "sensitive_data_categories": [
+      "Racial or ethnic origin",
+      "Religious beliefs",
+      "Mental or physical health condition or diagnosis",
+      "Sex life or sexual orientation",
+      "Citizenship or citizenship status",
+      "Genetic or biometric data processed for the purpose of uniquely identifying an individual",
+      "Personal data from a known child",
+      "Biological data"
+    ],
+    "verified": false,
+    "source_note": "Rights: C.R.S. Sec. 6-1-1306(1)(a)-(e) (confirmed as given -- (1)(a) is the opt-out right, split by the statute itself into targeted advertising / sale / profiling sub-items (I)(A)-(C); (b) access, (c) correction, (d) deletion, (e) portability). Sensitive data: C.R.S. Sec. 6-1-1303(24), the definitions section (not Sec. 6-1-1308(7), which is the controller-duty section referencing sensitive data rather than defining it). Note: the statute's own text reads 'citizenship or citizenship status,' not 'immigration status' as might be expected by analogy to other states -- verified verbatim from the definitions section body text, flagged as worth double-checking against the official Colorado Revised Statutes site given how unusual that phrasing is. 'Biological data' (a CO-specific category covering neural data) was added by 2024 amendment (HB 24-1058) and has no counterpart in VCDPA/IN/KY."
+  },
+  "DE": {
+    "consumer_rights": [
+      {
+        "right": "Right to Access",
+        "description": "You have the right to confirm whether we are processing your personal data and to access that personal data, unless doing so would require us to reveal a trade secret."
+      },
+      {
+        "right": "Right to Correct",
+        "description": "You have the right to correct inaccuracies in your personal data, taking into account the nature of the data and the purposes of processing it."
+      },
+      {
+        "right": "Right to Delete",
+        "description": "You have the right to delete personal data you provided to us or that we obtained about you."
+      },
+      {
+        "right": "Right to Data Portability",
+        "description": "You have the right to obtain a copy of your personal data in a portable and, to the extent technically feasible, readily usable format that allows you to transmit the data to another controller."
+      },
+      {
+        "right": "Right to a List of Third-Party Categories",
+        "description": "You have the right to obtain a list of the categories of third parties to which we have disclosed your personal data."
+      },
+      {
+        "right": "Right to Opt Out of Targeted Advertising",
+        "description": "You have the right to opt out of the processing of your personal data for purposes of targeted advertising."
+      },
+      {
+        "right": "Right to Opt Out of Sale",
+        "description": "You have the right to opt out of the sale of your personal data."
+      },
+      {
+        "right": "Right to Opt Out of Profiling",
+        "description": "You have the right to opt out of profiling in furtherance of solely automated decisions that produce legal or similarly significant effects concerning you."
+      }
+    ],
+    "sensitive_data_categories": [
+      "Racial or ethnic origin",
+      "Religious beliefs",
+      "Mental or physical health condition or diagnosis, including pregnancy",
+      "Sex life",
+      "Sexual orientation",
+      "Status as transgender or nonbinary",
+      "Citizenship status",
+      "Immigration status",
+      "Genetic or biometric data",
+      "Personal data of a known child",
+      "Precise geolocation data"
+    ],
+    "verified": false,
+    "source_note": "Rights: 6 Del. C. Sec. 12D-104(a)(1)-(6) (confirmed as given, including the standalone third-party-category-list right at (a)(5), correctly distinguished from the opt-out right which is (a)(6) with sub-items a-c for targeted advertising/sale/profiling). Sensitive data: 6 Del. C. Sec. 12D-102(30), the definitions section (not Sec. 12D-106(a)(4), which is a duty/consent section referencing sensitive data rather than defining it). Delaware's sensitive-data list is notably broader than IN/KY/CO/VCDPA -- it separately enumerates 'sex life,' 'status as transgender or nonbinary,' and splits 'citizenship status' from 'immigration status' as two distinct items, and (unlike IN/KY/CO) does not qualify genetic/biometric data with a 'processed to uniquely identify' limitation."
+  },
+  "MT": {
+    "consumer_rights": [
+      {
+        "right": "Right to Access",
+        "description": "You have the right to confirm whether we process your personal data and to access that personal data."
+      },
+      {
+        "right": "Right to Correct",
+        "description": "You have the right to correct inaccuracies in your personal data, taking into account the nature of the data and our purposes for processing."
+      },
+      {
+        "right": "Right to Delete",
+        "description": "You have the right to delete personal data provided by or obtained about you."
+      },
+      {
+        "right": "Right to Data Portability",
+        "description": "You have the right to obtain a copy of your personal data in a portable and, to the extent technically feasible, readily usable format."
+      },
+      {
+        "right": "Right to Opt Out of Targeted Advertising",
+        "description": "You have the right to opt out of the processing of your personal data for purposes of targeted advertising."
+      },
+      {
+        "right": "Right to Opt Out of Sale",
+        "description": "You have the right to opt out of the sale of your personal data."
+      },
+      {
+        "right": "Right to Opt Out of Profiling",
+        "description": "You have the right to opt out of profiling in furtherance of automated decisions that produce legal or similarly significant effects concerning you."
+      }
+    ],
+    "sensitive_data_categories": [
+      "Racial or ethnic origin",
+      "Religious beliefs",
+      "Mental or physical health condition or diagnosis",
+      "Sex life",
+      "Sexual orientation",
+      "Citizenship or immigration status",
+      "Genetic or biometric data processed to uniquely identify an individual",
+      "Personal data collected from a known child",
+      "Precise geolocation data"
+    ],
+    "verified": false,
+    "source_note": "Rights: Mont. Code Ann. § 30-14-2808(1)(a)-(e) (as amended, Ch. 567, L. 2025). Sensitive data definition: Mont. Code Ann. § 30-14-2802(28), not the duty section § 30-14-2812(2)(b) originally cited."
+  },
+  "NE": {
+    "consumer_rights": [
+      {
+        "right": "Right to Access",
+        "description": "You have the right to confirm whether we process your personal data and to access that personal data."
+      },
+      {
+        "right": "Right to Correct",
+        "description": "You have the right to correct inaccuracies in your personal data, taking into account the nature of the data and our purposes for processing."
+      },
+      {
+        "right": "Right to Delete",
+        "description": "You have the right to delete personal data provided by or obtained about you."
+      },
+      {
+        "right": "Right to Data Portability",
+        "description": "You have the right to obtain a copy of your personal data in a portable and, to the extent technically feasible, readily usable format, if the data is available in a digital format and was processed by automated means."
+      },
+      {
+        "right": "Right to Opt Out of Targeted Advertising",
+        "description": "You have the right to opt out of the processing of your personal data for purposes of targeted advertising."
+      },
+      {
+        "right": "Right to Opt Out of Sale",
+        "description": "You have the right to opt out of the sale of your personal data."
+      },
+      {
+        "right": "Right to Opt Out of Profiling",
+        "description": "You have the right to opt out of profiling in furtherance of a decision that produces a legal or similarly significant effect concerning you."
+      }
+    ],
+    "sensitive_data_categories": [
+      "Racial or ethnic origin",
+      "Religious beliefs",
+      "Mental or physical health diagnosis",
+      "Sexual orientation",
+      "Citizenship or immigration status",
+      "Genetic or biometric data processed to uniquely identify an individual",
+      "Personal data collected from a known child",
+      "Precise geolocation data"
+    ],
+    "verified": false,
+    "source_note": "Rights: Neb. Rev. Stat. § 87-1107(2)(a)-(e). Sensitive data definition: Neb. Rev. Stat. § 87-1102(30) (the definitions section; § 87-1103 as originally cited is the applicability section, not definitions). Note: § 87-1118 imposes a separate controller duty requiring prior consumer consent before selling sensitive data -- this is a duty, not a consumer right, and is not included above."
+  },
+  "NH": {
+    "consumer_rights": [
+      {
+        "right": "Right to Access",
+        "description": "You have the right to confirm whether we process your personal data and to access that personal data."
+      },
+      {
+        "right": "Right to Correct",
+        "description": "You have the right to correct inaccuracies in your personal data, taking into account the nature of the data and our purposes for processing."
+      },
+      {
+        "right": "Right to Delete",
+        "description": "You have the right to delete personal data provided by or obtained about you."
+      },
+      {
+        "right": "Right to Data Portability",
+        "description": "You have the right to obtain a copy of your personal data in a portable and, to the extent technically feasible, readily usable format."
+      },
+      {
+        "right": "Right to Opt Out of Targeted Advertising",
+        "description": "You have the right to opt out of the processing of your personal data for purposes of targeted advertising."
+      },
+      {
+        "right": "Right to Opt Out of Sale",
+        "description": "You have the right to opt out of the sale of your personal data."
+      },
+      {
+        "right": "Right to Opt Out of Profiling",
+        "description": "You have the right to opt out of profiling in furtherance of solely automated decisions that produce legal or similarly significant effects concerning you."
+      }
+    ],
+    "sensitive_data_categories": [
+      "Racial or ethnic origin",
+      "Religious beliefs",
+      "Mental or physical health condition or diagnosis",
+      "Sex life",
+      "Sexual orientation",
+      "Citizenship or immigration status",
+      "Genetic or biometric data processed to uniquely identify an individual",
+      "Personal data collected from a known child",
+      "Precise geolocation data"
+    ],
+    "verified": false,
+    "source_note": "Rights: RSA 507-H:4(I)(a)-(e). Sensitive data definition: RSA 507-H:1(XXVIII), not the duty section 507-H:6(I)(d) originally cited."
+  },
+  "NJ": {
+    "consumer_rights": [
+      {
+        "right": "Right to Access",
+        "description": "You have the right to confirm whether we process your personal data and to access that personal data."
+      },
+      {
+        "right": "Right to Correct",
+        "description": "You have the right to correct inaccuracies in your personal data, taking into account the nature of the information and our purposes for processing."
+      },
+      {
+        "right": "Right to Delete",
+        "description": "You have the right to delete personal data concerning you."
+      },
+      {
+        "right": "Right to Data Portability",
+        "description": "You have the right to obtain a copy of your personal data in a portable and, to the extent technically feasible, readily usable format that allows you to transmit the data to another entity."
+      },
+      {
+        "right": "Right to Opt Out of Targeted Advertising",
+        "description": "You have the right to opt out of the processing of your personal data for purposes of targeted advertising."
+      },
+      {
+        "right": "Right to Opt Out of Sale",
+        "description": "You have the right to opt out of the sale of your personal data."
+      },
+      {
+        "right": "Right to Opt Out of Profiling",
+        "description": "You have the right to opt out of profiling in furtherance of decisions that produce legal or similarly significant effects concerning you."
+      }
+    ],
+    "sensitive_data_categories": [
+      "Racial or ethnic origin",
+      "Religious beliefs",
+      "Mental or physical health condition, treatment, or diagnosis",
+      "Financial information (account number, account log-in, financial account, or credit or debit card number, combined with any required security code, access code, or password permitting access to the account)",
+      "Sex life or sexual orientation",
+      "Citizenship or immigration status",
+      "Status as transgender or non-binary",
+      "Genetic or biometric data processed to uniquely identify an individual",
+      "Personal data collected from a known child",
+      "Precise geolocation data"
+    ],
+    "verified": false,
+    "source_note": "Rights: N.J.S.A. 56:8-166.10 (P.L. 2023, c.266, sec. 7). Sensitive data definition: N.J.S.A. 56:8-166.4 (P.L. 2023, c.266, sec. 1, Definitions) -- broader than the standard model, separately enumerating financial account/credential data and transgender or non-binary status, confirming the build notes' flag; not the duty section 56:8-166.12(a)(4) originally cited."
+  },
+  "OR": {
+    "consumer_rights": [
+      {
+        "right": "Right to Access",
+        "description": "You have the right to confirm whether we process your personal data and to access that personal data."
+      },
+      {
+        "right": "Right to Correct",
+        "description": "You have the right to correct inaccuracies in your personal data, taking into account the nature of the data and our purposes for processing it."
+      },
+      {
+        "right": "Right to Delete",
+        "description": "You have the right to require us to delete personal data about you, including data you provided to us, data we obtained from another source, and data derived about you."
+      },
+      {
+        "right": "Right to Data Portability",
+        "description": "You have the right to obtain a copy of your personal data in a portable and, to the extent technically feasible, readily usable format that allows you to transmit it to another person without hindrance."
+      },
+      {
+        "right": "Right to Opt Out of Targeted Advertising",
+        "description": "You have the right to opt out of our processing of your personal data for purposes of targeted advertising."
+      },
+      {
+        "right": "Right to Opt Out of Sale",
+        "description": "You have the right to opt out of the sale of your personal data."
+      },
+      {
+        "right": "Right to Opt Out of Profiling",
+        "description": "You have the right to opt out of profiling in furtherance of decisions that produce legal effects or effects of similar significance concerning you."
+      }
+    ],
+    "sensitive_data_categories": [
+      "Racial or ethnic background",
+      "National origin",
+      "Religious beliefs",
+      "Mental or physical condition or diagnosis",
+      "Sexual orientation",
+      "Transgender or nonbinary status",
+      "Status as a victim of crime",
+      "Citizenship or immigration status",
+      "A child's personal data",
+      "Precise geolocation data (within a 1,750-foot radius)",
+      "Genetic data",
+      "Biometric data"
+    ],
+    "verified": false,
+    "source_note": "Rights: Or. Rev. Stat. Ann. § 646A.574(1) (access/confirm + third-party-list option in (1)(a), correct in (1)(b), delete in (1)(c), opt-out categories in (1)(d); portability format requirement in (2)). Sensitive data definition: Or. Rev. Stat. Ann. § 646A.570(18)(a)-(b) (definitions section), not the § 646A.578(2)(b) duty citation originally suggested -- that section imposes the consent duty but does not itself enumerate the categories. Confirms build-note flag: Oregon's sensitive-data definition is broader than the VCDPA-style standard -- it separately lists national origin, transgender/nonbinary status, and victim-of-crime status, and its genetic/biometric prong ((18)(a)(D)) is unqualified (\"is genetic or biometric data\"), unlike RI/TN/VCDPA which limit that category to genetic/biometric data processed to uniquely identify a person. Note also (18)(b): the geolocation prong excludes content of communications and advanced-utility-metering data."
+  },
+  "RI": {
+    "consumer_rights": [
+      {
+        "right": "Right to Access",
+        "description": "You have the right to confirm whether we are processing your personal data and to access that personal data."
+      },
+      {
+        "right": "Right to Correct",
+        "description": "You have the right to correct inaccuracies in your personal data, taking into account the nature of the data and the purposes of processing."
+      },
+      {
+        "right": "Right to Delete",
+        "description": "You have the right to delete personal data provided by, or obtained about, you, taking into account the nature of the data and the purposes of processing."
+      },
+      {
+        "right": "Right to Data Portability",
+        "description": "You have the right to obtain a copy of your personal data in a portable and, to the extent technically feasible, readily usable format that allows you to transmit the data to another controller without undue delay, where the processing is carried out by automated means."
+      },
+      {
+        "right": "Right to Opt Out of Targeted Advertising",
+        "description": "You have the right to opt out of the processing of your personal data for purposes of targeted advertising."
+      },
+      {
+        "right": "Right to Opt Out of Sale",
+        "description": "You have the right to opt out of the sale of your personal data."
+      },
+      {
+        "right": "Right to Opt Out of Profiling",
+        "description": "You have the right to opt out of profiling in furtherance of solely automated decisions that produce legal or similarly significant effects concerning you."
+      }
+    ],
+    "sensitive_data_categories": [
+      "Racial or ethnic origin",
+      "Religious beliefs",
+      "Mental or physical health condition or diagnosis",
+      "Sex life",
+      "Sexual orientation",
+      "Citizenship or immigration status",
+      "Genetic or biometric data processed for the purpose of uniquely identifying an individual",
+      "Personal data collected from a known child",
+      "Precise geolocation data"
+    ],
+    "verified": false,
+    "source_note": "Rights: R.I. Gen. Laws § 6-48.1-5(e) -- confirmed as given, but note the statute uses 'customer' throughout rather than 'consumer'. Sensitive data definition: R.I. Gen. Laws § 6-48.1-2(26) (definitions section) -- corrects the originally suggested § 6-48.1-4(c); that section imposes the consent duty for processing sensitive data but does not enumerate the categories, and the definitions section in this chapter is actually numbered -2, not -3. Confirms build-note flag: RI's profiling opt-out right, § 6-48.1-5(e)(4), is scoped to 'profiling in furtherance of solely automated decisions that produce legal or similarly significant effects' -- narrower than the generic VCDPA/TN 'decisions that produce legal or similarly significant effects' framing (which is not limited to solely automated decisions). Also note RI's sensitive-data list includes 'sex life' as its own category, distinct from sexual orientation -- not present in the VCDPA list."
+  },
+  "TN": {
+    "consumer_rights": [
+      {
+        "right": "Right to Access",
+        "description": "You have the right to confirm whether we are processing your personal information and to access that personal information."
+      },
+      {
+        "right": "Right to Correct",
+        "description": "You have the right to correct inaccuracies in your personal information, taking into account the nature of the information and the purposes of processing."
+      },
+      {
+        "right": "Right to Delete",
+        "description": "You have the right to delete personal information provided by or obtained about you."
+      },
+      {
+        "right": "Right to Data Portability",
+        "description": "You have the right to obtain a copy of the personal information you previously provided to us, in a portable and, to the extent technically feasible, readily usable format that allows you to transmit the data to another controller without hindrance, where processing is carried out by automated means."
+      },
+      {
+        "right": "Right to Opt Out of Sale",
+        "description": "You have the right to opt out of the sale of your personal information."
+      },
+      {
+        "right": "Right to Opt Out of Targeted Advertising",
+        "description": "You have the right to opt out of the processing of your personal information for purposes of targeted advertising."
+      },
+      {
+        "right": "Right to Opt Out of Profiling",
+        "description": "You have the right to opt out of profiling in furtherance of decisions that produce legal or similarly significant effects concerning you."
+      }
+    ],
+    "sensitive_data_categories": [
+      "Racial or ethnic origin",
+      "Religious beliefs",
+      "Mental or physical health diagnosis",
+      "Sexual orientation",
+      "Citizenship or immigration status",
+      "Genetic or biometric data processed to uniquely identify a person",
+      "Personal information collected from a known child",
+      "Precise geolocation data"
+    ],
+    "verified": false,
+    "source_note": "Rights: Tenn. Code Ann. § 47-18-3304(a)(2) -- corrects the originally suggested § 47-18-3203(a)(2); the actual codification of the Tennessee Information Protection Act runs § 47-18-3301 (short title) through at least § 47-18-3314, i.e. Part 33 sections numbered 33xx, not Part 32/32xx as the intake citation assumed. Sensitive data definition: Tenn. Code Ann. § 47-18-3302(26) (definitions section), likewise corrected from -3202. Sensitive-data consent duty is at § 47-18-3305(a)(6) (controller responsibilities section), correcting the originally suggested § 47-18-3204(a)(6). TN's rights and sensitive-data categories both track the standard VCDPA-style model with no narrowing or broadening -- profiling opt-out uses the generic 'legal or similarly significant effects' framing (not scoped to solely-automated decisions like RI), and the sensitive-data list matches VCDPA's eight categories with no additions."
+  },
+  "MD": {
+    "consumer_rights": [
+      {
+        "right": "Right to Access",
+        "description": "You have the right to confirm whether we are processing your personal data and to access that personal data."
+      },
+      {
+        "right": "Right to Correct",
+        "description": "You have the right to correct inaccuracies in your personal data, taking into account the nature of the data and our purposes for processing."
+      },
+      {
+        "right": "Right to Delete",
+        "description": "You have the right to delete personal data you provided to us or that we obtained about you, unless we are required by law to retain it."
+      },
+      {
+        "right": "Right to Data Portability",
+        "description": "You have the right to obtain a copy of your personal data that we process by automated means, in a portable and, to the extent technically feasible, readily usable format that allows you to transmit the data to another controller."
+      },
+      {
+        "right": "Right to a List of Third-Party Categories",
+        "description": "You have the right to obtain a list of the categories of third parties to which we have disclosed your personal data, or, if we do not maintain that information specific to you, a list of the categories of third parties to which we have disclosed any consumer's personal data."
+      },
+      {
+        "right": "Right to Opt Out of Targeted Advertising",
+        "description": "You have the right to opt out of the processing of your personal data for purposes of targeted advertising."
+      },
+      {
+        "right": "Right to Opt Out of Sale",
+        "description": "You have the right to opt out of the sale of your personal data."
+      },
+      {
+        "right": "Right to Opt Out of Profiling",
+        "description": "You have the right to opt out of profiling in furtherance of solely automated decisions that produce legal or similarly significant effects concerning you."
+      }
+    ],
+    "sensitive_data_categories": [
+      "Racial or ethnic origin",
+      "Religious beliefs",
+      "Consumer health data (including gender-affirming treatment and reproductive or sexual health care)",
+      "Sex life",
+      "Sexual orientation",
+      "Status as transgender or nonbinary",
+      "National origin",
+      "Citizenship or immigration status",
+      "Genetic data",
+      "Biometric data",
+      "Personal data collected from a known child",
+      "Precise geolocation data"
+    ],
+    "verified": false,
+    "source_note": "Md. Code Com. Law § 14-4701(gg) (sensitive-data definition) and § 14-4701(i) (consumer health data sub-definition, folded into (gg)(1)(iii)); § 14-4705(b)(1)-(7) (consumer rights). Confirms build note: MODPA grants a right to a list of third-party disclosure categories (§ 14-4705(b)(6)) — included above as its own right. The guardian/conservator delegation (§ 14-4705(d)(3)) is confirmed real but is a delegation-of-authority provision, not itself a distinct consumer right, so it is not listed as a separate rights-list entry. Per the task instructions, MODPA's necessity-based sensitive-data restriction (§ 14-4707(a)(1)-(2): collection/processing/sharing limited to strict necessity, sale of sensitive data banned outright) is deliberately NOT included in consumer_rights — it is a restriction on the controller that operates automatically, not a right a consumer invokes or opts into/out of, and forcing it into the 'You have the right to...' schema would misstate the law."
+  },
+  "MN": {
+    "consumer_rights": [
+      {
+        "right": "Right to Access",
+        "description": "You have the right to confirm whether we are processing your personal data and to access the categories of personal data we process about you."
+      },
+      {
+        "right": "Right to Correct",
+        "description": "You have the right to correct inaccurate personal data concerning you, taking into account the nature of the data and the purposes of processing."
+      },
+      {
+        "right": "Right to Delete",
+        "description": "You have the right to delete personal data concerning you."
+      },
+      {
+        "right": "Right to Data Portability",
+        "description": "You have the right to obtain personal data concerning you that you previously provided to us, in a portable and, to the extent technically feasible, readily usable format that allows you to transmit the data to another controller without hindrance, where the processing is carried out by automated means."
+      },
+      {
+        "right": "Right to Opt Out of Targeted Advertising",
+        "description": "You have the right to opt out of the processing of your personal data for targeted advertising."
+      },
+      {
+        "right": "Right to Opt Out of Sale",
+        "description": "You have the right to opt out of the sale of your personal data."
+      },
+      {
+        "right": "Right to Opt Out of Profiling",
+        "description": "You have the right to opt out of profiling in furtherance of automated decisions that produce legal or similarly significant effects concerning you."
+      },
+      {
+        "right": "Right to Question and Receive an Explanation of Profiling",
+        "description": "You have the right, if your personal data was profiled in furtherance of a decision producing a legal or similarly significant effect, to question the result, be informed of why the profiling led to that decision, be informed (if feasible) of what you could have done to secure a different decision, and review the personal data used in the profiling; if that data was inaccurate, you have the right to have it corrected and the profiling decision reevaluated."
+      },
+      {
+        "right": "Right to a List of Specific Third Parties",
+        "description": "You have the right to obtain a list of the specific third parties to which we have disclosed your personal data, or, if we do not maintain that information specific to you, a list of the specific third parties to which we have disclosed any consumer's personal data."
+      }
+    ],
+    "sensitive_data_categories": [
+      "Racial or ethnic origin",
+      "Religious beliefs",
+      "Mental or physical health condition or diagnosis",
+      "Sexual orientation",
+      "Citizenship or immigration status",
+      "Biometric data or genetic information processed to uniquely identify an individual",
+      "Personal data collected from a known child",
+      "Specific geolocation data"
+    ],
+    "verified": false,
+    "source_note": "Minn. Stat. § 325M.14 subd. 1(b)-(h) (consumer rights); § 325M.11(v) (sensitive-data definition); § 325M.16 subd. 2(d) (opt-in consent required for sensitive data). Confirms both build-note additions: the profiling question/explanation right (subd. 1(g)) and the specific-third-parties-disclosed-to right (subd. 1(h)) are both directly in the statutory text and beyond the standard VCDPA model. One nuance found during verification, not previously flagged: MN's delete right (subd. 1(d), 'delete personal data concerning the consumer') is NOT scoped to consumer-provided data, while its portability right (subd. 1(e)) IS expressly scoped to data 'which the consumer previously provided to the controller' -- the two rights use different scope language within the same section, worth knowing if drafting precise clause text."
+  },
+  "CT": {
+    "consumer_rights": [
+      {
+        "right": "Right to Access",
+        "description": "You have the right to confirm whether we are processing your personal data and to access that data -- including inferences drawn from it and whether we are processing it for profiling that produces a legal or similarly significant effect -- unless that would require us to reveal a trade secret."
+      },
+      {
+        "right": "Right to Correct",
+        "description": "You have the right to correct inaccuracies in your personal data, taking into account the nature of the data and our purposes for processing."
+      },
+      {
+        "right": "Right to Delete",
+        "description": "You have the right to delete personal data you provided to us or that we obtained about you."
+      },
+      {
+        "right": "Right to Data Portability",
+        "description": "You have the right to obtain a copy of your personal data that we process by automated means, in a portable and, to the extent technically feasible, readily usable format that allows you to transmit the data to another controller."
+      },
+      {
+        "right": "Right to Opt Out of Targeted Advertising",
+        "description": "You have the right to opt out of the processing of your personal data for targeted advertising."
+      },
+      {
+        "right": "Right to Opt Out of Sale",
+        "description": "You have the right to opt out of the sale of your personal data."
+      },
+      {
+        "right": "Right to Opt Out of Profiling",
+        "description": "You have the right to opt out of profiling in furtherance of automated decisions that produce a legal or similarly significant effect concerning you."
+      },
+      {
+        "right": "Right to Question and Review Profiling Decisions",
+        "description": "You have the right, if your personal data was used for profiling in furtherance of an automated decision producing a legal or similarly significant effect, to question the result, be informed of the reason for the decision, and review the personal data used; if the decision concerned housing, you also have the right to correct inaccurate data used in that profiling and have the decision reevaluated."
+      },
+      {
+        "right": "Right to a List of Third Parties Data Was Sold To",
+        "description": "You have the right to obtain a list of the third parties to which we have sold your personal data, or, if we do not maintain that information specific to you, a list of all third parties to which we have sold any consumer's personal data."
+      }
+    ],
+    "sensitive_data_categories": [
+      "Racial or ethnic origin",
+      "Religious beliefs",
+      "Mental or physical health condition, diagnosis, disability, or treatment",
+      "Sex life",
+      "Sexual orientation or status as nonbinary or transgender",
+      "Citizenship or immigration status",
+      "Consumer health data",
+      "Genetic or biometric data",
+      "Personal data collected from a known child",
+      "Status as a victim of crime",
+      "Precise geolocation data",
+      "Neural data",
+      "Financial account number, login credential, or payment card number with an associated access code",
+      "Government-issued identification number"
+    ],
+    "verified": false,
+    "source_note": "Conn. Gen. Stat. § 42-518(a) as amended by P.A. 25-113 § 8 (eff. 2026-07-01, already in force as of the 2026-07-14 current date); § 42-515(39) sensitive-data definition as amended by P.A. 25-113 § 5. Confirms build note: § 42-518(a)(7) grants a right to a list of third parties -- but note it is scoped to third parties data was SOLD to, not all third parties data was disclosed to (narrower than MD's/MN's 'disclosed' framing) -- and § 42-518(a)(6) grants the profiling question/review right. Also confirms the build note's claim that the 2026 amendment adds financial account numbers and government ID numbers to sensitive data, and additionally found two further 2026 additions not mentioned in the build note: neural data and status as a victim of crime. IMPORTANT GAP CONFIRMATION: searched all 168 chunks of this source for the operative text of Conn. Gen. Stat. § 42-526 (Consumer Health Data controller duties). It is genuinely absent -- every one of the 22 hits on '42-526' is a cross-reference from another section (definitions, exemptions, processor-contract provisions) reading 'sections 42-515 to 42-526, inclusive' or similar, never § 42-526's own substantive text. This CONFIRMS the known source gap flagged in ct/questions.yml. Per instructions, 'consumer health data' is still included as a sensitive-data category here because that comes from the sourced § 42-515(9)/(39) definitions -- but no CHD-specific restrictions or rights from § 42-526 itself (e.g., any Maryland-style necessity/geofencing regime) are modeled, assumed, or implied anywhere in this output."
+  },
+  "IA": {
+    "consumer_rights": [
+      {
+        "right": "Right to Access",
+        "description": "You have the right to confirm whether we are processing your personal data and to access that personal data."
+      },
+      {
+        "right": "Right to Delete",
+        "description": "You have the right to delete personal data you provided to us."
+      },
+      {
+        "right": "Right to Data Portability",
+        "description": "You have the right to obtain a copy of personal data you previously provided to us, in a portable and, to the extent technically practicable, readily usable format that allows you to transmit the data to another controller, where the processing is carried out by automated means. This right does not extend to information that already qualifies as protected 'personal information' under Iowa's security breach notification law."
+      },
+      {
+        "right": "Right to Opt Out of Sale",
+        "description": "You have the right to opt out of the sale of your personal data."
+      }
+    ],
+    "sensitive_data_categories": [
+      "Racial or ethnic origin",
+      "Religious beliefs",
+      "Mental or physical health diagnosis",
+      "Sexual orientation",
+      "Citizenship or immigration status",
+      "Genetic or biometric data processed to uniquely identify a natural person",
+      "Personal data collected from a known child",
+      "Precise geolocation data"
+    ],
+    "verified": false,
+    "source_note": "Iowa Code § 715D.3(1)(a)-(d) (the complete consumer rights list -- read directly rather than trusting the build note); § 715D.1(26) (sensitive-data definition); § 715D.4(2) (opt-out, not opt-in, sensitive-data model). Confirms the build note in full: Iowa's rights list has only four items -- access, delete, portability, opt-out of sale -- with NO correction right and NO opt-out of targeted advertising or profiling. Additional finding beyond what the build note flagged: Iowa's delete right (§ 715D.3(1)(b)) is expressly scoped to 'personal data provided by the consumer' only -- it does not reach data Iowa obtained about the consumer from other sources, a narrow scope similar to Utah's that the build note did not call out for Iowa. Also note the portability right (§ 715D.3(1)(c)) carves out data defined as 'personal information' under Iowa's breach-notification statute (Iowa Code § 715C.1), reflected in the description above. Iowa's sensitive-data category list is also narrower than its peers -- it omits 'sex life' and 'transgender/nonbinary status,' which MD/CT/MN include."
+  },
+  "UT": {
+    "consumer_rights": [
+      {
+        "right": "Right to Access",
+        "description": "You have the right to confirm whether we are processing your personal data and to access that personal data."
+      },
+      {
+        "right": "Right to Correct",
+        "description": "You have the right to request that we correct inaccuracies in your personal data, taking into account the nature of the data and our purposes for processing."
+      },
+      {
+        "right": "Right to Delete (Provided Data Only)",
+        "description": "You have the right to delete the personal data that you provided to us. This right does not extend to personal data we obtained about you from other sources."
+      },
+      {
+        "right": "Right to Data Portability (Provided Data Only)",
+        "description": "You have the right to obtain a copy of the personal data that you previously provided to us, in a format that is portable, to the extent technically feasible, and readily usable, to the extent practicable, so that you can transmit it to another controller where the processing is carried out by automated means. This right applies only to data you provided to us directly, not data we obtained about you from other sources."
+      },
+      {
+        "right": "Right to Opt Out of Targeted Advertising",
+        "description": "You have the right to opt out of the processing of your personal data for targeted advertising."
+      },
+      {
+        "right": "Right to Opt Out of Sale",
+        "description": "You have the right to opt out of the sale of your personal data."
+      }
+    ],
+    "sensitive_data_categories": [
+      "Racial or ethnic origin",
+      "Religious beliefs",
+      "Sexual orientation",
+      "Citizenship or immigration status",
+      "Medical history, mental or physical health condition, or medical treatment or diagnosis by a health care professional",
+      "Genetic or biometric data processed to identify a specific individual",
+      "Specific geolocation data"
+    ],
+    "verified": false,
+    "source_note": "Utah Code § 13-61-201 (consumer rights, current codified text reflecting the amendment by Chapter 468, 2025 General Session -- the DB source is the official le.utah.gov codification current through the 2026 General Session, i.e. this is the presently-in-force text, not a superseded version); § 13-61-101(34) (sensitive-data definition); § 13-61-302(3) (opt-out, not opt-in, sensitive-data model with a COPPA-consistent carve-out for known children). MATERIAL CORRECTION TO THE BUILD NOTE: contrary to the ut/questions.yml build note's claim that Utah has 'no correction right,' § 13-61-201(4) now reads 'A consumer has the right to request that a controller correct inaccuracies in the consumer's personal data...' -- this subsection was added by the 2025 General Session amendment (Chapter 468) to the original 2022 enactment, which indeed lacked a correction right. This looks like a genuine statutory change since the build note/BUILD_PLAN_PHASE6.md classification was written, not a research error -- but it means that classification is now stale on this specific point and the correction right should be added to Utah's rights model (the questions.yml build notes and any downstream engine logic assuming Utah has no correction right should be revisited). Everything else in the build note is confirmed accurate: deletion (§ 13-61-201(2)) and portability (§ 13-61-201(3)) remain expressly scoped to personal data 'that the consumer provided to the controller,' there is no profiling opt-out anywhere in the chapter, and a full-text search of all 38 chunks of this source turned up zero hits for 'appeal' or 'assessment' -- confirming no appeals process and no Data Protection Assessment requirement. One further finding: Utah's sensitive-data definition (§ 13-61-101(34)) does NOT list 'personal data of a known child' as its own sensitive-data category (unlike MD/CT/MN/IA) -- children's data is instead addressed only via the COPPA-consistent carve-out inside the consent/opt-out provision itself (§ 13-61-302(3)(b)), so it is correctly omitted from the sensitive_data_categories list above rather than added by analogy to the other four states."
+  }
+}

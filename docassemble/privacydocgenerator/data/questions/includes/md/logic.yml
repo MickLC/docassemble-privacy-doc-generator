@@ -15,3 +15,11 @@ code: |
       matters[i].md.role in ['Controller', 'Both']
   )
 sets: matters[i].md.is_controller
+---
+code: |
+  matters[i].md.applicable_rights = state_privacy_consumer_rights('MD')
+sets: matters[i].md.applicable_rights
+---
+code: |
+  matters[i].md.sensitive_data_categories_reference = state_privacy_sensitive_data_categories('MD')
+sets: matters[i].md.sensitive_data_categories_reference
