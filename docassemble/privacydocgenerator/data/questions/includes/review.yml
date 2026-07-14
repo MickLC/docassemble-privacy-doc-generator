@@ -62,6 +62,53 @@ subquestion: |
   PIAs completed: ${ 'Yes' if matters[i].vcdpa.pia_completed else 'No' }
   % endif
 
+  % for _spa in matters[i].state_acts.values():
+  **${ _spa.code } — ${ _spa.full_name }**
+  Role: ${ _spa.role }
+  Processes sensitive data: ${ 'Yes' if _spa.processes_sensitive_data else 'No' }
+  Sells data: ${ 'Yes' if _spa.sells_data else 'No' }
+  PIAs completed: ${ 'Yes' if _spa.pia_completed else 'No' }
+
+  % endfor
+
+  % if 'Maryland Online Data Privacy Act' in matters[i].confirmed_jurisdictions.true_values():
+  **MD — Maryland Online Data Privacy Act**
+  Role: ${ matters[i].md.role }
+  Processes sensitive data: ${ 'Yes' if matters[i].md.processes_sensitive_data else 'No' }
+  Sells data: ${ 'Yes' if matters[i].md.sells_data else 'No' }
+  PIAs completed: ${ 'Yes' if matters[i].md.pia_completed else 'No' }
+  % endif
+
+  % if 'Minnesota Consumer Data Privacy Act' in matters[i].confirmed_jurisdictions.true_values():
+  **MN — Minnesota Consumer Data Privacy Act**
+  Role: ${ matters[i].mn.role }
+  Processes sensitive data: ${ 'Yes' if matters[i].mn.processes_sensitive_data else 'No' }
+  Sells data: ${ 'Yes' if matters[i].mn.sells_data else 'No' }
+  PIAs completed: ${ 'Yes' if matters[i].mn.pia_completed else 'No' }
+  % endif
+
+  % if 'Connecticut Data Privacy Act' in matters[i].confirmed_jurisdictions.true_values():
+  **CT — Connecticut Data Privacy Act**
+  Role: ${ matters[i].ct.role }
+  Processes sensitive data: ${ 'Yes' if matters[i].ct.processes_sensitive_data else 'No' }
+  Sells data: ${ 'Yes' if matters[i].ct.sells_data else 'No' }
+  PIAs completed: ${ 'Yes' if matters[i].ct.pia_completed else 'No' }
+  % endif
+
+  % if 'Iowa Consumer Data Protection Act' in matters[i].confirmed_jurisdictions.true_values():
+  **IA — Iowa Consumer Data Protection Act**
+  Role: ${ matters[i].ia.role }
+  Processes sensitive data: ${ 'Yes' if matters[i].ia.processes_sensitive_data else 'No' }
+  Sells data: ${ 'Yes' if matters[i].ia.sells_data else 'No' }
+  % endif
+
+  % if 'Utah Consumer Privacy Act' in matters[i].confirmed_jurisdictions.true_values():
+  **UT — Utah Consumer Privacy Act**
+  Role: ${ matters[i].ut.role }
+  Processes sensitive data: ${ 'Yes' if matters[i].ut.processes_sensitive_data else 'No' }
+  Sells data: ${ 'Yes' if matters[i].ut.sells_data else 'No' }
+  % endif
+
   ---
 
   **Compliance Gap Summary** (${ matters[i].gap_analysis['counts']['total'] } finding(s))
