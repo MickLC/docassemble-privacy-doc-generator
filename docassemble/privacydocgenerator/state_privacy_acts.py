@@ -88,6 +88,8 @@ STATE_PRIVACY_CONFIG = {
             'General cure period sunset 2025-01-01, but preserved through '
             '2026-12-31 specifically for the new minors provisions '
             '(§ 6-1-1311(1)(d)).',
+            'Appeal decision deadline is 45 days, not the 60 days used in '
+            'most other states in this batch (C.R.S. § 6-1-1306(3)(b)).',
         ],
     ),
     'Delaware Personal Data Privacy Act': dict(
@@ -255,6 +257,8 @@ STATE_PRIVACY_CONFIG = {
             'Sensitive-data definition is broader than the standard '
             'model — separately includes transgender/nonbinary status '
             'and victim-of-crime status (§ 646A.570(18)(a)(A)).',
+            'Appeal decision deadline is 45 days, not the 60 days used in '
+            'most other states in this batch (ORS 646A.576(6)(d)).',
         ],
     ),
     'Rhode Island Data Transparency and Privacy Protection Act': dict(

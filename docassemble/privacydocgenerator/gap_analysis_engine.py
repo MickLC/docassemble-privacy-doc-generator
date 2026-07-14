@@ -615,6 +615,887 @@ def analyse_vcdpa_gaps(matter):
 
 
 # -----------------------------------------------
+# Shared-model State Privacy Act Gap Analysis
+# (Phase 3 step 4 REUSE/ADAPT tier: IN, KY, CO, DE, MT, NE, NH, NJ, OR,
+# RI, TN — see state_privacy_acts.py)
+# -----------------------------------------------
+def analyse_state_privacy_gaps(matter):
+    """
+    Evaluates compliance posture for every "standard model" state privacy
+    act StatePrivacyAct instance in matter.state_acts and returns gap
+    findings, mirroring analyse_vcdpa_gaps's structure since these states
+    were built as VCDPA-model reuses/adaptations (BUILD_PLAN_PHASE6.md
+    Phase 3 step 4). Iterates matter.state_acts.values() directly rather
+    than re-deriving the applicable list, since main.yml has already
+    populated this DADict with exactly the confirmed subset.
+    """
+    findings = []
+
+    for act in matter.state_acts.values():
+        p = act.posture
+        J = act.code
+
+        if not p.privacy_notice_provided:
+            findings.append(_gap(
+                J,
+                'Privacy Notice',
+                act.citation('notice'),
+                'No {} privacy notice provided to consumers.'.format(act.full_name),
+                'Controllers must provide consumers with a reasonably '
+                'accessible privacy notice meeting {} requirements.'.format(
+                    act.full_name
+                ),
+                '2. Notices & Consent',
+                '{} consumers are entitled to the same baseline notice '
+                'protections required across every comprehensive state '
+                'privacy law this tool tracks.'.format(act.code),
+                MUST_FIX
+            ))
+
+        if not p.rights_procedure_45_days:
+            findings.append(_gap(
+                J,
+                'Consumer Rights Response Procedure (45-day)',
+                act.citation('deadline'),
+                'No documented procedure to respond to consumer requests '
+                'within 45 days.',
+                'Controllers must respond to authenticated consumer rights '
+                'requests within 45 days under {}.'.format(act.full_name),
+                '3. Data Subject / Consumer Rights Procedures',
+                "{}'s 45-day response deadline mirrors the other "
+                'comprehensive state privacy laws this tool tracks — a '
+                'documented procedure is what keeps it from being '
+                'missed.'.format(act.code),
+                MUST_FIX
+            ))
+
+        if not p.appeals_procedure:
+            findings.append(_gap(
+                J,
+                'Consumer Appeals Procedure',
+                act.citation('appeal'),
+                'No appeals procedure in place for denied consumer requests.',
+                'Controllers must establish an internal process for '
+                'consumers to appeal the denial of a rights request under '
+                '{}.'.format(act.full_name),
+                '3. Data Subject / Consumer Rights Procedures',
+                'Consumers have a statutory right to appeal a denied '
+                'request; without an internal appeals process, that right '
+                'cannot actually be exercised.',
+                MUST_FIX
+            ))
+
+        if act.include_opt_out_section and not p.opt_out_mechanism_in_place:
+            findings.append(_gap(
+                J,
+                'Opt-Out Mechanism for Targeted Advertising / Sale / Profiling',
+                act.citation('notice'),
+                'No opt-out mechanism in place for applicable processing '
+                'activities.',
+                'The client engages in targeted advertising, sale of '
+                'personal data, or profiling with significant effects but '
+                'has not provided a mechanism for consumers to opt out, as '
+                'required by {}.'.format(act.full_name),
+                '2. Notices & Consent',
+                'Targeted advertising, sale, and significant-effect '
+                'profiling all trigger a consumer opt-out right under {} '
+                'that requires an actual working mechanism.'.format(act.code),
+                MUST_FIX
+            ))
+
+        if act.requires_uoom and not p.uoom_honored:
+            findings.append(_gap(
+                J,
+                'Universal Opt-Out Mechanism (UOOM)',
+                act.uoom_citation,
+                'Universal Opt-Out Mechanism not honored.',
+                '{} requires controllers to honor a recognized universal '
+                'opt-out mechanism. The client does not currently honor '
+                'any such signal.'.format(act.full_name),
+                '2. Notices & Consent',
+                '{} requires honoring recognized universal opt-out '
+                'signals — without support, individually-set opt-outs can '
+                'be silently ignored at scale.'.format(act.code),
+                MUST_FIX
+            ))
+
+        if act.processes_sensitive_data and not p.sensitive_data_consent_obtained:
+            findings.append(_gap(
+                J,
+                'Sensitive Data Opt-In Consent',
+                act.citation('sensitive_data'),
+                'Sensitive data processed without opt-in consent mechanism.',
+                "Processing of sensitive data requires the consumer's "
+                'prior opt-in consent under {}. No consent mechanism is '
+                'currently in place.'.format(act.full_name),
+                '2. Notices & Consent',
+                'Processing sensitive data without prior opt-in consent is '
+                'a standalone violation under {}, independent of any other '
+                'lawful basis analysis.'.format(act.code),
+                MUST_FIX
+            ))
+
+        if act.pia_completed and not p.pia_assessments_completed:
+            findings.append(_gap(
+                J,
+                'Data Protection Assessments',
+                act.citation('dpa'),
+                'Data Protection Assessments not completed for high-risk '
+                'processing.',
+                'Controllers must conduct and document Data Protection '
+                'Assessments before engaging in processing that presents a '
+                'heightened risk of harm under {}.'.format(act.full_name),
+                '9. Assessments (DPIA/LIA)',
+                '{} requires a documented risk assessment before engaging '
+                "in higher-risk processing — the same underlying "
+                "discipline as GDPR's DPIA, just under a different "
+                'statute.'.format(act.code),
+                MUST_FIX
+            ))
+
+        if not p.third_party_contracts_updated:
+            findings.append(_gap(
+                J,
+                'Third-Party Contracts Updated for {}'.format(act.code),
+                act.citation('contracts'),
+                'Contracts with third parties not reviewed or updated for '
+                '{} compliance.'.format(act.code),
+                'Existing contracts with third parties who receive '
+                'personal data should be reviewed and updated to include '
+                '{}-required provisions.'.format(act.code),
+                '5. Vendor & DPA Management',
+                'Older vendor contracts predating {} are unlikely to '
+                'include the processor obligations the statute now '
+                'requires.'.format(act.code),
+                SHOULD_FIX
+            ))
+
+    return findings
+
+
+# -----------------------------------------------
+# Maryland Online Data Privacy Act (MODPA) Gap Analysis (bespoke)
+# -----------------------------------------------
+def analyse_md_gaps(matter):
+    """
+    MODPA diverges from the shared-template model with a necessity-based
+    (not consent-based) sensitive-data restriction, a Consumer Health
+    Data/geofencing ban, a mandatory UOOM, and an under-18 ad/sale ban —
+    see md/questions.yml and BUILD_PLAN_PHASE6.md Phase 3 step 4.
+    """
+    findings = []
+    p = matter.md.posture
+
+    if not p.privacy_notice_provided:
+        findings.append(_gap(
+            'MD', 'Privacy Notice', 'Md. Code Com. Law § 14-4705',
+            'No MODPA-compliant privacy notice provided to consumers.',
+            'Controllers must provide consumers with a privacy notice '
+            'meeting MODPA requirements.',
+            '2. Notices & Consent',
+            'Maryland consumers are entitled to the same baseline notice '
+            'protections required across every comprehensive state '
+            'privacy law this tool tracks.',
+            MUST_FIX
+        ))
+
+    if not p.rights_procedure_45_days:
+        findings.append(_gap(
+            'MD', 'Consumer Rights Response Procedure (45-day)',
+            'Md. Code Com. Law § 14-4705(e)(2)',
+            'No documented procedure to respond to consumer requests '
+            'within 45 days.',
+            'Controllers must respond to authenticated consumer rights '
+            'requests within 45 days under MODPA.',
+            '3. Data Subject / Consumer Rights Procedures',
+            "MODPA's 45-day response deadline mirrors the other "
+            'comprehensive state privacy laws this tool tracks.',
+            MUST_FIX
+        ))
+
+    if not p.appeals_procedure:
+        findings.append(_gap(
+            'MD', 'Consumer Appeals Procedure', 'Md. Code Com. Law § 14-4705(f)',
+            'No appeals procedure in place for denied consumer requests.',
+            'Controllers must establish an internal appeals process with a '
+            '60-day decision window for denied consumer requests.',
+            '3. Data Subject / Consumer Rights Procedures',
+            'Consumers have a statutory right to appeal a denied request; '
+            'without an internal appeals process, that right cannot '
+            'actually be exercised.',
+            MUST_FIX
+        ))
+
+    if matter.md.include_opt_out_section:
+        if not p.opt_out_mechanism_in_place:
+            findings.append(_gap(
+                'MD', 'Opt-Out Mechanism for Targeted Advertising / Sale / Profiling',
+                'Md. Code Com. Law § 14-4707',
+                'No opt-out mechanism in place for applicable processing '
+                'activities.',
+                'The client engages in targeted advertising, sale of '
+                'personal data, or profiling with significant effects but '
+                'has not provided a mechanism for consumers to opt out.',
+                '2. Notices & Consent',
+                'Targeted advertising, sale, and significant-effect '
+                'profiling all trigger a consumer opt-out right under '
+                'MODPA that requires an actual working mechanism.',
+                MUST_FIX
+            ))
+
+        if not p.uoom_honored:
+            findings.append(_gap(
+                'MD', 'Universal Opt-Out Mechanism (UOOM)',
+                'Md. Code Com. Law § 14-4707(f)(3)-(5)',
+                'Universal Opt-Out Mechanism not honored.',
+                'MODPA requires controllers to honor a universal opt-out '
+                "signal meeting the statute's mandatory technical "
+                'specifications. The client does not currently honor any '
+                'such signal.',
+                '2. Notices & Consent',
+                'MODPA requires honoring a mandatory universal opt-out '
+                'signal — without support, individually-set opt-outs can '
+                'be silently ignored at scale.',
+                MUST_FIX
+            ))
+
+    if matter.md.processes_sensitive_data and not p.sensitive_data_restriction_honored:
+        findings.append(_gap(
+            'MD', 'Sensitive Data Necessity Restriction',
+            'Md. Code Com. Law § 14-4707(a)(1)-(2)',
+            'Sensitive data processed or sold beyond what MODPA permits.',
+            "MODPA does not use an opt-in consent model for sensitive "
+            "data — a controller may not collect, process, or share it "
+            "except where strictly necessary to provide a product or "
+            "service the consumer requested, and may never sell it at "
+            "all. The client's current sensitive-data handling has not "
+            "been confirmed to honor this restriction.",
+            '2. Notices & Consent',
+            "Processing sensitive data beyond strict necessity, or "
+            "selling it at all, is a standalone MODPA violation "
+            "regardless of any consent obtained — MODPA's model is a "
+            "necessity-based ban, not a consent exception.",
+            MUST_FIX
+        ))
+
+    if matter.md.uses_health_facility_geofencing and not p.geofencing_restriction_honored:
+        findings.append(_gap(
+            'MD', 'Consumer Health Data Geofencing Ban',
+            'Md. Code Com. Law § 14-4704',
+            'Geofencing near mental-health or reproductive/sexual-health '
+            'facilities has not been discontinued.',
+            'MODPA bans using geofencing technology within 1,750 feet of '
+            'a mental-health or reproductive/sexual-health facility to '
+            'track consumers or send them notifications. The client has '
+            'not confirmed this practice has stopped.',
+            '2. Notices & Consent',
+            "This is an absolute statutory ban, not a disclosure "
+            "requirement — continuing the practice is itself the "
+            "violation, independent of notice or consent.",
+            MUST_FIX
+        ))
+
+    if matter.md.knows_processes_under_18 and not p.under_18_restriction_honored:
+        findings.append(_gap(
+            'MD', 'Under-18 Targeted Advertising / Sale Ban',
+            'Md. Code Com. Law § 14-4707(a)(4)-(5)',
+            'Targeted advertising to, or sale of data of, known-under-18 '
+            'consumers has not been stopped.',
+            'MODPA bans targeted advertising to, and sale of data of, any '
+            'consumer the client knew or should have known is under 18 — '
+            'broader than the under-13 "known child" standard used by '
+            'most peer states. The client has not confirmed this practice '
+            'has stopped.',
+            '2. Notices & Consent',
+            'This is an absolute statutory ban tied to a broader age '
+            'threshold than COPPA — a client relying on a COPPA-style '
+            'under-13 cutoff may still be in violation for 13-17 '
+            'year-olds under MODPA specifically.',
+            MUST_FIX
+        ))
+
+    if matter.md.pia_completed and not p.pia_assessments_completed:
+        findings.append(_gap(
+            'MD', 'Data Protection Assessments',
+            'Md. Code Com. Law § 14-4710',
+            'Data Protection Assessments not completed for high-risk '
+            'processing or algorithmic decision-making.',
+            'Controllers must conduct and document Data Protection '
+            'Assessments before engaging in processing that presents a '
+            'heightened risk of harm, and MODPA additionally requires an '
+            'assessment for each algorithm used.',
+            '9. Assessments (DPIA/LIA)',
+            "MODPA's per-algorithm assessment duty is broader than the "
+            'standard trigger categories most peer states use — a '
+            'completed assessment covering only the standard categories '
+            'may still leave algorithmic processing unassessed.',
+            MUST_FIX
+        ))
+
+    if not p.third_party_contracts_updated:
+        findings.append(_gap(
+            'MD', 'Third-Party Contracts Updated for MD',
+            'Md. Code Com. Law § 14-4708',
+            'Contracts with third parties not reviewed or updated for '
+            'MODPA compliance.',
+            'Existing contracts with third parties who receive personal '
+            'data should be reviewed and updated to include '
+            'MODPA-required provisions.',
+            '5. Vendor & DPA Management',
+            'Older vendor contracts predating MODPA are unlikely to '
+            'include the processor obligations the statute now requires.',
+            SHOULD_FIX
+        ))
+
+    return findings
+
+
+# -----------------------------------------------
+# Minnesota Consumer Data Privacy Act (MCDPA) Gap Analysis (bespoke)
+# -----------------------------------------------
+def analyse_mn_gaps(matter):
+    """
+    MCDPA diverges from the shared-template model with a
+    profiling-explanation right, a distinct 13-16 teen-consent rule, and a
+    standalone documented-privacy-program duty — see mn/questions.yml and
+    BUILD_PLAN_PHASE6.md Phase 3 step 4. MCDPA's cure period expired
+    2026-01-31 (§ 325M.20(a)); findings here don't change based on that,
+    but it's relevant context for the attorney's risk framing.
+    """
+    findings = []
+    p = matter.mn.posture
+
+    if not p.privacy_notice_provided:
+        findings.append(_gap(
+            'MN', 'Privacy Notice', 'Minn. Stat. § 325M.16 subd. 1',
+            'No MCDPA-compliant privacy notice provided to consumers.',
+            "Controllers must provide a privacy notice meeting MCDPA's "
+            'detailed content requirements (retention-policy description, '
+            'last-updated date, multi-language posting, accessibility, '
+            'and notice of material changes).',
+            '2. Notices & Consent',
+            "MCDPA's notice-content mandate is more detailed than most "
+            'peer states — a notice that satisfies a different state\'s '
+            'law may still fall short here.',
+            MUST_FIX
+        ))
+
+    if not p.rights_procedure_45_days:
+        findings.append(_gap(
+            'MN', 'Consumer Rights Response Procedure (45-day)',
+            'Minn. Stat. § 325M.14 subd. 4',
+            'No documented procedure to respond to consumer requests '
+            'within 45 days.',
+            'Controllers must respond to authenticated consumer rights '
+            'requests within 45 days, with opt-out requests handled "as '
+            'soon as feasibly possible."',
+            '3. Data Subject / Consumer Rights Procedures',
+            "MCDPA's 45-day response deadline mirrors the other "
+            'comprehensive state privacy laws this tool tracks.',
+            MUST_FIX
+        ))
+
+    if not p.appeals_procedure:
+        findings.append(_gap(
+            'MN', 'Consumer Appeals Procedure', 'Minn. Stat. § 325M.14 subd. 5',
+            'No appeals procedure in place for denied consumer requests.',
+            'Controllers must establish an internal appeals process and '
+            'retain appeal records for 24 months for AG production on '
+            'request.',
+            '3. Data Subject / Consumer Rights Procedures',
+            'Consumers have a statutory right to appeal a denied request; '
+            'without an internal appeals process, that right cannot '
+            'actually be exercised.',
+            MUST_FIX
+        ))
+
+    if matter.mn.include_opt_out_section:
+        if not p.opt_out_mechanism_in_place:
+            findings.append(_gap(
+                'MN', 'Opt-Out Mechanism for Targeted Advertising / Sale / Profiling',
+                'Minn. Stat. § 325M.16',
+                'No opt-out mechanism in place for applicable processing '
+                'activities.',
+                'The client engages in targeted advertising, sale of '
+                'personal data, or profiling with significant effects but '
+                'has not provided a mechanism for consumers to opt out.',
+                '2. Notices & Consent',
+                'Targeted advertising, sale, and significant-effect '
+                'profiling all trigger a consumer opt-out right under '
+                'MCDPA that requires an actual working mechanism.',
+                MUST_FIX
+            ))
+
+        if not p.uoom_honored:
+            findings.append(_gap(
+                'MN', 'Universal Opt-Out Mechanism (UOOM)',
+                'Minn. Stat. § 325M.14 subd. 3',
+                'Universal Opt-Out Mechanism not honored.',
+                'MCDPA requires controllers to honor a universal opt-out '
+                'signal. The client does not currently honor any such '
+                'signal.',
+                '2. Notices & Consent',
+                'MCDPA requires honoring a mandatory universal opt-out '
+                'signal — without support, individually-set opt-outs can '
+                'be silently ignored at scale.',
+                MUST_FIX
+            ))
+
+    if (matter.mn.profiling_opt_out
+            and not p.profiling_explanation_procedure_in_place):
+        findings.append(_gap(
+            'MN', 'Profiling Decision Explanation Procedure',
+            'Minn. Stat. § 325M.14 subd. 1(g)',
+            'No procedure for consumers to question and receive an '
+            'explanation of automated profiling decisions.',
+            'MCDPA grants consumers a right to question and receive an '
+            'explanation of automated profiling decisions, including what '
+            'data was used and what could change the outcome — beyond the '
+            'standard opt-out right most peer states grant.',
+            '3. Data Subject / Consumer Rights Procedures',
+            'This is a distinct MCDPA right beyond the standard profiling '
+            'opt-out — a client that only built an opt-out mechanism has '
+            'not satisfied this separate explanation obligation.',
+            MUST_FIX
+        ))
+
+    if matter.mn.processes_teen_13_16_data and not matter.mn.teen_ad_sale_consent_obtained:
+        findings.append(_gap(
+            'MN', 'Teen (Ages 13-16) Targeted Advertising / Sale Consent',
+            'Minn. Stat. § 325M.16 subd. 2(f)',
+            'Consent not obtained for targeted advertising or sale using '
+            'data of consumers ages 13-16.',
+            'MCDPA restricts targeted advertising or sale of data for '
+            'consumers the controller knows are ages 13-16 without '
+            'consent — a distinct teen age band from the standard '
+            'under-13 "known child" framework most peer states use.',
+            '2. Notices & Consent',
+            "A client relying on a COPPA-style under-13 cutoff may still "
+            "be in violation for 13-16 year-olds under MCDPA "
+            "specifically — this is a separate consent gate, not covered "
+            "by the general targeted-advertising opt-out.",
+            MUST_FIX
+        ))
+
+    if matter.mn.processes_sensitive_data and not p.sensitive_data_consent_obtained:
+        findings.append(_gap(
+            'MN', 'Sensitive Data Opt-In Consent', 'Minn. Stat. § 325M.16 subd. 2(d)',
+            'Sensitive data processed without opt-in consent mechanism.',
+            "Processing of sensitive data requires the consumer's prior "
+            'opt-in consent under MCDPA. No consent mechanism is '
+            'currently in place.',
+            '2. Notices & Consent',
+            'Processing sensitive data without prior opt-in consent is a '
+            'standalone MCDPA violation, independent of any other lawful '
+            'basis analysis.',
+            MUST_FIX
+        ))
+
+    if matter.mn.pia_completed and not p.pia_assessments_completed:
+        findings.append(_gap(
+            'MN', 'Data Protection Assessments', 'Minn. Stat. § 325M.18',
+            'Data Protection Assessments not completed for high-risk '
+            'processing.',
+            'Controllers must conduct and document Data Protection '
+            'Assessments before engaging in processing that presents a '
+            'heightened risk of harm, incorporating the documented '
+            'privacy program description MCDPA separately requires.',
+            '9. Assessments (DPIA/LIA)',
+            'MCDPA requires a documented risk assessment before engaging '
+            "in higher-risk processing — the same underlying discipline "
+            "as GDPR's DPIA, just under a different statute.",
+            MUST_FIX
+        ))
+
+    if matter.mn.has_documented_privacy_program and not p.privacy_program_documented:
+        findings.append(_gap(
+            'MN', 'Documented Privacy Compliance Program', 'Minn. Stat. § 325M.18(a), (e)',
+            'Documented privacy compliance program not current.',
+            'MCDPA separately requires controllers to document and '
+            'maintain a full privacy-compliance program — naming a '
+            'responsible individual or chief privacy officer and '
+            'describing policies on security, data minimization, '
+            'retention limits, and violation remediation.',
+            '1. Lawful Basis & Documentation',
+            'This is a standalone MCDPA accountability duty independent '
+            'of any individual processing activity — an out-of-date '
+            'program document is itself the gap, separate from whether '
+            'the underlying practices are compliant.',
+            MUST_FIX
+        ))
+
+    if not p.third_party_contracts_updated:
+        findings.append(_gap(
+            'MN', 'Third-Party Contracts Updated for MN', 'Minn. Stat. § 325M.13',
+            'Contracts with third parties not reviewed or updated for '
+            'MCDPA compliance.',
+            'Existing contracts with third parties who receive personal '
+            'data should be reviewed and updated to include '
+            'MCDPA-required provisions.',
+            '5. Vendor & DPA Management',
+            'Older vendor contracts predating MCDPA are unlikely to '
+            'include the processor obligations the statute now requires.',
+            SHOULD_FIX
+        ))
+
+    return findings
+
+
+# -----------------------------------------------
+# Connecticut Data Privacy Act (CTDPA) Gap Analysis (bespoke)
+# -----------------------------------------------
+def analyse_ct_gaps(matter):
+    """
+    CTDPA diverges from the shared-template model with a Kids Code
+    minor-account right and a mandatory UOOM already in force — see
+    ct/questions.yml and BUILD_PLAN_PHASE6.md Phase 3 step 4.
+
+    Deliberately does NOT check matter.ct.posture.chd_compliance_note:
+    that field is a free-text placeholder, not a yes/no compliance flag —
+    § 42-526's Consumer Health Data controller duties were never sourced
+    from actual statute text (see ct/questions.yml's header), so treating
+    it as a checkable gap would fabricate a compliance requirement this
+    tool has not actually verified exists in that form.
+    """
+    findings = []
+    p = matter.ct.posture
+
+    if not p.privacy_notice_provided:
+        findings.append(_gap(
+            'CT', 'Privacy Notice', 'Conn. Gen. Stat. § 42-520',
+            'No CTDPA-compliant privacy notice provided to consumers.',
+            'Controllers must provide consumers with a reasonably '
+            'accessible privacy notice meeting CTDPA requirements.',
+            '2. Notices & Consent',
+            'Connecticut consumers are entitled to the same baseline '
+            'notice protections required across every comprehensive '
+            'state privacy law this tool tracks.',
+            MUST_FIX
+        ))
+
+    if not p.rights_procedure_45_days:
+        findings.append(_gap(
+            'CT', 'Consumer Rights Response Procedure (45-day)',
+            'Conn. Gen. Stat. § 42-518(c)(1)',
+            'No documented procedure to respond to consumer requests '
+            'within 45 days.',
+            'Controllers must respond to authenticated consumer rights '
+            'requests within 45 days under CTDPA.',
+            '3. Data Subject / Consumer Rights Procedures',
+            "CTDPA's 45-day response deadline mirrors the other "
+            'comprehensive state privacy laws this tool tracks.',
+            MUST_FIX
+        ))
+
+    if not p.appeals_procedure:
+        findings.append(_gap(
+            'CT', 'Consumer Appeals Procedure', 'Conn. Gen. Stat. § 42-518(d)',
+            'No appeals procedure in place for denied consumer requests.',
+            'Controllers must establish an internal appeals process with '
+            'a 60-day decision window for denied consumer requests.',
+            '3. Data Subject / Consumer Rights Procedures',
+            'Consumers have a statutory right to appeal a denied request; '
+            'without an internal appeals process, that right cannot '
+            'actually be exercised.',
+            MUST_FIX
+        ))
+
+    if matter.ct.include_opt_out_section:
+        if not p.opt_out_mechanism_in_place:
+            findings.append(_gap(
+                'CT', 'Opt-Out Mechanism for Targeted Advertising / Sale / Profiling',
+                'Conn. Gen. Stat. § 42-520',
+                'No opt-out mechanism in place for applicable processing '
+                'activities.',
+                'The client engages in targeted advertising, sale of '
+                'personal data, or profiling with significant effects but '
+                'has not provided a mechanism for consumers to opt out.',
+                '2. Notices & Consent',
+                'Targeted advertising, sale, and significant-effect '
+                'profiling all trigger a consumer opt-out right under '
+                'CTDPA that requires an actual working mechanism.',
+                MUST_FIX
+            ))
+
+        if not p.uoom_honored:
+            findings.append(_gap(
+                'CT', 'Universal Opt-Out Mechanism (UOOM)',
+                'Conn. Gen. Stat. § 42-520(e)(1)(A)(ii)',
+                'Universal Opt-Out Mechanism not honored.',
+                'CTDPA has required controllers to honor a universal '
+                'opt-out signal since 2025-01-01. The client does not '
+                'currently honor any such signal.',
+                '2. Notices & Consent',
+                'CTDPA requires honoring a mandatory universal opt-out '
+                'signal — without support, individually-set opt-outs can '
+                'be silently ignored at scale.',
+                MUST_FIX
+            ))
+
+    if matter.ct.processes_sensitive_data and not p.sensitive_data_consent_obtained:
+        findings.append(_gap(
+            'CT', 'Sensitive Data Opt-In Consent', 'Conn. Gen. Stat. § 42-520(a)(4)',
+            'Sensitive data processed without opt-in consent mechanism.',
+            "Processing of sensitive data requires the consumer's prior "
+            'opt-in consent under CTDPA. No consent mechanism is '
+            'currently in place.',
+            '2. Notices & Consent',
+            'Processing sensitive data without prior opt-in consent is a '
+            'standalone CTDPA violation, independent of any other lawful '
+            'basis analysis.',
+            MUST_FIX
+        ))
+
+    if matter.ct.operates_social_media_platform and not p.kids_code_procedure_in_place:
+        findings.append(_gap(
+            'CT', "Kids Code Minor-Account Procedure", 'Conn. Gen. Stat. § 42-528',
+            "No procedure to unpublish or delete a minor's account within "
+            "Kids Code deadlines.",
+            "Connecticut's Kids Code requires social media platforms to "
+            "unpublish a minor's account within 15 business days, and "
+            "delete it within 45 business days, of a qualifying request. "
+            "No such procedure is currently in place.",
+            '3. Data Subject / Consumer Rights Procedures',
+            "Enforced as an unfair trade practice — missing this "
+            "procedure is a standalone enforcement exposure separate "
+            "from CTDPA's general consumer-rights framework.",
+            MUST_FIX
+        ))
+
+    if matter.ct.pia_completed and not p.pia_assessments_completed:
+        findings.append(_gap(
+            'CT', 'Data Protection Assessments', 'Conn. Gen. Stat. § 42-522',
+            'Data Protection Assessments not completed for high-risk '
+            'processing.',
+            'Controllers must conduct and document Data Protection '
+            'Assessments before engaging in processing that presents a '
+            'heightened risk of harm, including a separate profiling '
+            'impact assessment where the client profiles consumers in '
+            'decisions producing legal or similarly significant effects.',
+            '9. Assessments (DPIA/LIA)',
+            'CTDPA requires a documented risk assessment before engaging '
+            "in higher-risk processing — the same underlying discipline "
+            "as GDPR's DPIA, just under a different statute.",
+            MUST_FIX
+        ))
+
+    if not p.third_party_contracts_updated:
+        findings.append(_gap(
+            'CT', 'Third-Party Contracts Updated for CT', 'Conn. Gen. Stat. § 42-521',
+            'Contracts with third parties not reviewed or updated for '
+            'CTDPA compliance.',
+            'Existing contracts with third parties who receive personal '
+            'data should be reviewed and updated to include '
+            'CTDPA-required provisions.',
+            '5. Vendor & DPA Management',
+            'Older vendor contracts predating CTDPA are unlikely to '
+            'include the processor obligations the statute now requires.',
+            SHOULD_FIX
+        ))
+
+    return findings
+
+
+# -----------------------------------------------
+# Iowa Consumer Data Protection Act (ICDPA) Gap Analysis (bespoke)
+# -----------------------------------------------
+def analyse_ia_gaps(matter):
+    """
+    Iowa's rights model is narrower than the shared template: opt-out
+    (not opt-in) sensitive data, sale-only opt-out (no targeted-ad/
+    profiling opt-out right), a 90-day response deadline, and no Data
+    Protection Assessment requirement at all — see ia/questions.yml and
+    BUILD_PLAN_PHASE6.md Phase 3 step 4.
+    """
+    findings = []
+    p = matter.ia.posture
+
+    if not p.privacy_notice_provided:
+        findings.append(_gap(
+            'IA', 'Privacy Notice', 'Iowa Code § 715D.4',
+            'No Iowa CDPA-compliant privacy notice provided to consumers.',
+            'Controllers must provide consumers with a privacy notice '
+            'meeting Iowa Code ch. 715D requirements.',
+            '2. Notices & Consent',
+            'Iowa consumers are entitled to the same baseline notice '
+            'protections required across every comprehensive state '
+            'privacy law this tool tracks.',
+            MUST_FIX
+        ))
+
+    if not p.rights_procedure_90_days:
+        findings.append(_gap(
+            'IA', 'Consumer Rights Response Procedure (90-day)',
+            'Iowa Code § 715D.3(2)(a)',
+            'No documented procedure to respond to consumer requests '
+            'within 90 days.',
+            'Controllers must respond to authenticated consumer rights '
+            'requests within 90 days — longer than the 45-day deadline '
+            'most peer states use, but still a hard statutory deadline.',
+            '3. Data Subject / Consumer Rights Procedures',
+            "Iowa's 90-day deadline is longer than most peer states, but "
+            'a documented procedure is still what keeps it from being '
+            'missed — don\'t assume the longer window makes this lower '
+            'priority.',
+            MUST_FIX
+        ))
+
+    if not p.appeals_procedure:
+        findings.append(_gap(
+            'IA', 'Consumer Appeals Procedure', 'Iowa Code § 715D.3(3)',
+            'No appeals procedure in place for denied consumer requests.',
+            'Controllers must establish an internal appeals process with '
+            'a 60-day decision window for denied consumer requests.',
+            '3. Data Subject / Consumer Rights Procedures',
+            'Consumers have a statutory right to appeal a denied request; '
+            'without an internal appeals process, that right cannot '
+            'actually be exercised.',
+            MUST_FIX
+        ))
+
+    if matter.ia.include_opt_out_section and not p.opt_out_mechanism_in_place:
+        findings.append(_gap(
+            'IA', 'Sale Opt-Out Mechanism', 'Iowa Code § 715D.3(1)',
+            'No opt-out mechanism in place for the sale of personal data.',
+            'The client sells personal data but has not provided a clear '
+            'mechanism for consumers to opt out of that sale. Note: Iowa '
+            'grants no right to opt out of targeted advertising or '
+            'profiling — only sale.',
+            '2. Notices & Consent',
+            "Iowa's opt-out right is narrower than most peer states — "
+            'scoped to sale only — but a working mechanism for that '
+            'narrower right is still a hard requirement.',
+            MUST_FIX
+        ))
+
+    if matter.ia.processes_sensitive_data and not p.sensitive_data_notice_in_place:
+        findings.append(_gap(
+            'IA', 'Sensitive Data Notice and Opt-Out', 'Iowa Code § 715D.4(2)',
+            'No notice or opt-out opportunity provided for sensitive data '
+            'processing.',
+            "Unlike most comprehensive state privacy acts, Iowa does not "
+            "require opt-in consent for sensitive data — a controller "
+            "must instead give clear notice and an opportunity to opt "
+            "out before processing it. Neither is currently confirmed in "
+            "place.",
+            '2. Notices & Consent',
+            "Because Iowa uses an opt-out (not opt-in) model, the "
+            "absence of prior consent is not itself a violation — but "
+            "the absence of notice and an opt-out opportunity is.",
+            MUST_FIX
+        ))
+
+    if not p.third_party_contracts_updated:
+        findings.append(_gap(
+            'IA', 'Third-Party Contracts Updated for IA', 'Iowa Code § 715D.5',
+            'Contracts with third parties not reviewed or updated for '
+            'Iowa CDPA compliance.',
+            'Existing contracts with third parties who receive personal '
+            'data should be reviewed and updated to include Iowa '
+            'CDPA-required provisions.',
+            '5. Vendor & DPA Management',
+            'Older vendor contracts predating the Iowa CDPA are unlikely '
+            'to include the processor obligations the statute now '
+            'requires.',
+            SHOULD_FIX
+        ))
+
+    return findings
+
+
+# -----------------------------------------------
+# Utah Consumer Privacy Act (UCPA) Gap Analysis (bespoke)
+# -----------------------------------------------
+def analyse_ut_gaps(matter):
+    """
+    Utah has the most narrowed rights model of any state this tool
+    tracks: no correction right, no profiling opt-out, an opt-out (not
+    opt-in) sensitive-data model, no appeals process, and no Data
+    Protection Assessment requirement at all — see ut/questions.yml and
+    BUILD_PLAN_PHASE6.md Phase 3 step 4. No appeals-procedure check
+    exists here because the statute has no appeals process to check
+    against.
+    """
+    findings = []
+    p = matter.ut.posture
+
+    if not p.privacy_notice_provided:
+        findings.append(_gap(
+            'UT', 'Privacy Notice', 'Utah Code § 13-61-302',
+            'No UCPA-compliant privacy notice provided to consumers.',
+            'Controllers must provide consumers with a privacy notice '
+            'meeting UCPA requirements.',
+            '2. Notices & Consent',
+            'Utah consumers are entitled to the same baseline notice '
+            'protections required across every comprehensive state '
+            'privacy law this tool tracks.',
+            MUST_FIX
+        ))
+
+    if not p.rights_procedure_45_days:
+        findings.append(_gap(
+            'UT', 'Consumer Rights Response Procedure (45-day)',
+            'Utah Code § 13-61-203(2)',
+            'No documented procedure to respond to consumer requests '
+            'within 45 days.',
+            'Controllers must respond to authenticated consumer rights '
+            'requests within 45 days under UCPA.',
+            '3. Data Subject / Consumer Rights Procedures',
+            "UCPA's 45-day response deadline mirrors the other "
+            'comprehensive state privacy laws this tool tracks.',
+            MUST_FIX
+        ))
+
+    if matter.ut.include_opt_out_section and not p.opt_out_mechanism_in_place:
+        findings.append(_gap(
+            'UT', 'Opt-Out Mechanism for Targeted Advertising / Sale',
+            'Utah Code § 13-61-302',
+            'No opt-out mechanism in place for applicable processing '
+            'activities.',
+            'The client engages in targeted advertising or sale of '
+            'personal data but has not provided a mechanism for consumers '
+            'to opt out. Note: UCPA grants no profiling opt-out right.',
+            '2. Notices & Consent',
+            "UCPA's opt-out right is narrower than most peer states — no "
+            "profiling opt-out — but a working mechanism for targeted "
+            "advertising and sale is still a hard requirement.",
+            MUST_FIX
+        ))
+
+    if matter.ut.processes_sensitive_data and not p.sensitive_data_notice_in_place:
+        findings.append(_gap(
+            'UT', 'Sensitive Data Notice and Opt-Out', 'Utah Code § 13-61-302(3)',
+            'No notice or opt-out opportunity provided for sensitive data '
+            'processing.',
+            'Like Iowa, Utah does not require opt-in consent for '
+            'sensitive data — a controller must instead give clear notice '
+            'and an opportunity to opt out before processing it. Neither '
+            'is currently confirmed in place.',
+            '2. Notices & Consent',
+            "Because Utah uses an opt-out (not opt-in) model, the "
+            "absence of prior consent is not itself a violation — but "
+            "the absence of notice and an opt-out opportunity is.",
+            MUST_FIX
+        ))
+
+    if not p.third_party_contracts_updated:
+        findings.append(_gap(
+            'UT', 'Third-Party Contracts Updated for UT', 'Utah Code § 13-61-301',
+            'Contracts with third parties not reviewed or updated for '
+            'UCPA compliance.',
+            'Existing contracts with third parties who receive personal '
+            'data should be reviewed and updated to include UCPA-required '
+            'provisions.',
+            '5. Vendor & DPA Management',
+            'Older vendor contracts predating UCPA are unlikely to '
+            'include the processor obligations the statute now requires.',
+            SHOULD_FIX
+        ))
+
+    return findings
+
+
+# -----------------------------------------------
 # Vendor DPA Gap Analysis (cross-jurisdictional)
 # -----------------------------------------------
 def analyse_vendor_dpa_gaps(matter):
@@ -989,6 +1870,23 @@ def run_gap_analysis(matter):
 
     if 'VCDPA' in confirmed:
         all_findings.extend(analyse_vcdpa_gaps(matter))
+
+    all_findings.extend(analyse_state_privacy_gaps(matter))
+
+    if 'Maryland Online Data Privacy Act' in confirmed:
+        all_findings.extend(analyse_md_gaps(matter))
+
+    if 'Minnesota Consumer Data Privacy Act' in confirmed:
+        all_findings.extend(analyse_mn_gaps(matter))
+
+    if 'Connecticut Data Privacy Act' in confirmed:
+        all_findings.extend(analyse_ct_gaps(matter))
+
+    if 'Iowa Consumer Data Protection Act' in confirmed:
+        all_findings.extend(analyse_ia_gaps(matter))
+
+    if 'Utah Consumer Privacy Act' in confirmed:
+        all_findings.extend(analyse_ut_gaps(matter))
 
     all_findings.extend(analyse_vendor_dpa_gaps(matter))
     all_findings.extend(analyse_breach_readiness_gaps(matter))
