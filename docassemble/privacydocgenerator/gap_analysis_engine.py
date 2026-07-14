@@ -1408,13 +1408,19 @@ def analyse_ia_gaps(matter):
 # -----------------------------------------------
 def analyse_ut_gaps(matter):
     """
-    Utah has the most narrowed rights model of any state this tool
-    tracks: no correction right, no profiling opt-out, an opt-out (not
-    opt-in) sensitive-data model, no appeals process, and no Data
-    Protection Assessment requirement at all — see ut/questions.yml and
+    Utah has one of the most narrowed rights models of any state this
+    tool tracks: no profiling opt-out, an opt-out (not opt-in)
+    sensitive-data model, no appeals process, and no Data Protection
+    Assessment requirement at all — see ut/questions.yml and
     BUILD_PLAN_PHASE6.md Phase 3 step 4. No appeals-procedure check
     exists here because the statute has no appeals process to check
     against.
+
+    Utah does have a correction right (§ 13-61-201(4), added 2025) —
+    no dedicated posture check exists for it because no state in this
+    codebase models per-right posture checks; the generic
+    `rights_procedure_45_days` check below covers a missing correction
+    procedure the same way it covers access/delete/portability.
     """
     findings = []
     p = matter.ut.posture

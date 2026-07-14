@@ -10,11 +10,12 @@ Minnesota, Connecticut, Iowa, Utah) get their own dedicated question/logic
 files instead — see the build plan's per-state classification table for why.
 
 Every citation and threshold note below is grounded in the actual statute
-text on file under
-`.claude/skills/Privacy/context/text/NAmerica/United States/States/<ST>/`
-(Phase 3 step 4 extraction), not general legal knowledge. None of these
-detectors or citations are attorney-verified; treat outputs as a first pass
-for attorney review.
+text queried from the Privacy skill's corpus (`Projects/Privacy/privacy.sqlite`,
+or the same text as flat files under `Projects/Privacy/corpus/us/states/<ST>/`;
+see that project's SKILL.md and BUILD_PLAN_PHASE6.md Phase 3 step 4
+extraction), not general legal knowledge. None of these detectors or
+citations are attorney-verified; treat outputs as a first pass for
+attorney review.
 
 `jurisdiction_name` keys below must match the `name` field returned by the
 corresponding `detect_*` function in `jurisdiction_engine.py` exactly, since

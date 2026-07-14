@@ -17,17 +17,28 @@
 # state_privacy_acts.py's module docstring / BUILD_PLAN_PHASE6.md for the
 # full classification.
 #
-# CORRECTION (2026-07-14): the "no correction right" claim above is now
+# CORRECTION (2026-07-14): the "no correction right" claim above was
 # STALE. Utah Code § 13-61-201(4), added by the 2025 General Session
 # (Chapter 468), added a correction right that did not exist in the 2022
 # original enactment this file was first built against — confirmed by
 # reading the current codified text directly. The Privacy Statement
 # content in data/sources/state_privacy_clauses.json (key "UT") already
-# reflects this and includes a Right to Correct. This questions.yml file's
-# Part 2 posture screen and gap_analysis_engine.py's analyse_ut_gaps()
-# do NOT yet ask about/check a correction-request procedure — that is a
-# follow-up still owed (out of scope for the pass that added this note),
-# not a modeled gap today.
+# reflected this and included a Right to Correct.
+#
+# FOLLOW-UP RESOLVED (2026-07-14): the Part 1 subquestion below still said
+# "no right to correct inaccurate data" — fixed. No new Part 2 posture
+# field or analyse_ut_gaps() check was added, after confirming that every
+# other state in this codebase (including Maryland, which has always had
+# a correction right) relies on a single generic "documented procedure to
+# respond to consumer rights requests" posture check
+# (`posture.rights_procedure_45_days` here) to cover access/correct/
+# delete/portability collectively — no state anywhere has a per-right
+# posture breakdown. Utah's existing MUST_FIX check on
+# `rights_procedure_45_days` in gap_analysis_engine.py's
+# `analyse_ut_gaps()` therefore already structurally covers a missing
+# correction procedure now that the right exists; adding a bespoke
+# Utah-only field would be architecturally inconsistent, not more
+# accurate.
 # ===============================================
 code: |
   matters[i].initializeAttribute('ut', DAObject)
@@ -64,9 +75,11 @@ question: |
   Utah UCPA — Targeted Advertising and Sale — ${ matters[i].org.name.text }
 subquestion: |
   UCPA's consumer rights are narrower than most peer states: no right to
-  correct inaccurate data, no right to opt out of profiling, and the
-  deletion/portability rights cover only data the consumer directly
-  provided to the controller (Utah Code § 13-61-201).
+  opt out of profiling, and the deletion/portability rights cover only
+  data the consumer directly provided to the controller (Utah Code
+  § 13-61-201). Utah does have a right to correct inaccurate data
+  (§ 13-61-201(4)), added by the 2025 General Session (Chapter 468) — an
+  amendment not present in the statute's original 2022 enactment.
 fields:
   - Does the client process personal data for targeted advertising?: matters[i].ut.targeted_advertising
     datatype: yesnoradio

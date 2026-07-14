@@ -27,10 +27,11 @@ Supported jurisdictions:
   - Utah Consumer Privacy Act (UT)
 
 Threshold and effective-date constants below are grounded in the actual
-statute text on file under
-`.claude/skills/Privacy/context/text/NAmerica/United States/States/<ST>/`
-(see BUILD_PLAN_PHASE6.md Phase 3) — not general legal knowledge. None of
-these detectors are attorney-verified; treat outputs as a first pass for
+statute text queried from the Privacy skill's corpus
+(`Projects/Privacy/privacy.sqlite`, or the same text as flat files under
+`Projects/Privacy/corpus/us/states/<ST>/`; see that project's SKILL.md and
+BUILD_PLAN_PHASE6.md Phase 3) — not general legal knowledge. None of these
+detectors are attorney-verified; treat outputs as a first pass for
 attorney review, not final applicability determinations.
 
 Each detect_* function returns a dict:
