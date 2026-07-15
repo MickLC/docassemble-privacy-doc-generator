@@ -230,6 +230,16 @@ code: |
     matters[i].gdpr.posture.privacy_notice_provided
     matters[i].gdpr.posture.cookie_consent_compliant
     matters[i].gdpr.posture.rights_procedure_documented
+    # privacy_statement.docx reads these two, but docxtpl's Jinja2
+    # rendering context can't pause to trigger docassemble's on-demand
+    # sets: computation the way normal question-flow does -- an
+    # attribute touched for the first time inside a template render just
+    # logs "UndefinedError exception during document assembly" and
+    # renders blank (or, when iterated in a {%p for %} loop, raises
+    # TypeError: 'NoneType' object is not iterable). Force resolution
+    # here, before documents ever run.
+    matters[i].gdpr.applicable_rights
+    matters[i].gdpr.transfer_mechanisms_reference
 
   # --- CCPA/CPRA ---
   if 'CCPA/CPRA' in matters[i].confirmed_jurisdictions.true_values():
@@ -251,6 +261,9 @@ code: |
       matters[i].ccpa.posture.spi_limit_mechanism_in_place
     matters[i].ccpa.posture.rights_procedure_45_days
     matters[i].ccpa.posture.deletion_verification_in_place
+    # See the GDPR block above for why these must be forced here.
+    matters[i].ccpa.applicable_rights
+    matters[i].ccpa.sensitive_pi_categories_reference
 
   # --- TDPSA ---
   if 'TDPSA' in matters[i].confirmed_jurisdictions.true_values():
@@ -268,6 +281,9 @@ code: |
       matters[i].tdpsa.posture.opt_out_mechanism_in_place
     matters[i].tdpsa.posture.uoom_supported
     matters[i].tdpsa.posture.dpa_assessments_completed
+    # See the GDPR block above for why these must be forced here.
+    matters[i].tdpsa.applicable_rights
+    matters[i].tdpsa.sensitive_data_categories_reference
 
   # --- VCDPA ---
   if 'VCDPA' in matters[i].confirmed_jurisdictions.true_values():
@@ -286,6 +302,9 @@ code: |
     matters[i].vcdpa.posture.sensitive_data_consent_obtained
     matters[i].vcdpa.posture.pia_assessments_completed
     matters[i].vcdpa.posture.third_party_contracts_updated
+    # See the GDPR block above for why these must be forced here.
+    matters[i].vcdpa.applicable_rights
+    matters[i].vcdpa.sensitive_data_categories_reference
 
   # --- Shared-model state privacy acts (Phase 3 step 4 REUSE/ADAPT bucket:
   # IN, KY, CO, DE, MT, NE, NH, NJ, OR, RI, TN) ---
@@ -320,6 +339,22 @@ code: |
     if matters[i].state_acts[_spa_name].pia_completed:
       matters[i].state_acts[_spa_name].posture.pia_assessments_completed
     matters[i].state_acts[_spa_name].posture.third_party_contracts_updated
+    # privacy_statement.docx reads these two, but docxtpl's Jinja2
+    # rendering context can't pause to trigger docassemble's on-demand
+    # sets: computation the way normal question-flow does -- an
+    # attribute touched for the first time inside a template render just
+    # logs "UndefinedError exception during document assembly" and
+    # renders blank instead of computing. Force resolution here, before
+    # documents ever run.
+    matters[i].state_acts[_spa_name].applicable_rights
+    matters[i].state_acts[_spa_name].sensitive_data_categories_reference
+  # state_acts is populated directly above, not via .gather() -- but
+  # DADict.values() (called by analyse_state_privacy_gaps() and
+  # review.yml) still triggers docassemble's auto-gather machinery on any
+  # DADict whose `gathered` flag isn't set, which looks for a
+  # there_is_another question that was deliberately never built for this
+  # dict. Mark it gathered explicitly so that machinery no-ops.
+  matters[i].state_acts.gathered = True
 
   # --- Maryland Online Data Privacy Act (bespoke — Phase 3 step 4) ---
   if 'Maryland Online Data Privacy Act' in matters[i].confirmed_jurisdictions.true_values():
@@ -354,6 +389,11 @@ code: |
     if matters[i].md.pia_completed:
       matters[i].md.posture.pia_assessments_completed
     matters[i].md.posture.third_party_contracts_updated
+    # See the shared-template loop above for why these must be forced
+    # here rather than left to resolve when privacy_statement.docx
+    # first references them.
+    matters[i].md.applicable_rights
+    matters[i].md.sensitive_data_categories_reference
 
   # --- Minnesota Consumer Data Privacy Act (bespoke — Phase 3 step 4) ---
   if 'Minnesota Consumer Data Privacy Act' in matters[i].confirmed_jurisdictions.true_values():
@@ -387,6 +427,8 @@ code: |
     if matters[i].mn.has_documented_privacy_program:
       matters[i].mn.posture.privacy_program_documented
     matters[i].mn.posture.third_party_contracts_updated
+    matters[i].mn.applicable_rights
+    matters[i].mn.sensitive_data_categories_reference
 
   # --- Connecticut Data Privacy Act (bespoke — Phase 3 step 4) ---
   if 'Connecticut Data Privacy Act' in matters[i].confirmed_jurisdictions.true_values():
@@ -420,6 +462,8 @@ code: |
     if matters[i].ct.pia_completed:
       matters[i].ct.posture.pia_assessments_completed
     matters[i].ct.posture.third_party_contracts_updated
+    matters[i].ct.applicable_rights
+    matters[i].ct.sensitive_data_categories_reference
 
   # --- Iowa Consumer Data Protection Act (bespoke — Phase 3 step 4) ---
   if 'Iowa Consumer Data Protection Act' in matters[i].confirmed_jurisdictions.true_values():
@@ -437,6 +481,8 @@ code: |
     if matters[i].ia.processes_sensitive_data:
       matters[i].ia.posture.sensitive_data_notice_in_place
     matters[i].ia.posture.third_party_contracts_updated
+    matters[i].ia.applicable_rights
+    matters[i].ia.sensitive_data_categories_reference
 
   # --- Utah Consumer Privacy Act (bespoke — Phase 3 step 4) ---
   if 'Utah Consumer Privacy Act' in matters[i].confirmed_jurisdictions.true_values():
@@ -454,6 +500,8 @@ code: |
     if matters[i].ut.processes_sensitive_data:
       matters[i].ut.posture.sensitive_data_notice_in_place
     matters[i].ut.posture.third_party_contracts_updated
+    matters[i].ut.applicable_rights
+    matters[i].ut.sensitive_data_categories_reference
 
   # --- Playbooks: regulator/DSR/breach contacts, DPIA-trigger flag ---
   matters[i].playbooks_initialized
