@@ -227,3 +227,53 @@ code: |
 
   matters[i].business_functions_seeded = True
 sets: matters[i].business_functions_seeded
+---
+# -----------------------------------------------
+# Confirm-and-prune: without this, an attorney who answers
+# "yes" to several of the 5 business functions above gets
+# stuck cycling through "Tell me about this activity" for
+# every seeded item in a row — processing_activities.gather()
+# won't ask "another activity?" until every existing item is
+# complete, and there was previously no way to decline a
+# seeded suggestion once it was in the list.
+#
+# This runs as ONE list edit, before
+# matters[i].processing_activities.gather() ever starts (see
+# main.yml) — never interleaved with gather()'s own per-item
+# loop — so a declined suggestion is simply gone from the list
+# before dpia_assessment.yml, lia_assessment.yml,
+# universal_data_questions.yml, document_types.py,
+# gap_analysis_engine.py, or ropa.docx ever see it. None of
+# those need to know a suggestion was ever declined.
+# -----------------------------------------------
+question: |
+  Confirm suggested activities — ${ matters[i].org.name.text }
+subquestion: |
+  Based on your answers above, these look like separate processing
+  activities worth describing on their own. Uncheck any that don't
+  actually apply to the client — you'll still get the usual chance to
+  describe each one you keep, and to add anything else afterward.
+fields:
+  - label: Which of these actually apply?
+    field: matters[i].suggested_activities_to_keep
+    datatype: checkboxes
+    default:
+      code: |
+        [pa.suggested_name for pa in matters[i].processing_activities if hasattr(pa, 'suggested_name')]
+    choices:
+      code: |
+        [pa.suggested_name for pa in matters[i].processing_activities if hasattr(pa, 'suggested_name')]
+---
+code: |
+  _kept = matters[i].suggested_activities_to_keep.true_values()
+  for pa in list(matters[i].processing_activities):
+      if hasattr(pa, 'suggested_name') and pa.suggested_name not in _kept:
+          matters[i].processing_activities.remove(pa)
+  # No suggestions survived and nothing else was added yet — unset
+  # there_are_any (rather than leaving it True with 0 items) so the
+  # original "What does the client do with people's data?" yesno
+  # fires fresh, same as if no business function had ever applied.
+  if len(matters[i].processing_activities) == 0:
+      del matters[i].processing_activities.there_are_any
+  matters[i].suggested_activities_reviewed = True
+sets: matters[i].suggested_activities_reviewed

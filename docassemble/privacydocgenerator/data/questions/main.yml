@@ -195,6 +195,13 @@ code: |
     matters[i].biz.webit_data_types
   matters[i].business_functions_seeded
 
+  # Let the attorney prune any seeded suggestion that doesn't actually
+  # apply in one screen, before processing_activities.gather() starts
+  # walking the list one item at a time — see business_functions.yml.
+  # Guarded so this never fires when nothing was seeded.
+  if any(hasattr(pa, 'suggested_name') for pa in matters[i].processing_activities):
+    matters[i].suggested_activities_reviewed
+
   matters[i].processing_activities.gather()
   matters[i].processing_activities_derived
 
