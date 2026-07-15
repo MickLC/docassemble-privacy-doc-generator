@@ -223,8 +223,13 @@ code: |
   matters[i].data.third_party_sharing
 
   # --- GDPR ---
+  # gdpr_initialized always runs, for every matter, so matters[i].gdpr
+  # exists (with safe defaults when GDPR doesn't apply) before RoPA/DPIA
+  # documents ever read matters[i].gdpr.dpo_exists -- see the note in
+  # gdpr/questions.yml. The real questions below still only run when
+  # GDPR is actually confirmed.
+  matters[i].gdpr_initialized
   if 'GDPR' in matters[i].confirmed_jurisdictions.true_values():
-    matters[i].gdpr_initialized
     matters[i].gdpr.lawful_bases
     matters[i].gdpr.processes_special_category
     matters[i].gdpr.international_transfers

@@ -10,11 +10,39 @@
 # field is asked — see the matching note in org_profile.yml.
 # .dpo is an Individual (not Person) so .dpo.name.first/.last
 # work, matching the fields below.
+#
+# This block now runs unconditionally for every matter (see main.yml,
+# which references matters[i].gdpr_initialized ahead of the "if GDPR
+# confirmed" gate) rather than only when GDPR applies. RoPA and DPIA
+# report documents are generated for every matter regardless of GDPR
+# applicability (see document_types.py) and both templates read
+# matters[i].gdpr.dpo_exists unconditionally, so matters[i].gdpr can't
+# be left entirely uninitialised just because this matter isn't a GDPR
+# matter — that left docx rendering with no defining block to fall
+# back on ("There was a reference to a variable 'matters[i].gdpr' that
+# could not be looked up..."). When GDPR doesn't apply, fill in the
+# fields those documents (and gdpr/logic.yml's clause-inclusion
+# booleans) read with safe defaults instead; the real questions below
+# still run whenever GDPR *is* confirmed, since main.yml only forces
+# those under its own "if GDPR confirmed" gate.
 # ===============================================
 code: |
   matters[i].initializeAttribute('gdpr', DAObject)
   matters[i].gdpr.initializeAttribute('posture', DAObject)
   matters[i].gdpr.initializeAttribute('dpo', Individual)
+  if 'GDPR' not in matters[i].confirmed_jurisdictions.true_values():
+    matters[i].gdpr.dpo_exists = False
+    matters[i].gdpr.lawful_bases = {}
+    matters[i].gdpr.processes_special_category = False
+    matters[i].gdpr.international_transfers = False
+    matters[i].gdpr.include_consent_clause = False
+    matters[i].gdpr.include_legitimate_interests_clause = False
+    matters[i].gdpr.include_special_category_clause = False
+    matters[i].gdpr.include_international_transfer_clause = False
+    matters[i].gdpr.include_dpo_section = False
+    matters[i].gdpr.include_children_clause = False
+    matters[i].gdpr.applicable_rights = []
+    matters[i].gdpr.transfer_mechanisms_reference = []
   matters[i].gdpr_initialized = True
 sets: matters[i].gdpr_initialized
 ---
