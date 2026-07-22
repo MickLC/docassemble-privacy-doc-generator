@@ -27,7 +27,15 @@ Phase 1; 'internal_privacy_policy' and 'ropa' in Phase 2; 'dpia_report' and
 
 
 def _applies_privacy_statement(m):
-    return bool(m.confirmed_jurisdictions.true_values())
+    # Every matter gets a website Privacy Statement, same as the internal
+    # policy and ROPA below -- there's no real "no privacy law applies to
+    # our website at all" case, and privacy_statement.docx wraps each
+    # jurisdiction's section individually so a matter with zero confirmed
+    # jurisdictions still renders a valid baseline statement (org info,
+    # generic intro, no jurisdiction-specific sections). Previously gated
+    # on confirmed_jurisdictions being non-empty, which silently dropped
+    # the document for matters under every threshold.
+    return True
 
 
 def _applies_gap_analysis_memo(m):
